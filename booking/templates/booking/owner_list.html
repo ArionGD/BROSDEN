@@ -1,0 +1,77 @@
+{% extends "owner/portal_base.html" %}
+
+{% block portal_content %}
+<div class="mb-10">
+    <h2 class="text-3xl font-black text-slate-800 tracking-tight">Booking Requests</h2>
+    <p class="text-slate-500 font-medium mt-2">Manage inquiries for your listed properties.</p>
+</div>
+
+<div class="space-y-6">
+    {% for booking in bookings %}
+    <div
+        class="bg-white border border-slate-200 rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start hover:shadow-xl transition-all border-l-8 {% if booking.status == 'PENDING' %}border-amber-400{% elif booking.status == 'APPROVED' %}border-emerald-500{% else %}border-red-400{% endif %}">
+
+        <div class="flex-1">
+            <div class="flex items-center gap-3 mb-4">
+                <div
+                    class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 font-bold uppercase text-sm">
+                    {{ booking.tenant.username|slice:":1" }}
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-slate-900 leading-tight">{{ booking.tenant.username }}</h3>
+                    <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">Potential Tenant</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 rounded-2xl p-4 mb-4">
+                <p class="text-xs font-black uppercase text-slate-400 mb-2">Requesting for:</p>
+                <p class="text-md font-bold text-blue-600">{{ booking.property.title }}</p>
+            </div>
+
+            <div class="prose prose-sm italic text-slate-600">
+                <p>"{{ booking.message|default:"I am interested in this property and would like to schedule a visit."
+                    }}"</p>
+            </div>
+        </div>
+
+        <div class="w-full md:w-auto flex flex-col gap-3 min-w-[200px]">
+            <div class="text-right mb-4">
+                <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">Status</p>
+                <p
+                    class="text-sm font-black {% if booking.status == 'PENDING' %}text-amber-600{% elif booking.status == 'APPROVED' %}text-emerald-600{% else %}text-red-500{% endif %} mt-1">
+                    {{ booking.status }}
+                </p>
+            </div>
+
+            {% if booking.status == 'PENDING' %}
+            <div class="flex flex-col gap-2">
+                <a href="{% url 'booking:handle' booking.id 'approve' %}"
+                    class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 rounded-xl shadow-lg shadow-emerald-100 text-center text-sm transition-all">
+                    <i class="fas fa-check mr-2"></i> Approve Request
+                </a>
+                <a href="{% url 'booking:handle' booking.id 'reject' %}"
+                    class="w-full bg-red-50 hover:bg-red-100 text-red-500 font-black py-3 rounded-xl text-center text-sm transition-all border border-red-100">
+                    <i class="fas fa-times mr-2"></i> Reject Request
+                </a>
+            </div>
+            {% else %}
+            <div class="text-center p-4 bg-slate-50 rounded-2xl">
+                <p class="text-xs font-bold text-slate-400 italic">This request has been resolved.</p>
+            </div>
+            {% endif %}
+
+            <p class="text-center text-[9px] font-black uppercase text-slate-300 mt-4 tracking-tighter">Received on {{
+                booking.created_at|date:"F d, Y" }}</p>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-slate-100">
+        <div class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-inbox text-slate-200 text-4xl"></i>
+        </div>
+        <h3 class="text-xl font-black text-slate-900">No requests yet</h3>
+        <p class="text-slate-500 mt-2 font-medium">Your property listings are live. Requests will appear here.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
