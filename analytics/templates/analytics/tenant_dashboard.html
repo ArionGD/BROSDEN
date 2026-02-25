@@ -1,0 +1,79 @@
+{% extends "tenant/portal_base.html" %}
+
+{% block portal_content %}
+<div class="mb-12">
+    <h2 class="text-4xl font-black text-slate-800 tracking-tight">Activity Overview</h2>
+    <p class="text-slate-500 font-medium mt-2">Personalized insights into your housing journey.</p>
+</div>
+
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+    <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
+        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Total Requests Sent</p>
+        <h3 class="text-5xl font-black text-slate-900">{{ total_sent }}</h3>
+        <p class="text-xs text-slate-500 mt-4 font-medium italic">Across all properties</p>
+    </div>
+
+    <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm border-b-8 border-b-emerald-400">
+        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Approved Bookings</p>
+        <h3 class="text-5xl font-black text-emerald-600">{{ approved }}</h3>
+        <p class="text-xs text-slate-500 mt-4 font-medium italic">Ready for visit/payment</p>
+    </div>
+
+    <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
+        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Success Rate</p>
+        <h3 class="text-5xl font-black text-blue-600">{{ success_rate }}%</h3>
+        <div class="w-full bg-slate-100 h-2 rounded-full mt-6 overflow-hidden">
+            <div class="bg-blue-500 h-full rounded-full" style="width: {{ success_rate }}%"></div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Recent Searches -->
+    <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
+        <div class="flex justify-between items-center mb-8">
+            <h3 class="text-xl font-black text-slate-900">Recent Searches</h3>
+            <i class="fas fa-magnifying-glass text-slate-200 text-2xl"></i>
+        </div>
+        <div class="space-y-4">
+            {% for search in recent_searches %}
+            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-blue-500 shadow-sm">
+                        <i class="fas fa-clock-rotate-left text-xs"></i>
+                    </div>
+                    <span class="font-bold text-slate-700">{{ search.query }}</span>
+                </div>
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{{
+                    search.searched_at|timesince }} ago</span>
+            </div>
+            {% empty %}
+            <div class="text-center py-10">
+                <p class="text-slate-400 italic">No search history found.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Advice Card -->
+    <div
+        class="bg-gradient-to-br from-blue-600 to-indigo-700 p-10 rounded-[2.5rem] text-white shadow-xl flex flex-col justify-between">
+        <div>
+            <h3 class="text-2xl font-black mb-4 flex items-center">
+                <i class="fas fa-lightbulb mr-3 text-amber-300"></i> Smart Hunt Tip
+            </h3>
+            <p class="text-blue-100 font-medium leading-relaxed">
+                Increase your success rate by adding a personalized message to owners. Users with custom messages are
+                65% more likely to get an approval!
+            </p>
+        </div>
+        <div class="mt-8">
+            <a href="{% url 'property:browse' %}"
+                class="inline-block bg-white text-blue-600 px-8 py-4 rounded-2xl font-black shadow-lg hover:bg-blue-50 transition-all">
+                Find Your Next Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

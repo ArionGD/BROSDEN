@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Property
 from .forms import PropertyForm
+from analytics.models import PropertyView, SearchActivity
 from accounts.decorators import tenant_required, owner_required
 
 @tenant_required
@@ -10,6 +11,10 @@ def browse_properties(request):
     query = request.GET.get('q')
     properties = Property.objects.all()
     if query:
+        # Track search if authenticated
+        if request.user.is_authenticated:
+            SearchActivity.objects.create(user=request.user, query=query)
+            
         properties = properties.filter(title__icontains=query) | properties.filter(city__icontains=query)
     properties = properties.order_by('-created_at')
     return render(request, 'property/browse.html', {'properties': properties})
@@ -38,4 +43,9 @@ def add_property(request):
 def property_detail(request, pk):
     """Public/Shared view for property details."""
     prop = get_object_or_404(Property, pk=pk)
+    
+    # Track view if authenticated
+    if request.user.is_authenticated:
+        PropertyView.objects.create(property=prop, viewer=request.user)
+        
     return render(request, 'property/detail.html', {'property': prop})
