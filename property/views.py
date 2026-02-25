@@ -28,6 +28,15 @@ def owner_property_list(request):
 @owner_required
 def add_property(request):
     """View for Owners to add a new property."""
+    # Enforce KYC
+    try:
+        if not request.user.kyc.is_verified:
+            messages.warning(request, "Please complete your KYC verification before listing a property.")
+            return redirect('/payment/kyc/?next=' + request.path)
+    except Exception:
+        messages.warning(request, "Please complete your KYC verification before listing a property.")
+        return redirect('/payment/kyc/?next=' + request.path)
+
     if request.method == 'POST':
         form = PropertyForm(request.POST)
         if form.is_valid():

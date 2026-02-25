@@ -7,20 +7,20 @@ This document provides a comparative analysis of **BrosDen-AV** (our current pla
 | Feature | Housing.com | BrosDen-AV | Our Strategy |
 | :--- | :---: | :---: | :--- |
 | **User Roles** | Tenant, Owner, Agent | Admin, Tenant, Owner | ✅ Simplified, focused on Direct-Owner connections. |
+| **KYC / Trust** | Basic Verification | Managed KYC Engine | ✅ **Edge:** Mandatory KYC for all listings & bookings. |
 | **Property Listing** | High (AR/VR/Drone) | Basic (Data + Message) | 🚀 **Plan:** Add Image upload & Video tours. |
-| **Booking Flow** | Housing Chat | Simple Request System | ✅ Efficient direct lead management. |
-| **Analytics** | Professional Seller Insights | Core View/Lead Metrics | ✅ **Edge:** Faster, cleaner dashboards for individuals. |
-| **Verified Leads** | Automated + Manual | Boolean Flag (Admin) | 🚀 **Plan:** Add mobile OTP verification. |
-| **Payments** | Housing Edge (UPI/Credit) | Coming Soon | 🚀 **Plan:** Integrate Razorpay/Stripe. |
+| **Booking Flow** | Housing Chat | Status-Tracked Request | ✅ Managed funnel from Request to Approval. |
+| **Analytics** | Professional Seller Insights | Real-time Activity IQ | ✅ **Edge:** Success rates for tenants + View stats for owners. |
+| **Payments** | Housing Edge (UPI/Credit) | Razorpay Master-UI | ✅ Integrated premium checkout interface. |
 
 ---
 
 ## 🏗️ What We Offer (Our Existing Core)
 
 1.  **Direct Owner Workspace:** A clean, zero-distraction dashboard for owners to manage bookings without dealing with brokers.
-2.  **Marketplace Analytics:** Search history and success rate tracking for tenants—features that keep users engaged during their hunt.
-3.  **Premium Aesthetics:** A state-of-the-art UI with high-contrast themes and reactive charts (Chart.js) that feels more modern than traditional real-estate sites.
-4.  **Role-Based Access:** Rigid decorators ensuring data privacy and correct workflow for each user type.
+2.  **Mandatory KYC Shield:** Unlike many platforms, we enforce identity verification *before* any major interaction, significantly reducing fraud.
+3.  **Marketplace Analytics:** Search history and success rate tracking for tenants—features that keep users engaged during their hunt.
+4.  **Premium Aesthetics:** A state-of-the-art UI with high-contrast themes and reactive charts (Chart.js) that feels more modern than traditional real-estate sites.
 
 ---
 
@@ -30,18 +30,19 @@ To compete with Housing.com's dominance, we should focus on these high-impact fe
 
 ### 1. Immersive Discovery (Visuals)
 *   **Media Gallery:** Allow owners to upload multiple high-res photos and 360-degree panoramic images.
-*   **Video Shorts:** Implementation of "BrosDen Shorts"—15-second vertical video tours of properties.
+*   **Property Map:** Integration of OpenStreetMap or Google Maps to show property proximity to schools/hospitals.
 
-### 2. Trust & Security
+### 2. Trust & Security Enhancement
 *   **OTP Authentication:** Using Twilio to verify tenant phone numbers during registration to reduce spam.
-*   **KYC Badge:** A verified "Pro Owner" badge for owners who submit identity proof.
+*   **Document Vault:** Let users store digital copies of their rent agreements and payment receipts securely within their profile.
 
-### 3. Fintech Integration (Housing Edge Rival)
-*   **Digital Rent Agreements:** Auto-generation of PDF rent agreements.
-*   **Payment Gateway:** One-click rent payments via UPI or Credit Card.
+### 3. Fintech Integration 2.0
+*   **Actual Payment Gateway:** Connecting the Razorpay UI to a live API for real-time rent collection.
+*   **Automated Rent Receipts:** Auto-generating professional PDFs immediately after a successful payout.
 
-### 4. Communication (BrosDen Chat)
-*   Instead of just a "Request" message, a real-time WebSocket-based chat system (using Django Channels) for instant owner-tenant negotiation.
+### 4. Communication & Engagement
+*   **Real-time Chat:** Implementation of a WebSocket-based chat system (using Django Channels) for instant owner-tenant negotiation.
+*   **Smart Matching:** An AI-driven notification system that alerts tenants when a property matching their "Search History" is listed.
 
 ---
 

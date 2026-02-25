@@ -7,6 +7,15 @@ from accounts.decorators import tenant_required, owner_required
 @tenant_required
 def create_booking(request, property_id):
     """Allow tenants to request a booking."""
+    # Enforce KYC
+    try:
+        if not request.user.kyc.is_verified:
+            messages.warning(request, "Please complete your KYC verification before requesting a booking.")
+            return redirect('/payment/kyc/?next=' + request.path)
+    except Exception:
+        messages.warning(request, "Please complete your KYC verification before requesting a booking.")
+        return redirect('/payment/kyc/?next=' + request.path)
+        
     prop = get_object_or_404(Property, id=property_id)
     
     # Check if a pending request already exists
