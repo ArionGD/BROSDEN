@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}{{ property.title }} | BrosDen-AV{% endblock %}
+
+{% block content %}
+<div class="bg-white">
+    <!-- Breadcrumbs / Top nav -->
+    <div class="container mx-auto px-4 py-8">
+        <a href="javascript:history.back()"
+            class="inline-flex items-center text-slate-400 hover:text-blue-600 font-bold transition-all">
+            <i class="fas fa-arrow-left mr-2"></i> Back to search
+        </a>
+    </div>
+
+    <!-- Main Detail Section -->
+    <div class="container mx-auto px-4 pb-20 grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <!-- Left: Images & Info -->
+        <div class="lg:col-span-2 space-y-12">
+            <!-- Main Hero Image Area -->
+            <div
+                class="w-full h-[500px] bg-slate-100 rounded-[3rem] flex items-center justify-center text-slate-300 relative overflow-hidden group shadow-2xl">
+                <i class="fas fa-image text-6xl group-hover:scale-110 transition-transform"></i>
+                <div class="absolute top-8 left-8 flex gap-3">
+                    {% if property.is_verified %}
+                    <span
+                        class="bg-emerald-500 text-white text-xs font-black uppercase px-4 py-2 rounded-xl shadow-lg">Verified
+                        Listing</span>
+                    {% endif %}
+                    <span
+                        class="bg-blue-600 text-white text-xs font-black uppercase px-4 py-2 rounded-xl shadow-lg">Featured</span>
+                </div>
+            </div>
+
+            <!-- Core Details -->
+            <div class="bg-white border-b border-slate-100 pb-12">
+                <div class="flex flex-col md:flex-row justify-between items-start gap-6">
+                    <div>
+                        <h1 class="text-5xl font-black text-slate-900 tracking-tight">{{ property.title }}</h1>
+                        <p class="text-xl text-slate-500 mt-4 flex items-center">
+                            <i class="fas fa-location-dot mr-3 text-blue-500"></i> {{ property.address }}, {{
+                            property.city }}
+                        </p>
+                    </div>
+                    <div class="text-left md:text-right">
+                        <span class="text-xs font-black uppercase tracking-widest text-slate-400">Total Price</span>
+                        <p class="text-5xl font-black text-blue-600 tracking-tighter">₹ {{ property.price }}</p>
+                    </div>
+                </div>
+
+                <!-- Feature Pills -->
+                <div class="flex flex-wrap gap-4 mt-10">
+                    <div class="bg-slate-50 px-8 py-5 rounded-[2rem] border border-slate-100">
+                        <span class="block text-[10px] font-black uppercase text-slate-400 mb-1">Type</span>
+                        <span class="text-lg font-bold text-slate-800">{{ property.get_property_type_display }}</span>
+                    </div>
+                    <div class="bg-slate-50 px-8 py-5 rounded-[2rem] border border-slate-100">
+                        <span class="block text-[10px] font-black uppercase text-slate-400 mb-1">Configuration</span>
+                        <span class="text-lg font-bold text-slate-800">{{ property.bedrooms }} BHK</span>
+                    </div>
+                    <div class="bg-slate-50 px-8 py-5 rounded-[2rem] border border-slate-100">
+                        <span class="block text-[10px] font-black uppercase text-slate-400 mb-1">Bathrooms</span>
+                        <span class="text-lg font-bold text-slate-800">{{ property.bathrooms }} Units</span>
+                    </div>
+                    <div class="bg-slate-50 px-8 py-5 rounded-[2rem] border border-slate-100">
+                        <span class="block text-[10px] font-black uppercase text-slate-400 mb-1">Build Area</span>
+                        <span class="text-lg font-bold text-slate-800">{{ property.sqft }} sqft</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="prose prose-slate lg:prose-xl">
+                <h3 class="text-2xl font-black text-slate-900 mb-6">About this property</h3>
+                <p class="text-slate-600 leading-relaxed whitespace-pre-line">{{ property.description }}</p>
+            </div>
+        </div>
+
+        <!-- Right: Action Sidebar -->
+        <div class="space-y-8">
+            <div class="bg-white border border-slate-200 rounded-[3rem] p-10 shadow-2xl sticky top-32">
+                <h3 class="text-xl font-black text-slate-900 mb-8 border-b border-slate-50 pb-6">Interested?</h3>
+
+                <div class="space-y-6">
+                    <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl">
+                        <div class="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-black text-slate-400 uppercase tracking-widest">Listed By</p>
+                            <p class="text-lg font-bold text-slate-900">{{ property.owner.username }}</p>
+                        </div>
+                    </div>
+
+                    <button
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-lg shadow-blue-200 transition-all transform hover:-translate-y-1 active:scale-95 text-lg">
+                        Contact Owner <i class="fas fa-phone ml-2"></i>
+                    </button>
+
+                    <button
+                        class="w-full bg-slate-50 hover:bg-slate-100 text-slate-600 font-black py-4 rounded-2xl transition-all">
+                        Schedule a Visit <i class="fas fa-calendar-alt ml-2"></i>
+                    </button>
+                </div>
+
+                <div class="mt-10 pt-10 border-t border-slate-50 text-center">
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Property ID: #PRO-{{
+                        property.pk }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

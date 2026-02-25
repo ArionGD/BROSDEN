@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Login | BrosDen-AV{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center p-6 bg-slate-50">
+    <div
+        class="max-w-md w-full bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100 transition-all hover:shadow-blue-100">
+        <div class="px-10 py-12">
+            <div class="text-center mb-10">
+                <div
+                    class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-lg shadow-blue-200 mb-6">
+                    <i class="fas fa-lock text-white text-2xl"></i>
+                </div>
+                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Welcome Back</h2>
+                <p class="text-slate-500 font-medium mt-2">Login to access your portal</p>
+            </div>
+
+            {% if messages %}
+            <div class="mb-6">
+                {% for message in messages %}
+                <div
+                    class="px-4 py-3 rounded-xl {% if message.tags == 'error' %}bg-red-50 text-red-600{% else %}bg-blue-50 text-blue-600{% endif %} text-sm font-bold flex items-center">
+                    <i
+                        class="fas {% if message.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %} mr-2"></i>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Username</label>
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                        <input type="text" name="username" required
+                            class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800"
+                            placeholder="Enter your username">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Password</label>
+                    <div class="relative">
+                        <i class="fas fa-key absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                        <input type="password" name="password" required
+                            class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl shadow-lg shadow-blue-200 transition-all transform hover:-translate-y-1 active:scale-95 text-lg">
+                    Sign In <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                </button>
+            </form>
+
+            <div class="mt-8 pt-8 border-t border-slate-50 text-center">
+                <p class="text-slate-500 font-medium">Don't have an account? <a href="{% url 'accounts:register' %}"
+                        class="text-blue-600 font-bold hover:underline">Register now</a></p>
+            </div>
+        </div>
+
+        <!-- Helpful Tip for Dev -->
+        <div class="bg-blue-50 px-10 py-4 text-center">
+            <p class="text-[10px] text-blue-400 font-black uppercase tracking-widest">Dev Preview: Use 'tenant' or
+                'owner' / 'password'</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

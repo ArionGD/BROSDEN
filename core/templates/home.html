@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}BrosDen-AV | Find Your Next Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Housing.com Vibe -->
+<section class="relative h-[550px] flex items-center justify-center overflow-hidden">
+    <!-- Background Image with Overlay -->
+    <div class="absolute inset-0 z-0">
+        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+            class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10 text-center">
+        <h1 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight">
+            Discover Your Perfect <span class="text-blue-400">Den</span>.
+        </h1>
+
+        <!-- Category Tabs -->
+        <div class="flex justify-center space-x-2 mb-8">
+            <button class="px-8 py-3 bg-blue-600 text-white font-bold rounded-full shadow-lg">Buy</button>
+            <button
+                class="px-8 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full backdrop-blur-md transition-all">Rent</button>
+            <button
+                class="px-8 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full backdrop-blur-md transition-all">Plots</button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="max-w-4xl mx-auto">
+            <form action="{% url 'property:browse' %}" method="GET"
+                class="bg-white p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2 transition-all hover:ring-4 hover:ring-blue-100">
+                <div class="flex-1 flex items-center px-4 border-b md:border-b-0 md:border-r border-slate-100">
+                    <i class="fas fa-location-dot text-slate-400 mr-3"></i>
+                    <input type="text" name="q" placeholder="Enter Locality, Project or Landmark"
+                        class="w-full py-4 text-slate-800 outline-none font-medium placeholder:text-slate-400 text-lg">
+                </div>
+                <button type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 rounded-xl font-black text-lg transition-all flex items-center justify-center">
+                    <i class="fas fa-search mr-3"></i> Search
+                </button>
+            </form>
+            <p class="mt-6 text-slate-200 font-medium">
+                <i class="fas fa-fire text-orange-400 mr-2"></i> Trending: Banjara Hills, Whitefield, Gurgaon Sector 45
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Section -->
+<div class="container mx-auto px-4 py-20">
+    <div class="flex justify-between items-end mb-12">
+        <div>
+            <span class="text-blue-600 font-bold uppercase tracking-widest text-sm">Exclusives</span>
+            <h2 class="text-4xl font-black text-slate-900 mt-2">Handpicked Collections</h2>
+        </div>
+        <a href="#" class="text-blue-600 font-bold hover:underline">View all properties <i
+                class="fas fa-arrow-right ml-1"></i></a>
+    </div>
+
+    <!-- Featured Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Property 1 -->
+        <div
+            class="group bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+            <div class="relative h-64 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute top-4 left-4 flex gap-2">
+                    <span
+                        class="bg-emerald-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-sm">Verified</span>
+                    <span
+                        class="bg-blue-600 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-sm">Hot</span>
+                </div>
+                <div
+                    class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-slate-900 font-black shadow-lg">
+                    ₹ 45,00,000
+                </div>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Skyview Premium
+                    Apartment</h3>
+                <p class="text-slate-500 mt-2 flex items-center"><i class="fas fa-location-dot mr-2 text-slate-300"></i>
+                    Banjara Hills, Hyderabad</p>
+                <div class="flex items-center justify-between mt-6 pt-6 border-t border-slate-50">
+                    <div class="flex gap-4 text-slate-500 text-sm font-semibold">
+                        <span><i class="fas fa-bed text-blue-500 mr-2"></i> 3 BHK</span>
+                        <span><i class="fas fa-maximize text-blue-500 mr-2"></i> 1850 sqft</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Property 2 -->
+        <div
+            class="group bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+            <div class="relative h-64 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute top-4 left-4 flex gap-2">
+                    <span
+                        class="bg-emerald-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-sm">Verified</span>
+                </div>
+                <div
+                    class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-slate-900 font-black shadow-lg">
+                    ₹ 1.2 Cr
+                </div>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Seaside Luxury
+                    Villa</h3>
+                <p class="text-slate-500 mt-2 flex items-center"><i class="fas fa-location-dot mr-2 text-slate-300"></i>
+                    Marine Drive, Mumbai</p>
+                <div class="flex items-center justify-between mt-6 pt-6 border-t border-slate-50">
+                    <div class="flex gap-4 text-slate-500 text-sm font-semibold">
+                        <span><i class="fas fa-bed text-blue-500 mr-2"></i> 5 BHK</span>
+                        <span><i class="fas fa-maximize text-blue-500 mr-2"></i> 4200 sqft</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Property 3 -->
+        <div
+            class="group bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+            <div class="relative h-64 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute top-4 left-4 flex gap-2">
+                    <span
+                        class="bg-emerald-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-sm">Verified</span>
+                </div>
+                <div
+                    class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-slate-900 font-black shadow-lg">
+                    ₹ 75,00,000
+                </div>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Suburban Family
+                    Home</h3>
+                <p class="text-slate-500 mt-2 flex items-center"><i class="fas fa-location-dot mr-2 text-slate-300"></i>
+                    Sector 45, Gurgaon</p>
+                <div class="flex items-center justify-between mt-6 pt-6 border-t border-slate-50">
+                    <div class="flex gap-4 text-slate-500 text-sm font-semibold">
+                        <span><i class="fas fa-bed text-blue-500 mr-2"></i> 3 BHK</span>
+                        <span><i class="fas fa-maximize text-blue-500 mr-2"></i> 2200 sqft</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Example SweetAlert2 Trigger
+    window.onload = function () {
+        // Just as an example for development
+        console.log("Tailwind & SweetAlert Ready!");
+    }
+</script>
+{% endblock %}
