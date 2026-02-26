@@ -1,8 +1,8 @@
-<div class="max-w-xl w-full">
+<div class="max-w-xl w-full reveal-on-scroll">
     <div class="bg-white rounded-[3rem] p-12 shadow-2xl border border-slate-100">
         <div class="text-center mb-10">
             <div
-                class="inline-flex items-center justify-center w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl mb-6 shadow-sm">
+                class="inline-flex items-center justify-center w-20 h-20 bg-arion-blue-light/10 text-arion-blue-light rounded-3xl mb-6 shadow-sm">
                 <i class="fas fa-id-card text-3xl"></i>
             </div>
             <h1 class="text-4xl font-black text-slate-900 tracking-tight">KYC Verification</h1>
@@ -16,7 +16,10 @@
                 <div class="space-y-2">
                     <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Full Statutory
                         Name</label>
-                    {{ form.full_name }}
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                        {{ form.full_name }}
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -33,16 +36,16 @@
                 </div>
             </div>
 
-            <div class="bg-blue-50/50 p-6 rounded-2xl flex gap-4 items-start border border-blue-100">
-                <i class="fas fa-shield-halved text-blue-600 mt-1"></i>
-                <p class="text-xs font-bold text-slate-700 leading-relaxed">
+            <div class="bg-arion-blue/5 p-6 rounded-2xl flex gap-4 items-start border border-arion-blue/10">
+                <i class="fas fa-shield-halved text-arion-blue mt-1"></i>
+                <p class="text-[10px] font-bold text-slate-600 leading-relaxed uppercase tracking-wider">
                     Your data is encrypted and used only for internal verification. We never share your ID details with
                     third parties.
                 </p>
             </div>
 
             <button type="submit"
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl shadow-lg shadow-blue-200 transition-all transform hover:-translate-y-1 active:scale-95 text-lg">
+                class="w-full bg-arion-blue-light hover:bg-arion-blue text-white font-black py-4 rounded-xl shadow-lg shadow-blue-100 transition-all transform hover:-translate-y-1 active:scale-95 text-lg">
                 Verify Identity <i class="fas fa-arrow-right ml-2 text-sm"></i>
             </button>
         </form>

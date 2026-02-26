@@ -33,7 +33,18 @@ def kyc_form_view(request):
     else:
         form = KYCForm(instance=kyc)
     
-    return render(request, 'payment/kyc_form.html', {'form': form})
+    # Identify the correct base template based on role
+    base_template = 'base.html'
+    if request.user.is_authenticated:
+        if request.user.role == 'OWNER':
+            base_template = 'owner/portal_base.html'
+        else:
+            base_template = 'tenant/portal_base.html'
+            
+    return render(request, 'payment/kyc_form.html', {
+        'form': form, 
+        'base_template': base_template
+    })
 
 @login_required
 def razorpay_checkout(request):
