@@ -62,10 +62,10 @@
                 class="bg-slate-900 text-white py-4 rounded-2xl font-black text-sm text-center shadow-lg hover:bg-black transition-all no-underline">
                 <i class="fas fa-file-contract mr-2 text-arion-orange"></i> View Contract
             </a>
-            <button onclick="window.print()"
-                class="bg-slate-100 text-slate-600 py-4 rounded-2xl font-black text-sm text-center hover:bg-slate-200 transition-all">
-                <i class="fas fa-download mr-2"></i> Download Receipt
-            </button>
+            <a href="{% url 'payment:view_receipt' receipt.id %}" target="_blank"
+                class="bg-slate-100 text-slate-600 py-4 rounded-2xl font-black text-sm text-center hover:bg-slate-200 transition-all no-underline">
+                <i class="fas fa-file-invoice-dollar mr-2 text-arion-blue"></i> View Security Deposit Receipt
+            </a>
         </div>
     </div>
 

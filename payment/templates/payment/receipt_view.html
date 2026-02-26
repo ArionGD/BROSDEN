@@ -1,0 +1,94 @@
+{% extends "tenant/portal_base.html" %}
+
+{% block title %}Payment Receipt | BrosDen-AV{% endblock %}
+
+{% block portal_content %}
+<div class="max-w-2xl mx-auto py-10 reveal-on-scroll">
+    <div class="mb-10 flex justify-between items-end">
+        <div>
+            <h2 class="text-3xl font-black text-slate-800 tracking-tight">Payment Receipt</h2>
+            <p class="text-slate-500 font-medium mt-2">Official proof of transaction.</p>
+        </div>
+        <button onclick="window.print()"
+            class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2">
+            <i class="fas fa-print"></i> Print Receipt
+        </button>
+    </div>
+
+    <!-- Receipt Card -->
+    <div class="bg-white rounded-[3rem] p-12 shadow-2xl border border-slate-100 relative overflow-hidden">
+        <!-- Watermark -->
+        <div class="absolute inset-0 flex items-center justify-center opacity-[0.02] pointer-events-none select-none">
+            <i class="fas fa-file-invoice-dollar text-[15rem]"></i>
+        </div>
+
+        <div class="relative z-10">
+            <div class="flex justify-between items-start border-b border-slate-100 pb-8 mb-8">
+                <div>
+                    <img src="https://razorpay.com/favicon.png" class="h-6 mb-4 grayscale opacity-40">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Merchant</p>
+                    <p class="text-sm font-bold text-slate-900 tracking-tight">BrosDen Portal Services</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Date Paid</p>
+                    <p class="text-sm font-bold text-slate-900">{{ receipt.created_at|date:"d M Y, H:i" }}</p>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 text-center">Receipt
+                        Details</p>
+                    <div class="space-y-4">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500 font-medium">Transaction ID</span>
+                            <span class="text-slate-900 font-mono text-sm">{{ receipt.transaction_id }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500 font-medium">Payment Reason</span>
+                            <span class="text-slate-900 font-bold">{{ receipt.get_payment_type_display }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500 font-medium">Property</span>
+                            <span class="text-slate-900 font-bold">{{ receipt.property_title }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500 font-medium">Paid By</span>
+                            <span class="text-arion-blue font-bold">{{ receipt.user.username }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-8 border-t border-slate-100">
+                    <div class="flex justify-between items-center bg-slate-50 p-6 rounded-2xl">
+                        <span class="text-lg font-black text-slate-900">Amount Paid</span>
+                        <span class="text-3xl font-black text-arion-blue">₹{{ receipt.amount }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center">
+                <p class="text-[9px] font-black uppercase text-slate-300 tracking-widest">This is a computer generated
+                    document. No signature required.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media print {
+
+        header,
+        .sidebar-section,
+        .toast-container,
+        button {
+            display: none !important;
+        }
+
+        .max-w-2xl {
+            max-width: 100% !important;
+            margin: 0 !important;
+        }
+    }
+</style>
+{% endblock %}

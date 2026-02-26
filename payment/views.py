@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import KYCForm
-from .models import KYC
+from .models import KYC, PaymentReceipt
 from booking.models import BookingRequest
 from contract.utils import generate_contract
 
@@ -72,15 +73,32 @@ def payment_success(request, booking_id):
     booking.status = 'PAID'
     booking.save()
     
+    # Create Payment Receipt
+    receipt = PaymentReceipt.objects.create(
+        user=request.user,
+        booking=booking,
+        property_title=booking.property.title,
+        amount=booking.property.price,
+        transaction_id=f"TID_{booking.id}_{booking.tenant.id}_{timezone.now().strftime('%U%H%M')}",
+        payment_type='SECURITY_DEPOSIT'
+    )
+    
     # Generate Contract Automatically
     contract = generate_contract(booking)
     
     context = {
         'booking': booking,
         'contract': contract,
-        'amount': booking.property.price,
-        'transaction_id': f"TID_{booking.id}_{booking.tenant.id}"
+        'receipt': receipt,
+        'amount': receipt.amount,
+        'transaction_id': receipt.transaction_id
     }
     
-    messages.success(request, f"Payment successful! Contract generated for {booking.property.title}.")
+    messages.success(request, f"Payment successful! Security Deposit for {booking.property.title} received.")
     return render(request, 'payment/payment_success.html', context)
+
+@login_required
+def view_receipt(request, receipt_id):
+    """View to display a specific payment receipt."""
+    receipt = get_object_or_404(PaymentReceipt, id=receipt_id, user=request.user)
+    return render(request, 'payment/receipt_view.html', {'receipt': receipt})
