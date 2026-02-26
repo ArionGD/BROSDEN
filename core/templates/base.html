@@ -132,6 +132,10 @@
             overscroll-behavior: none;
         }
 
+        body.no-global-scroll #main-scroll-container {
+            overflow-y: hidden !important;
+        }
+
         /* Arion Scrollbar */
         @media (min-width: 1024px) {
             ::-webkit-scrollbar {
@@ -189,9 +193,11 @@
     {% block extra_head %}{% endblock %}
 </head>
 
-<body class="bg-slate-50">
+<body class="bg-slate-50 {% block body_class %}{% endblock %}">
     <div id="main-scroll-container">
+        {% block header %}
         {% include "navigation/header.html" %}
+        {% endblock %}
 
         <!-- Floating Notifications -->
         <div class="toast-container" id="toast-container">
