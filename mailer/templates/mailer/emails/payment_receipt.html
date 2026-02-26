@@ -1,0 +1,30 @@
+{% extends "mailer/emails/base_email.html" %}
+{% block email_content %}
+<div class="hero-band">
+    <div class="hero-icon green">💳</div>
+    <div>
+        <h1>Payment Receipt</h1>
+        <p>Transaction confirmed</p>
+    </div>
+</div>
+<div class="email-body">
+    <p class="greeting">Hi {{ payment.user.first_name|default:payment.user.username }},</p>
+    <p class="message-text">Your payment has been successfully processed. Here's a summary of your transaction.</p>
+    <div class="info-card">
+        <div class="info-row"><span class="info-label">Receipt #</span><span class="info-value">#{{ payment.id }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Amount</span><span class="info-value">₹{{ payment.amount
+                }}</span></div>
+        <div class="info-row"><span class="info-label">Date</span><span class="info-value">{{ payment.created_at|date:"d
+                M Y" }}</span></div>
+        <div class="info-row"><span class="info-label">Status</span><span class="info-value"><span
+                    class="badge badge-green">Confirmed</span></span></div>
+    </div>
+    <div class="alert alert-success">
+        ✅ This receipt has been automatically recorded in your account. Keep it safe for your records.
+    </div>
+    <div class="cta-wrap">
+        <a href="#" class="cta-btn">View Full Receipt →</a>
+    </div>
+</div>
+{% endblock %}

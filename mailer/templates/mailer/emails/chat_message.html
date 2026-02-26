@@ -1,0 +1,26 @@
+{% extends "mailer/emails/base_email.html" %}
+{% block email_content %}
+<div class="hero-band">
+    <div class="hero-icon blue">💬</div>
+    <div>
+        <h1>New Message</h1>
+        <p>From {{ message.sender.username }}</p>
+    </div>
+</div>
+<div class="email-body">
+    <p class="greeting">Hi {{ recipient.first_name|default:recipient.username }},</p>
+    <p class="message-text">You have a new unread message on BrosDen-AV.</p>
+    <div class="info-card">
+        <div class="info-row"><span class="info-label">From</span><span class="info-value">{{ message.sender.username
+                }}</span></div>
+        <div class="info-row"><span class="info-label">Time</span><span class="info-value">{{ message.timestamp|date:"d
+                M Y, H:i" }}</span></div>
+    </div>
+    <div class="alert alert-info" style="white-space: pre-line; font-size: 14px;">
+        {{ message.content }}
+    </div>
+    <div class="cta-wrap">
+        <a href="#" class="cta-btn">Reply in Chat →</a>
+    </div>
+</div>
+{% endblock %}

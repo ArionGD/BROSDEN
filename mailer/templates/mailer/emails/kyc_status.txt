@@ -1,0 +1,12 @@
+KYC Verification {{ status|title }} — BrosDen-AV
+
+Hi {{ user.first_name|default:user.username }},
+
+Your KYC verification status: {{ status }}
+
+{% if remarks %}Remarks: {{ remarks }}{% endif %}
+
+{% if status == 'REJECTED' %}Please re-submit your documents from the KYC section.{% endif %}
+{% if status == 'APPROVED' %}You now have full access to all platform features.{% endif %}
+
+— BrosDen-AV Team

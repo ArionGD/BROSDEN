@@ -1,0 +1,14 @@
+Booking {{ status_label }} — BrosDen-AV
+
+Hi {{ booking.tenant.first_name|default:booking.tenant.username }},
+
+Your booking status has been updated.
+
+Property:   {{ booking.property.title }}
+Booking ID: #{{ booking.id }}
+Status:     {{ status_label }}
+
+{% if booking.status == 'APPROVED' %}Please proceed to the contract and payment steps from your dashboard.{% endif %}
+{% if booking.status == 'REJECTED' %}You may explore other properties on BrosDen-AV.{% endif %}
+
+— BrosDen-AV Team

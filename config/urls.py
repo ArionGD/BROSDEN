@@ -29,5 +29,6 @@ urlpatterns = [
     path('chat/', include('chat.urls')),
     path('support/', include('helpdesk.urls')),
     path('accounts/', include('accounts.urls')),
+    path('notifications/', include('notifications.urls')),
     path('', include('core.urls')),
 ]

@@ -1,0 +1,49 @@
+{% extends "mailer/emails/base_email.html" %}
+{% block email_content %}
+<div class="hero-band">
+    <div
+        class="hero-icon {% if booking.status == 'APPROVED' %}green{% elif booking.status == 'REJECTED' %}red{% else %}orange{% endif %}">
+        {% if booking.status == 'APPROVED' %}✅{% elif booking.status == 'REJECTED' %}❌{% else %}ℹ️{% endif %}
+    </div>
+    <div>
+        <h1>Booking {{ status_label }}</h1>
+        <p>{{ booking.property.title }}</p>
+    </div>
+</div>
+<div class="email-body">
+    <p class="greeting">Hi {{ booking.tenant.first_name|default:booking.tenant.username }},</p>
+    <p class="message-text">
+        {% if booking.status == 'APPROVED' %}
+        Great news! Your booking request has been <strong>approved</strong>. You're one step closer to your new home.
+        Please proceed with the contract and payment steps from your dashboard.
+        {% elif booking.status == 'REJECTED' %}
+        Unfortunately, your booking request has been <strong>declined</strong> by the property owner.
+        You can explore other available properties on BrosDen-AV.
+        {% else %}
+        Your booking status has been updated to <strong>{{ status_label }}</strong>.
+        {% endif %}
+    </p>
+    <div class="info-card">
+        <div class="info-row"><span class="info-label">Property</span><span class="info-value">{{ booking.property.title
+                }}</span></div>
+        <div class="info-row"><span class="info-label">Move-in Date</span><span class="info-value">{{ booking.start_date
+                }}</span></div>
+        <div class="info-row"><span class="info-label">Booking ID</span><span class="info-value">#{{ booking.id
+                }}</span></div>
+        <div class="info-row">
+            <span class="info-label">Status</span>
+            <span class="info-value">
+                <span
+                    class="badge {% if booking.status == 'APPROVED' %}badge-green{% elif booking.status == 'REJECTED' %}badge-red{% else %}badge-orange{% endif %}">
+                    {{ status_label }}
+                </span>
+            </span>
+        </div>
+    </div>
+    {% if booking.status == 'APPROVED' %}
+    <div class="cta-wrap">
+        <a href="#" class="cta-btn">Proceed to Contract →</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "mailer/emails/base_email.html" %}
+{% block email_content %}
+<div class="hero-band">
+    <div class="hero-icon purple">📄</div>
+    <div>
+        <h1>Contract Signed</h1>
+        <p>{{ contract.property.title }}</p>
+    </div>
+</div>
+<div class="email-body">
+    <p class="greeting">Hi {{ recipient.first_name|default:recipient.username }},</p>
+    <p class="message-text">A rental contract has been signed. Please find the details below.</p>
+    <div class="info-card">
+        <div class="info-row"><span class="info-label">Property</span><span class="info-value">{{
+                contract.property.title }}</span></div>
+        <div class="info-row"><span class="info-label">Contract ID</span><span class="info-value">#{{ contract.id
+                }}</span></div>
+        <div class="info-row"><span class="info-label">Start Date</span><span class="info-value">{{ contract.start_date
+                }}</span></div>
+        <div class="info-row"><span class="info-label">End Date</span><span class="info-value">{{ contract.end_date
+                }}</span></div>
+        <div class="info-row"><span class="info-label">Status</span><span class="info-value"><span
+                    class="badge badge-green">Signed</span></span></div>
+    </div>
+    <div class="cta-wrap">
+        <a href="#" class="cta-btn">View Contract →</a>
+    </div>
+</div>
+{% endblock %}

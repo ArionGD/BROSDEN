@@ -1,0 +1,13 @@
+Welcome to BrosDen-AV, {{ user.first_name|default:user.username }}!
+
+Your account has been successfully created.
+
+Username: {{ user.username }}
+Email: {{ user.email }}
+Role: {{ user.get_role_display }}
+
+Visit your dashboard to get started.
+
+If you didn't create this account, please contact support immediately.
+
+— BrosDen-AV Team

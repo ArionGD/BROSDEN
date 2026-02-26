@@ -1,0 +1,14 @@
+Booking Request Received — BrosDen-AV
+
+Hi {{ booking.tenant.first_name|default:booking.tenant.username }},
+
+Your booking request has been received and is pending review by the property owner.
+
+Property:     {{ booking.property.title }}
+Move-in Date: {{ booking.start_date }}
+Booking ID:   #{{ booking.id }}
+Status:       Pending
+
+You can track the status from your tenant dashboard.
+
+— BrosDen-AV Team

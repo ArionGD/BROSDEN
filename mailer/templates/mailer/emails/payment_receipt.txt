@@ -1,0 +1,14 @@
+Payment Receipt — BrosDen-AV
+
+Hi {{ payment.user.first_name|default:payment.user.username }},
+
+Your payment has been successfully processed.
+
+Receipt #: #{{ payment.id }}
+Amount:    ₹{{ payment.amount }}
+Date:      {{ payment.created_at|date:"d M Y" }}
+Status:    Confirmed
+
+Keep this for your records.
+
+— BrosDen-AV Team

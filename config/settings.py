@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'contract',
     'chat',
     'helpdesk',
+    'notifications',
+    'mailer',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -132,3 +134,16 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Email Configuration — Gmail SMTP
+# ─────────────────────────────────────────────────────────────────────────────
+ENABLE_EMAIL_NOTIFICATIONS = False  # Toggle this to True to start sending real emails
+EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST          = 'smtp.gmail.com'
+EMAIL_PORT          = 587
+EMAIL_USE_TLS       = True
+EMAIL_HOST_USER     = 'aditya.raj322005@gmail.com'
+EMAIL_HOST_PASSWORD = None  # TODO: Set your Gmail App Password here
+DEFAULT_FROM_EMAIL  = 'BrosDen-AV <aditya.raj322005@gmail.com>'

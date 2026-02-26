@@ -1,0 +1,38 @@
+{% extends "mailer/emails/base_email.html" %}
+{% block email_content %}
+<div class="hero-band">
+    <div class="hero-icon blue">🎉</div>
+    <div>
+        <h1>Welcome to BrosDen-AV!</h1>
+        <p>Your account is ready to go</p>
+    </div>
+</div>
+<div class="email-body">
+    <p class="greeting">Hi {{ user.first_name|default:user.username }},</p>
+    <p class="message-text">
+        Welcome aboard! Your BrosDen-AV account has been successfully created.
+        Whether you're looking for your next home or managing your properties,
+        we've built everything you need in one place.
+    </p>
+    <div class="info-card">
+        <div class="info-row">
+            <span class="info-label">Username</span>
+            <span class="info-value">{{ user.username }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Email</span>
+            <span class="info-value">{{ user.email }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Role</span>
+            <span class="info-value">{{ user.get_role_display }}</span>
+        </div>
+    </div>
+    <div class="cta-wrap">
+        <a href="#" class="cta-btn">Go to My Dashboard →</a>
+    </div>
+    <p class="message-text" style="font-size:13px; color:#94a3b8;">
+        If you didn't create this account, please ignore this email or contact support immediately.
+    </p>
+</div>
+{% endblock %}

@@ -28,6 +28,16 @@
                 <i class="fas fa-comments w-6 mr-3 text-arion-blue"></i> <span
                     class="sidebar-text transition-opacity duration-200">Messages</span>
             </a>
+            <a href="{% url 'notifications:list' %}"
+                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
+                <i class="fas fa-bell w-6 mr-3 text-amber-500"></i>
+                <span
+                    class="sidebar-text transition-opacity duration-200 flex items-center justify-between w-full pr-4">
+                    <span>Notifications</span>
+                    <span id="notif-badge"
+                        class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full hidden">0</span>
+                </span>
+            </a>
             <a href="{% url 'helpdesk:home' %}"
                 class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
                 <i class="fas fa-headset w-6 mr-3 text-arion-orange"></i> <span

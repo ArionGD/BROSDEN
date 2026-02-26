@@ -1,0 +1,13 @@
+New Message from {{ message.sender.username }} — BrosDen-AV
+
+Hi {{ recipient.first_name|default:recipient.username }},
+
+You have a new message on BrosDen-AV.
+
+From: {{ message.sender.username }}
+Time: {{ message.timestamp|date:"d M Y, H:i" }}
+
+Message:
+{{ message.content }}
+
+— BrosDen-AV Team

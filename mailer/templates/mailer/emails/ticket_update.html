@@ -1,0 +1,36 @@
+{% extends "mailer/emails/base_email.html" %}
+{% block email_content %}
+<div class="hero-band">
+    <div class="hero-icon orange">🎧</div>
+    <div>
+        <h1>Ticket #{{ ticket.id }} Updated</h1>
+        <p>{{ ticket.subject }}</p>
+    </div>
+</div>
+<div class="email-body">
+    <p class="greeting">Hi {{ ticket.user.first_name|default:ticket.user.username }},</p>
+    <p class="message-text">Your support ticket has been updated. Here's the latest information.</p>
+    <div class="info-card">
+        <div class="info-row"><span class="info-label">Ticket #</span><span class="info-value">#{{ ticket.id }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Subject</span><span class="info-value">{{ ticket.subject
+                }}</span></div>
+        <div class="info-row"><span class="info-label">Category</span><span class="info-value">{{ ticket.category
+                }}</span></div>
+        <div class="info-row"><span class="info-label">Priority</span><span class="info-value">{{
+                ticket.get_priority_display }}</span></div>
+        <div class="info-row">
+            <span class="info-label">Status</span>
+            <span class="info-value">
+                <span
+                    class="badge {% if ticket.status == 'RESOLVED' %}badge-green{% elif ticket.status == 'OPEN' %}badge-blue{% elif ticket.status == 'CLOSED' %}badge-slate{% else %}badge-orange{% endif %}">
+                    {{ ticket.get_status_display }}
+                </span>
+            </span>
+        </div>
+    </div>
+    <div class="cta-wrap">
+        <a href="#" class="cta-btn">View Ticket →</a>
+    </div>
+</div>
+{% endblock %}

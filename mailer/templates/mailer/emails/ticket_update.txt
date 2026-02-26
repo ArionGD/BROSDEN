@@ -1,0 +1,11 @@
+Support Ticket #{{ ticket.id }} Updated — BrosDen-AV
+
+Hi {{ ticket.user.first_name|default:ticket.user.username }},
+
+Your support ticket has been updated.
+
+Ticket #:  #{{ ticket.id }}
+Subject:   {{ ticket.subject }}
+Status:    {{ ticket.get_status_display }}
+
+— BrosDen-AV Team

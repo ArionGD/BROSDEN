@@ -45,6 +45,19 @@
                 if (title) title.classList.toggle('opacity-0', !collapsed);
             });
         }
+
+        // Fetch unread notifications
+        fetch("{% url 'notifications:unread_count_api' %}")
+            .then(r => r.json())
+            .then(data => {
+                const badge = document.getElementById('notif-badge');
+                if (badge && data.unread_count > 0) {
+                    badge.textContent = data.unread_count;
+                    badge.classList.remove('hidden');
+                }
+            })
+            .catch(err => console.error('Error fetching unread count:', err));
+
     })();
 </script>
 {% endblock %}
