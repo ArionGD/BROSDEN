@@ -12,10 +12,10 @@
 
         <!-- Navigation Links -->
         <nav class="hidden md:flex items-center space-x-8">
-            <a href="#" class="text-slate-600 hover:text-blue-600 font-medium transition-colors">Buy</a>
-            <a href="#" class="text-slate-600 hover:text-blue-600 font-medium transition-colors">Rent</a>
+            <a href="{% url 'property:browse' %}"
+                class="text-slate-600 hover:text-blue-600 font-medium transition-colors">Browse Properties</a>
             <a href="#" class="text-slate-600 hover:text-blue-600 font-medium transition-colors">Commercial</a>
-            <a href="#" class="text-slate-600 hover:text-blue-600 font-medium transition-colors">About</a>
+            <a href="#" class="text-slate-600 hover:text-blue-600 font-medium transition-colors">About Us</a>
         </nav>
 
         <!-- Portal Actions -->
@@ -27,10 +27,10 @@
                     <span class="text-sm font-bold text-slate-900">{{ user.username }}</span>
                 </div>
                 {% if user.role == 'TENANT' %}
-                <a href="{% url 'tenant:dashboard' %}"
+                <a href="{% url 'analytics:tenant_dashboard' %}"
                     class="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-bold text-sm">My Dashboard</a>
                 {% elif user.role == 'OWNER' %}
-                <a href="{% url 'owner:dashboard' %}"
+                <a href="{% url 'analytics:owner_dashboard' %}"
                     class="bg-slate-900 text-white px-4 py-2 rounded-lg font-bold text-sm">My Dashboard</a>
                 {% else %}
                 <a href="/admin/" class="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-bold text-sm">Admin Panel</a>
