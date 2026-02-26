@@ -73,7 +73,14 @@ def payment_success(request, booking_id):
     booking.save()
     
     # Generate Contract Automatically
-    generate_contract(booking)
+    contract = generate_contract(booking)
+    
+    context = {
+        'booking': booking,
+        'contract': contract,
+        'amount': booking.property.price,
+        'transaction_id': f"TID_{booking.id}_{booking.tenant.id}"
+    }
     
     messages.success(request, f"Payment successful! Contract generated for {booking.property.title}.")
-    return redirect('tenant:dashboard')
+    return render(request, 'payment/payment_success.html', context)

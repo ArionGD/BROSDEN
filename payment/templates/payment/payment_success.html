@@ -1,0 +1,80 @@
+{% extends "tenant/portal_base.html" %}
+
+{% block title %}Payment Success | BrosDen-AV{% endblock %}
+
+{% block portal_content %}
+<div class="max-w-2xl mx-auto py-10 reveal-on-scroll">
+    <!-- Success Celebration -->
+    <div class="text-center mb-12">
+        <div
+            class="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl shadow-lg shadow-emerald-50">
+            <i class="fas fa-check"></i>
+        </div>
+        <h2 class="text-4xl font-black text-slate-900 tracking-tight">Payment Successful!</h2>
+        <p class="text-slate-500 font-medium mt-2">Your security deposit for {{ booking.property.title }} has been
+            received.</p>
+    </div>
+
+    <!-- Payment Receipt Card -->
+    <div class="bg-white rounded-[3rem] p-10 shadow-2xl border border-slate-100 overflow-hidden relative">
+        <!-- Ribbon -->
+        <div
+            class="absolute top-0 right-0 bg-emerald-500 text-white py-2 px-10 rotate-45 translate-x-10 translate-y-4 font-black text-[10px] uppercase tracking-widest">
+            Paid
+        </div>
+
+        <div class="flex justify-between items-start border-b border-slate-100 pb-8 mb-8">
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Transaction ID</p>
+                <p class="text-sm font-bold text-slate-900">{{ transaction_id }}</p>
+            </div>
+            <div class="text-right">
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Date & Time</p>
+                <p class="text-sm font-bold text-slate-900">{% now "d M Y, H:i" %}</p>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="flex justify-between">
+                <span class="text-slate-500 font-medium">Payment for</span>
+                <span class="text-slate-900 font-bold">Security Deposit</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-slate-500 font-medium">Property</span>
+                <span class="text-slate-900 font-bold">{{ booking.property.title }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-slate-500 font-medium">Tenant</span>
+                <span class="text-slate-900 font-bold text-arion-blue">{{ user.username }}</span>
+            </div>
+
+            <div class="pt-6 border-t border-slate-100">
+                <div class="flex justify-between items-center">
+                    <span class="text-lg font-black text-slate-900">Total Paid</span>
+                    <span class="text-3xl font-black text-arion-blue">₹{{ amount }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
+            <a href="{% url 'contract:view' contract.id %}"
+                class="bg-slate-900 text-white py-4 rounded-2xl font-black text-sm text-center shadow-lg hover:bg-black transition-all no-underline">
+                <i class="fas fa-file-contract mr-2 text-arion-orange"></i> View Contract
+            </a>
+            <button onclick="window.print()"
+                class="bg-slate-100 text-slate-600 py-4 rounded-2xl font-black text-sm text-center hover:bg-slate-200 transition-all">
+                <i class="fas fa-download mr-2"></i> Download Receipt
+            </button>
+        </div>
+    </div>
+
+    <!-- Contextual Link -->
+    <div class="text-center mt-10">
+        <a href="{% url 'tenant:dashboard' %}"
+            class="text-slate-400 hover:text-arion-blue font-bold text-sm transition-colors no-underline">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}
