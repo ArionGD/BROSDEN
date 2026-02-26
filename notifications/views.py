@@ -1,68 +1,63 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
-from django.shortcuts import render
 from .models import Notification
+
+# Shared read-status filter choices for the template
+_READ_CHOICES = [
+    ('ALL',    'All',    'bg-slate-800'),
+    ('UNREAD', 'Unread', 'bg-amber-500'),
+    ('READ',   'Read',   'bg-green-500'),
+]
 
 
 @login_required
 def notification_list(request):
     """Main in-app notification page — works for both Owner and Tenant."""
-    all_notifications = Notification.objects.filter(recipient=request.user)
+    qs = Notification.objects.filter(recipient=request.user)
 
-    # Filter by type
     filter_type = request.GET.get('type', 'ALL')
     if filter_type != 'ALL':
-        all_notifications = all_notifications.filter(notification_type=filter_type)
+        qs = qs.filter(notification_type=filter_type)
 
-    # Filter by read/unread
     read_filter = request.GET.get('read', 'ALL')
     if read_filter == 'UNREAD':
-        all_notifications = all_notifications.filter(is_read=False)
+        qs = qs.filter(is_read=False)
     elif read_filter == 'READ':
-        all_notifications = all_notifications.filter(is_read=True)
+        qs = qs.filter(is_read=True)
 
-    paginator = Paginator(all_notifications, 15)
-    page_obj = paginator.get_page(request.GET.get('page'))
-
+    page_obj = Paginator(qs, 15).get_page(request.GET.get('page'))
     unread_count = Notification.objects.filter(recipient=request.user, is_read=False).count()
 
-    # Type choices for filter UI
-    type_choices = Notification.TYPE_CHOICES
-
     context = {
-        'page_obj': page_obj,
-        'unread_count': unread_count,
-        'filter_type': filter_type,
-        'read_filter': read_filter,
-        'type_choices': type_choices,
+        'page_obj':      page_obj,
+        'unread_count':  unread_count,
+        'filter_type':   filter_type,
+        'read_filter':   read_filter,
+        'type_choices':  Notification.TYPE_CHOICES,
+        'read_choices':  _READ_CHOICES,
     }
 
-    # Render role-specific template
-    if request.user.is_owner:
-        return render(request, 'notifications/owner_notifications.html', context)
-    else:
-        return render(request, 'notifications/tenant_notifications.html', context)
+    template = 'notifications/owner_notifications.html' if request.user.is_owner else 'notifications/tenant_notifications.html'
+    return render(request, template, context)
 
 
 @login_required
 @require_POST
 def mark_read(request, pk):
-    """Mark a single notification as read via POST."""
-    notification = get_object_or_404(Notification, pk=pk, recipient=request.user)
-    notification.mark_read()
+    notif = get_object_or_404(Notification, pk=pk, recipient=request.user)
+    notif.mark_read()
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        return JsonResponse({'status': 'ok', 'unread_count': Notification.objects.filter(
-            recipient=request.user, is_read=False).count()})
+        count = Notification.objects.filter(recipient=request.user, is_read=False).count()
+        return JsonResponse({'status': 'ok', 'unread_count': count})
     return redirect('notifications:list')
 
 
 @login_required
 @require_POST
 def mark_all_read(request):
-    """Mark all notifications as read."""
     Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({'status': 'ok', 'unread_count': 0})
@@ -72,9 +67,7 @@ def mark_all_read(request):
 @login_required
 @require_POST
 def delete_notification(request, pk):
-    """Delete a single notification."""
-    notification = get_object_or_404(Notification, pk=pk, recipient=request.user)
-    notification.delete()
+    get_object_or_404(Notification, pk=pk, recipient=request.user).delete()
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({'status': 'deleted'})
     return redirect('notifications:list')
@@ -82,6 +75,5 @@ def delete_notification(request, pk):
 
 @login_required
 def unread_count_api(request):
-    """Lightweight API endpoint — returns unread count as JSON (for header badge polling)."""
     count = Notification.objects.filter(recipient=request.user, is_read=False).count()
     return JsonResponse({'unread_count': count})
