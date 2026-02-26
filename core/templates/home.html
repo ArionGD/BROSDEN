@@ -1,153 +1,265 @@
 {% extends "base.html" %}
+{% load core_extras %}
 
-{% block title %}BrosDen-AV | Find Your Next Home{% endblock %}
+{% block title %}BrosDen-AV | Find Your Perfect Den{% endblock %}
 
 {% block content %}
-<!-- Hero Section with Housing.com Vibe -->
-<section class="relative h-[550px] flex items-center justify-center overflow-hidden">
-    <!-- Background Image with Overlay -->
+<!-- BLOCK 1: Premium Hero -->
+<section class="relative h-[650px] flex items-center justify-center overflow-hidden">
     <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+        <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
             class="w-full h-full object-cover">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-[2px]"></div>
     </div>
 
-    <div class="container mx-auto px-4 relative z-10 text-center">
-        <h1 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight">
-            Discover Your Perfect <span class="text-blue-400">Den</span>.
-        </h1>
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <span
+                class="inline-block px-4 py-1.5 mb-6 text-xs font-black uppercase tracking-[0.2em] text-white bg-arion-orange rounded-full shadow-lg shadow-orange-500/20">The
+                Arion Standard</span>
+            <h1 class="text-5xl md:text-7xl font-black text-white mb-8 tracking-tighter leading-none">
+                Elevating Your <br> <span class="text-arion-blue">Property Experience.</span>
+            </h1>
 
-        <!-- Category Tabs -->
-        <div class="flex justify-center space-x-2 mb-8">
-            <button class="px-8 py-3 bg-blue-600 text-white font-bold rounded-full shadow-lg">Buy</button>
-            <button
-                class="px-8 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full backdrop-blur-md transition-all">Rent</button>
-            <button
-                class="px-8 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full backdrop-blur-md transition-all">Plots</button>
-        </div>
-
-        <!-- Search Bar -->
-        <div class="max-w-4xl mx-auto">
-            <form action="{% url 'property:browse' %}" method="GET"
-                class="bg-white p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2 transition-all hover:ring-4 hover:ring-blue-100">
-                <div class="flex-1 flex items-center px-4 border-b md:border-b-0 md:border-r border-slate-100">
-                    <i class="fas fa-location-dot text-slate-400 mr-3"></i>
-                    <input type="text" name="q" placeholder="Enter Locality, Project or Landmark"
-                        class="w-full py-4 text-slate-800 outline-none font-medium placeholder:text-slate-400 text-lg">
+            <!-- Search Console -->
+            <div class="bg-white/10 backdrop-blur-xl p-4 rounded-[2.5rem] border border-white/20 shadow-2xl">
+                <form action="{% url 'property:browse' %}" method="GET" class="flex flex-col md:flex-row gap-3">
+                    <div class="flex-1 bg-white rounded-3xl flex items-center px-6 py-4 shadow-inner">
+                        <i class="fas fa-search text-arion-blue mr-3 opacity-50"></i>
+                        <input type="text" name="q" placeholder="Search by locality or project..."
+                            class="w-full outline-none font-bold text-slate-800 placeholder:text-slate-400">
+                    </div>
+                    <div class="md:w-48 bg-white rounded-3xl flex items-center px-6 py-4 shadow-inner">
+                        <i class="fas fa-building text-arion-orange mr-3 opacity-50"></i>
+                        <select class="w-full outline-none font-bold text-slate-800 appearance-none bg-transparent">
+                            <option>Buy</option>
+                            <option>Rent</option>
+                        </select>
+                    </div>
+                    <button type="submit"
+                        class="bg-arion-blue hover:bg-arion-blue-light text-white px-10 py-4 rounded-[1.5rem] font-black tracking-wide transition-all active:scale-95 shadow-lg shadow-blue-500/20">
+                        SEARCH
+                    </button>
+                </form>
+            </div>
+            <div class="mt-8 flex justify-center gap-8 text-white/60 font-medium">
+                <div class="flex items-center gap-2"><i class="fas fa-check-circle text-arion-orange"></i> 100% Verified
                 </div>
-                <button type="submit"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 rounded-xl font-black text-lg transition-all flex items-center justify-center">
-                    <i class="fas fa-search mr-3"></i> Search
-                </button>
-            </form>
-            <p class="mt-6 text-slate-200 font-medium">
-                <i class="fas fa-fire text-orange-400 mr-2"></i> Trending: Banjara Hills, Whitefield, Gurgaon Sector 45
-            </p>
+                <div class="flex items-center gap-2"><i class="fas fa-check-circle text-arion-blue"></i> Zero Brokerage
+                </div>
+                <div class="flex items-center gap-2"><i class="fas fa-check-circle text-arion-orange"></i> Instant
+                    Support</div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Featured Section -->
-<div class="container mx-auto px-4 py-20">
-    <div class="flex justify-between items-end mb-12 reveal-on-scroll">
-        <div>
-            <span class="text-blue-600 font-bold uppercase tracking-widest text-sm">Exclusives</span>
-            <h2 class="text-4xl font-black text-slate-900 mt-2">Handpicked Collections</h2>
+<!-- BLOCK 2: Property Categories -->
+<section class="py-24 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">Browse by <span
+                    class="text-arion-orange">Category</span></h2>
+            <div class="h-1.5 w-20 bg-arion-blue mx-auto mt-4 rounded-full"></div>
         </div>
-        <a href="#" class="text-blue-600 font-bold hover:underline">View all properties <i
-                class="fas fa-arrow-right ml-1"></i></a>
-    </div>
-
-    <!-- Featured Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Property 1 -->
-        <div
-            class="group bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 reveal-on-scroll">
-            <div class="relative h-64 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                <div class="absolute top-4 left-4 flex gap-2">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for cat in "Apartments,Villas,Commercial,Plots"|split:"," %}
+            <a href="#"
+                class="group relative aspect-square rounded-[3rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all">
+                <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                    alt="{{ cat }}"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent"></div>
+                <div class="absolute bottom-10 inset-x-0 text-center px-6">
+                    <h3 class="text-2xl font-black text-white mb-2">{{ cat }}</h3>
                     <span
-                        class="bg-emerald-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-sm">Verified</span>
-                    <span
-                        class="bg-blue-600 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-sm">Hot</span>
+                        class="text-sm font-bold text-white/70 uppercase tracking-widest group-hover:text-arion-orange transition-colors">Explore
+                        All <i class="fas fa-arrow-right ml-1"></i></span>
                 </div>
-                <div
-                    class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-slate-900 font-black shadow-lg">
-                    ₹ 45,00,000
-                </div>
-            </div>
-            <div class="p-6">
-                <h3 class="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Skyview Premium
-                    Apartment</h3>
-                <p class="text-slate-500 mt-2 flex items-center"><i class="fas fa-location-dot mr-2 text-slate-300"></i>
-                    Banjara Hills, Hyderabad</p>
-                <div class="flex items-center justify-between mt-6 pt-6 border-t border-slate-50">
-                    <div class="flex gap-4 text-slate-500 text-sm font-semibold">
-                        <span><i class="fas fa-bed text-blue-500 mr-2"></i> 3 BHK</span>
-                        <span><i class="fas fa-maximize text-blue-500 mr-2"></i> 1850 sqft</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Property 2 -->
-        <div
-            class="group bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 reveal-on-scroll">
-            <div class="relative h-64 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                <div class="absolute top-4 left-4 flex gap-2">
-                    <span
-                        class="bg-emerald-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-sm">Verified</span>
-                </div>
-                <div
-                    class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-slate-900 font-black shadow-lg">
-                    ₹ 1.2 Cr
-                </div>
-            </div>
-            <div class="p-6">
-                <h3 class="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Seaside Luxury
-                    Villa</h3>
-                <p class="text-slate-500 mt-2 flex items-center"><i class="fas fa-location-dot mr-2 text-slate-300"></i>
-                    Marine Drive, Mumbai</p>
-                <div class="flex items-center justify-between mt-6 pt-6 border-t border-slate-50">
-                    <div class="flex gap-4 text-slate-500 text-sm font-semibold">
-                        <span><i class="fas fa-bed text-blue-500 mr-2"></i> 5 BHK</span>
-                        <span><i class="fas fa-maximize text-blue-500 mr-2"></i> 4200 sqft</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Property 3 -->
-        <div
-            class="group bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 reveal-on-scroll">
-            <div class="relative h-64 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                <div class="absolute top-4 left-4 flex gap-2">
-                    <span
-                        class="bg-emerald-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-sm">Verified</span>
-                </div>
-                <div
-                    class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-slate-900 font-black shadow-lg">
-                    ₹ 75,00,000
-                </div>
-            </div>
-            <div class="p-6">
-                <h3 class="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Suburban Family
-                    Home</h3>
-                <p class="text-slate-500 mt-2 flex items-center"><i class="fas fa-location-dot mr-2 text-slate-300"></i>
-                    Sector 45, Gurgaon</p>
-                <div class="flex items-center justify-between mt-6 pt-6 border-t border-slate-50">
-                    <div class="flex gap-4 text-slate-500 text-sm font-semibold">
-                        <span><i class="fas fa-bed text-blue-500 mr-2"></i> 3 BHK</span>
-                        <span><i class="fas fa-maximize text-blue-500 mr-2"></i> 2200 sqft</span>
-                    </div>
-                </div>
-            </div>
+            </a>
+            {% endfor %}
         </div>
     </div>
-</div>
+</section>
+
+<!-- BLOCK 3: Handpicked Collections -->
+<section class="py-24 bg-slate-50">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-end mb-16">
+            <div>
+                <span class="text-arion-blue font-black uppercase tracking-widest text-sm">Exclusives</span>
+                <h2 class="text-4xl font-black text-slate-900 mt-2 tracking-tight">Featured Collections</h2>
+            </div>
+            <a href="{% url 'property:browse' %}"
+                class="bg-white px-8 py-3 rounded-2xl border border-slate-200 text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition-all shadow-sm">
+                View All <i class="fas fa-chevron-right ml-2 text-xs"></i>
+            </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for i in "1,2,3"|split:"," %}
+            <div
+                class="bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all group">
+                <div class="relative h-64">
+                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute top-6 left-6 flex gap-2">
+                        <span
+                            class="bg-arion-blue text-white text-[10px] font-black uppercase px-3 py-1.5 rounded-full shadow-lg">Arion
+                            Verified</span>
+                    </div>
+                    <div
+                        class="absolute bottom-6 right-6 px-5 py-2.5 bg-white/90 backdrop-blur-md rounded-2xl font-black text-slate-900 text-lg shadow-xl">
+                        ₹ 85.5 L
+                    </div>
+                </div>
+                <div class="p-8">
+                    <h3 class="text-xl font-black text-slate-900 group-hover:text-arion-blue transition-colors">Elite
+                        Skyline Residences</h3>
+                    <p class="text-slate-500 mt-2 font-medium flex items-center gap-2"><i
+                            class="fas fa-location-dot text-arion-orange"></i> Jubilee Hills, Hyderabad</p>
+                    <div class="mt-6 pt-6 border-t border-slate-50 flex items-center justify-between">
+                        <div class="flex gap-4 text-slate-400 font-bold text-sm">
+                            <span><i class="fas fa-bed mr-2 text-arion-blue"></i> 3 BHK</span>
+                            <span><i class="fas fa-maximize mr-2 text-arion-blue"></i> 1.8k sqft</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- BLOCK 4: Why BrosDen-AV -->
+<section class="py-24 bg-arion-blue relative overflow-hidden">
+    <!-- Decorative Blurs -->
+    <div class="absolute -top-20 -left-20 w-80 h-80 bg-arion-orange/20 rounded-full blur-[100px]"></div>
+    <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-white/10 rounded-full blur-[100px]"></div>
+
+    <div class="container mx-auto px-4 relative z-10 text-center">
+        <h2 class="text-4xl md:text-5xl font-black text-white mb-20 tracking-tight">The Arion Advantage</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div
+                class="p-10 bg-white/10 backdrop-blur-xl rounded-[3rem] border border-white/20 hover:-translate-y-4 transition-all duration-500 group">
+                <div
+                    class="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl group-hover:rotate-12 transition-transform">
+                    <i class="fas fa-shield-halved text-3xl text-arion-orange"></i>
+                </div>
+                <h3 class="text-2xl font-black text-white mb-4">Secured Transactions</h3>
+                <p class="text-blue-100 font-medium leading-relaxed">Every property undergoes a 45-point verification
+                    check before it makes it to our platform.</p>
+            </div>
+            <div
+                class="p-10 bg-white/10 backdrop-blur-xl rounded-[3rem] border border-white/20 hover:-translate-y-4 transition-all duration-500 group">
+                <div
+                    class="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl group-hover:rotate-12 transition-transform">
+                    <i class="fas fa-bolt text-3xl text-arion-blue"></i>
+                </div>
+                <h3 class="text-2xl font-black text-white mb-4">Instant Matching</h3>
+                <p class="text-blue-100 font-medium leading-relaxed">Our AI backend matches your lifestyle preferences
+                    with available units in under 60 seconds.</p>
+            </div>
+            <div
+                class="p-10 bg-white/10 backdrop-blur-xl rounded-[3rem] border border-white/20 hover:-translate-y-4 transition-all duration-500 group">
+                <div
+                    class="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl group-hover:rotate-12 transition-transform">
+                    <i class="fas fa-headset text-3xl text-arion-orange"></i>
+                </div>
+                <h3 class="text-2xl font-black text-white mb-4">24/7 Concierge</h3>
+                <p class="text-blue-100 font-medium leading-relaxed">Dedicated relationship managers to help you through
+                    documentation and possession.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BLOCK 5: Double CTA (Owner/Tenant Focus) -->
+<section class="py-24 bg-white relative">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- For Owners -->
+            <div class="relative rounded-[3.5rem] overflow-hidden p-12 bg-slate-100 group">
+                <div class="relative z-10 max-w-md">
+                    <span class="text-arion-orange font-black uppercase tracking-widest text-xs mb-4 block">For Property
+                        Owners</span>
+                    <h2 class="text-4xl font-black text-slate-900 mb-6">Maximize Your Returns.</h2>
+                    <p class="text-slate-500 text-lg font-medium mb-10 leading-relaxed">List your property with Arion
+                        and get access to verified corporate tenants and hassle-free management.</p>
+                    <a href="#"
+                        class="inline-flex items-center px-8 py-4 bg-arion-orange text-white font-black rounded-2xl shadow-xl shadow-orange-500/20 hover:scale-105 active:scale-95 transition-all">
+                        LIST YOUR PROPERTY <i class="fas fa-plus ml-3"></i>
+                    </a>
+                </div>
+                <i
+                    class="fas fa-house-chimney absolute -right-10 -bottom-10 text-[180px] text-slate-200/50 -rotate-12 group-hover:rotate-0 transition-transform duration-700"></i>
+            </div>
+            <!-- For Tenants -->
+            <div class="relative rounded-[3.5rem] overflow-hidden p-12 bg-slate-900 group">
+                <div class="relative z-10 max-w-md">
+                    <span
+                        class="text-arion-blue font-black uppercase tracking-widest text-xs mb-4 block text-arion-blue-light">For
+                        New Tenants</span>
+                    <h2 class="text-4xl font-black text-white mb-6">Find Your Sanctuary.</h2>
+                    <p class="text-slate-400 text-lg font-medium mb-10 leading-relaxed">Browse homes with zero
+                        brokerage, digital contracts, and automated rent payments.</p>
+                    <a href="#"
+                        class="inline-flex items-center px-8 py-4 bg-white text-slate-900 font-black rounded-2xl shadow-xl shadow-white/5 hover:scale-105 active:scale-95 transition-all">
+                        START BROWSING <i class="fas fa-compass ml-3 text-arion-blue"></i>
+                    </a>
+                </div>
+                <i
+                    class="fas fa-key absolute -right-10 -bottom-10 text-[180px] text-white/5 -rotate-12 group-hover:rotate-0 transition-transform duration-700"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BLOCK 6: Testimonials -->
+<section class="py-32 bg-white overflow-hidden">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-20 tracking-tight">Trust the <span
+                    class="text-arion-blue">BrosDen</span> Community</h2>
+            <div class="relative">
+                <i class="fas fa-quote-left text-[120px] text-slate-100 absolute -top-20 -left-10 z-0"></i>
+                <div class="relative z-10">
+                    <div class="grid lg:grid-cols-2 gap-12 text-left">
+                        <div class="bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                            <div class="flex gap-1 text-arion-orange mb-6">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <p class="text-slate-600 font-bold text-lg mb-8 leading-relaxed italic">"Transparent process
+                                and zero brokerage actually meant zero hidden costs. Highly recommend for working
+                                professionals."</p>
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-arion-blue rounded-2xl"></div>
+                                <div>
+                                    <h4 class="font-black text-slate-900">Arjun Sharma</h4>
+                                    <p class="text-sm font-bold text-slate-400">Software Engineer, Amazon</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                            <div class="flex gap-1 text-arion-orange mb-6">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <p class="text-slate-600 font-bold text-lg mb-8 leading-relaxed italic">"My rental income
+                                increased by 15% after listing with Arion. Their KYC process is incredibly deep and
+                                reassuring."</p>
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-arion-orange rounded-2xl"></div>
+                                <div>
+                                    <h4 class="font-black text-slate-900">Priya Reddy</h4>
+                                    <p class="text-sm font-bold text-slate-400">Property Owner, Gachibowli</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

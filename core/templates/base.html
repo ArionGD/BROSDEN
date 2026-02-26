@@ -27,17 +27,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 
     <style>
         html,
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
-            height: 100%;
-            overflow: hidden;
-            overscroll-behavior: none;
             background: #f8fafc;
+            overscroll-behavior: none;
         }
 
         /* Message Toasts */
@@ -107,33 +104,8 @@
             }
         }
 
-        /* Lenis required baseline */
-        html.lenis,
-        html.lenis body {
-            height: auto !important;
-        }
-
-        .lenis.lenis-smooth {
-            scroll-behavior: auto !important;
-        }
-
-        .lenis.lenis-stopped {
-            overflow: hidden;
-        }
-
-        /* Global scroll container */
-        #main-scroll-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow-y: auto;
-            overscroll-behavior: none;
-        }
-
-        body.no-global-scroll #main-scroll-container {
-            overflow-y: hidden !important;
+        body.no-global-scroll {
+            overflow: hidden !important;
         }
 
         /* Arion Scrollbar */
@@ -157,18 +129,7 @@
             }
         }
 
-        /* Reveal on Scroll */
-        .reveal-on-scroll {
-            opacity: 0;
-            transform: translateY(60px) scale(0.98);
-            transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform;
-        }
 
-        .reveal-on-scroll.is-revealed {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
 
         /* Portal scrollbar (inside cards) */
         .portal-scroll::-webkit-scrollbar {
@@ -194,77 +155,45 @@
 </head>
 
 <body class="bg-slate-50 {% block body_class %}{% endblock %}">
-    <div id="main-scroll-container">
-        {% block header %}
-        {% include "navigation/header.html" %}
-        {% endblock %}
+    {% block header %}
+    {% include "navigation/header.html" %}
+    {% endblock %}
 
-        <!-- Floating Notifications -->
-        <div class="toast-container" id="toast-container">
-            {% if messages %}
-            {% for message in messages %}
-            <div class="toast-message {% if message.tags %}{{ message.tags }}{% endif %} shadow-2xl" role="alert">
-                <div class="flex-shrink-0">
-                    {% if message.tags == 'error' %}
-                    <i class="fas fa-circle-exclamation text-red-400"></i>
-                    {% elif message.tags == 'success' %}
-                    <i class="fas fa-circle-check text-emerald-400"></i>
-                    {% else %}
-                    <i class="fas fa-circle-info text-arion-blue-light"></i>
-                    {% endif %}
-                </div>
-                <p class="text-sm font-bold tracking-tight">{{ message }}</p>
-                <button onclick="this.parentElement.remove()"
-                    class="ml-auto text-slate-500 hover:text-white transition-colors">
-                    <i class="fas fa-xmark text-xs"></i>
-                </button>
+    <!-- Floating Notifications -->
+    <div class="toast-container" id="toast-container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="toast-message {% if message.tags %}{{ message.tags }}{% endif %} shadow-2xl" role="alert">
+            <div class="flex-shrink-0">
+                {% if message.tags == 'error' %}
+                <i class="fas fa-circle-exclamation text-red-400"></i>
+                {% elif message.tags == 'success' %}
+                <i class="fas fa-circle-check text-emerald-400"></i>
+                {% else %}
+                <i class="fas fa-circle-info text-arion-blue-light"></i>
+                {% endif %}
             </div>
-            {% endfor %}
-            {% endif %}
+            <p class="text-sm font-bold tracking-tight">{{ message }}</p>
+            <button onclick="this.parentElement.remove()"
+                class="ml-auto text-slate-500 hover:text-white transition-colors">
+                <i class="fas fa-xmark text-xs"></i>
+            </button>
         </div>
-
-        <main style="min-height: calc(100vh - 80px);">
-            {% block content %}{% endblock %}
-        </main>
-
-        {% block footer %}
-        {% include "navigation/footer.html" %}
-        {% endblock %}
+        {% endfor %}
+        {% endif %}
     </div>
 
-    <!-- Global Lenis + Reveal System (always active, child blocks EXTEND this) -->
+    <main style="min-height: calc(100vh - 80px);">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block footer %}
+    {% include "navigation/footer.html" %}
+    {% endblock %}
+
+    <!-- Global UI Scripts -->
     <script>
             (function () {
-                // Adani-style heavy scroll
-                const scroller = document.getElementById('main-scroll-container');
-                const lenis = new Lenis({
-                    wrapper: scroller,
-                    content: scroller.querySelector('main'),
-                    duration: 3.5,
-                    easing: (t) => Math.min(1, 1 - Math.pow(1 - t, 4)),
-                    smoothWheel: true,
-                    wheelMultiplier: 0.35,
-                    lerp: 0.01,
-                    touchMultiplier: 1.5,
-                    prevent: (el) => el.nodeName === 'TEXTAREA' || el.nodeName === 'INPUT',
-                });
-
-                (function raf(time) { lenis.raf(time); requestAnimationFrame(raf); })(0);
-
-                // Scroll Reveal via IntersectionObserver
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(e => e.target.classList.toggle('is-revealed', e.isIntersecting));
-                }, { root: scroller, threshold: 0.08 });
-
-                const observe = (root) => root.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-                observe(document);
-
-                new MutationObserver((muts) => muts.forEach(m => m.addedNodes.forEach(n => {
-                    if (n.nodeType === 1) { if (n.classList.contains('reveal-on-scroll')) observer.observe(n); observe(n); }
-                }))).observe(document.body, { childList: true, subtree: true });
-
-                window.addEventListener('resize', () => lenis.update());
-
                 // Auto-remove toasts after 5 seconds
                 document.querySelectorAll('.toast-message').forEach(toast => {
                     setTimeout(() => {

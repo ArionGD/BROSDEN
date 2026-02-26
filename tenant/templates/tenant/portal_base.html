@@ -2,7 +2,7 @@
 
 {% block title %}Tenant Portal - BrosDen-AV{% endblock %}
 
-{% block body_class %}no-global-scroll{% endblock %}
+{% block body_class %}no-global-scroll overscroll-none{% endblock %}
 {% block header %}{% endblock %}
 
 {% block content %}
@@ -26,38 +26,22 @@
 {% block extra_js %}
 <script>
     (function () {
-        const portalMain = document.getElementById('portal-main');
+        const get = id => document.getElementById(id);
+        const sb = get('sidebar'), btn = get('sidebarToggle'), ic = get('toggleIcon');
 
-        // Sidebar Toggle
-        const sidebar = document.getElementById('sidebar');
-        const toggleBtn = document.getElementById('sidebarToggle');
-        const toggleIcon = document.getElementById('toggleIcon');
+        btn?.addEventListener('click', () => {
+            const c = sb.classList.toggle('w-20');
+            sb.classList.toggle('w-72', !c);
+            ic?.classList.toggle('fa-chevron-right', c);
+            ic?.classList.toggle('fa-chevron-left', !c);
+            get('sidebarTitle')?.classList.toggle('opacity-0', c);
+            sb.querySelectorAll('.sidebar-text').forEach(t => t.classList.toggle('hidden', c));
+        });
 
-        if (toggleBtn && sidebar) {
-            toggleBtn.addEventListener('click', () => {
-                const collapsed = sidebar.classList.contains('w-20');
-                sidebar.classList.toggle('w-72', collapsed);
-                sidebar.classList.toggle('w-20', !collapsed);
-                toggleIcon.classList.toggle('fa-chevron-left', collapsed);
-                toggleIcon.classList.toggle('fa-chevron-right', !collapsed);
-                sidebar.querySelectorAll('.sidebar-text').forEach(t => t.classList.toggle('hidden', !collapsed));
-                const title = document.getElementById('sidebarTitle');
-                if (title) title.classList.toggle('opacity-0', !collapsed);
-            });
-        }
-
-        // Fetch unread notifications
-        fetch("{% url 'notifications:unread_count_api' %}")
-            .then(r => r.json())
-            .then(data => {
-                const badge = document.getElementById('notif-badge');
-                if (badge && data.unread_count > 0) {
-                    badge.textContent = data.unread_count;
-                    badge.classList.remove('hidden');
-                }
-            })
-            .catch(err => console.error('Error fetching unread count:', err));
-
+        fetch("{% url 'notifications:unread_count_api' %}").then(r => r.json()).then(d => {
+            const b = get('notif-badge');
+            if (b && d.unread_count > 0) { b.textContent = d.unread_count; b.classList.remove('hidden'); }
+        }).catch(() => { });
     })();
 </script>
 {% endblock %}
