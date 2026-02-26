@@ -6,62 +6,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}BrosDen-AV{% endblock %}</title>
 
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        arion: {
-                            blue: '#1A73E8',
-                            orange: '#E75A27',
-                        },
-                    },
-                },
-            },
+                        arion: { blue: '#1A73E8', orange: '#E75A27' }
+                    }
+                }
+            }
         }
     </script>
 
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
-
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 
     <style>
         html,
         body {
             font-family: 'Inter', sans-serif;
-            overscroll-behavior: none;
+            margin: 0;
             height: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;
+            background: #f8fafc;
+        }
+
+        /* Lenis required baseline */
+        html.lenis,
+        html.lenis body {
+            height: auto !important;
+        }
+
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+
+        .lenis.lenis-stopped {
             overflow: hidden;
         }
 
-        #main-scroll-container,
-        .overflow-y-auto {
+        /* Global scroll container */
+        #main-scroll-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
             overscroll-behavior: none;
-            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Arion Scrollbar */
+        @media (min-width: 1024px) {
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: #f1f5f9;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #1A73E8;
+                border-radius: 10px;
+                border: 2px solid #f1f5f9;
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #E75A27;
+            }
+        }
+
+        /* Reveal on Scroll */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(60px) scale(0.98);
+            transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal-on-scroll.is-revealed {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Portal scrollbar (inside cards) */
+        .portal-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .portal-scroll::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+
+        .portal-scroll::-webkit-scrollbar-thumb {
+            background: #1A73E8;
+            border-radius: 10px;
+            border: 2px solid #f8fafc;
+        }
+
+        .portal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #E75A27;
         }
     </style>
 
     {% block extra_head %}{% endblock %}
 </head>
 
-<body class="bg-slate-50 flex flex-col h-screen overflow-hidden">
-    {% include "navigation/header.html" %}
+<body class="bg-slate-50">
+    <div id="main-scroll-container">
+        {% include "navigation/header.html" %}
 
-    <div class="flex-grow overflow-y-auto overscroll-none" id="main-scroll-container">
-        <main>
+        <main style="min-height: calc(100vh - 80px);">
             {% if messages %}
             <div class="container mx-auto px-4 mt-6">
                 {% for message in messages %}
                 <div
-                    class="px-6 py-4 rounded-2xl shadow-lg mb-4 {% if message.tags == 'error' %}bg-red-500 text-white{% else %}bg-slate-900 text-white{% endif %} font-bold flex items-center animate-bounce">
+                    class="px-6 py-4 rounded-2xl shadow-lg mb-4 {% if message.tags == 'error' %}bg-red-500 text-white{% else %}bg-slate-900 text-white{% endif %} font-bold flex items-center">
                     <i
                         class="fas {% if message.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %} mr-3"></i>
                     {{ message }}
@@ -70,14 +136,48 @@
             </div>
             {% endif %}
 
-            {% block content %}
-            {% endblock %}
+            {% block content %}{% endblock %}
         </main>
 
         {% block footer %}
         {% include "navigation/footer.html" %}
         {% endblock %}
     </div>
+
+    <!-- Global Lenis + Reveal System (always active, child blocks EXTEND this) -->
+    <script>
+            (function () {
+                // Adani-style heavy scroll
+                const scroller = document.getElementById('main-scroll-container');
+                const lenis = new Lenis({
+                    wrapper: scroller,
+                    content: scroller.querySelector('main'),
+                    duration: 3.5,
+                    easing: (t) => Math.min(1, 1 - Math.pow(1 - t, 4)),
+                    smoothWheel: true,
+                    wheelMultiplier: 0.35,
+                    lerp: 0.01,
+                    touchMultiplier: 1.5,
+                    prevent: (el) => el.nodeName === 'TEXTAREA' || el.nodeName === 'INPUT',
+                });
+
+                (function raf(time) { lenis.raf(time); requestAnimationFrame(raf); })(0);
+
+                // Scroll Reveal via IntersectionObserver
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(e => e.target.classList.toggle('is-revealed', e.isIntersecting));
+                }, { root: scroller, threshold: 0.08 });
+
+                const observe = (root) => root.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+                observe(document);
+
+                new MutationObserver((muts) => muts.forEach(m => m.addedNodes.forEach(n => {
+                    if (n.nodeType === 1) { if (n.classList.contains('reveal-on-scroll')) observer.observe(n); observe(n); }
+                }))).observe(document.body, { childList: true, subtree: true });
+
+                window.addEventListener('resize', () => lenis.update());
+            })();
+    </script>
 
     {% block extra_js %}{% endblock %}
 </body>

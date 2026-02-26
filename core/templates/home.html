@@ -49,7 +49,7 @@
 
 <!-- Featured Section -->
 <div class="container mx-auto px-4 py-20">
-    <div class="flex justify-between items-end mb-12">
+    <div class="flex justify-between items-end mb-12 reveal-on-scroll">
         <div>
             <span class="text-blue-600 font-bold uppercase tracking-widest text-sm">Exclusives</span>
             <h2 class="text-4xl font-black text-slate-900 mt-2">Handpicked Collections</h2>
@@ -62,7 +62,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <!-- Property 1 -->
         <div
-            class="group bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+            class="group bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 reveal-on-scroll">
             <div class="relative h-64 overflow-hidden">
                 <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
@@ -93,7 +93,7 @@
 
         <!-- Property 2 -->
         <div
-            class="group bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+            class="group bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 reveal-on-scroll">
             <div class="relative h-64 overflow-hidden">
                 <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
@@ -122,7 +122,7 @@
 
         <!-- Property 3 -->
         <div
-            class="group bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+            class="group bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 reveal-on-scroll">
             <div class="relative h-64 overflow-hidden">
                 <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
@@ -150,14 +150,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    // Example SweetAlert2 Trigger
-    window.onload = function () {
-        // Just as an example for development
-        console.log("Tailwind & SweetAlert Ready!");
-    }
-</script>
 {% endblock %}

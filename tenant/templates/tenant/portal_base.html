@@ -4,54 +4,71 @@
 
 {% block content %}
 <div class="flex h-[calc(100vh-80px)] overflow-hidden bg-white">
-    <!-- Sidebar Navigation -->
     {% include "tenant/navigation/sidebar.html" %}
 
-    <!-- Main Area - Fixed Header + Scrollable Content -->
     <div class="flex-1 flex flex-col h-full overflow-hidden">
-        <!-- Portal Header Navigation -->
         {% include "tenant/navigation/header.html" %}
 
-        <!-- Dynamic Content Area - Scrollable -->
-        <main class="flex-1 overflow-y-auto p-10 bg-white overscroll-none">
+        <main id="portal-main" class="flex-1 overflow-y-auto p-10 bg-white overscroll-none portal-scroll">
             <div class="max-w-6xl mx-auto">
                 {% block portal_content %}{% endblock %}
             </div>
         </main>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const sidebar = document.getElementById('sidebar');
-        const toggleBtn = document.getElementById('sidebarToggle');
-        const toggleIcon = document.getElementById('toggleIcon');
-        const sidebarTexts = document.querySelectorAll('.sidebar-text');
-        const sidebarTitle = document.getElementById('sidebarTitle');
-
-        if (toggleBtn && sidebar) {
-            toggleBtn.addEventListener('click', function () {
-                if (sidebar.classList.contains('w-72')) {
-                    // Collapse
-                    sidebar.classList.remove('w-72');
-                    sidebar.classList.add('w-20');
-                    toggleIcon.classList.remove('fa-chevron-left');
-                    toggleIcon.classList.add('fa-chevron-right');
-                    sidebarTexts.forEach(t => t.classList.add('opacity-0', 'hidden'));
-                    if (sidebarTitle) sidebarTitle.classList.add('opacity-0');
-                } else {
-                    // Expand
-                    sidebar.classList.remove('w-20');
-                    sidebar.classList.add('w-72');
-                    toggleIcon.classList.remove('fa-chevron-right');
-                    toggleIcon.classList.add('fa-chevron-left');
-                    sidebarTexts.forEach(t => t.classList.remove('opacity-0', 'hidden'));
-                    if (sidebarTitle) sidebarTitle.classList.remove('opacity-0');
-                }
-            });
-        }
-    });
-</script>
 {% endblock %}
 
 {% block footer %}{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        const portalMain = document.getElementById('portal-main');
+
+        // Heavy Lenis for portal workspace
+        const lenis = new Lenis({
+            wrapper: portalMain,
+            content: portalMain.firstElementChild,
+            duration: 3.5,
+            easing: (t) => Math.min(1, 1 - Math.pow(1 - t, 4)),
+            smoothWheel: true,
+            wheelMultiplier: 0.35,
+            lerp: 0.01,
+            touchMultiplier: 1.5,
+        });
+
+        (function raf(time) { lenis.raf(time); requestAnimationFrame(raf); })(0);
+
+        // Reveal observer scoped to portal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => e.target.classList.toggle('is-revealed', e.isIntersecting));
+        }, { root: portalMain, threshold: 0.08 });
+
+        const observe = (root) => root.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+        observe(portalMain);
+
+        new MutationObserver((muts) => muts.forEach(m => m.addedNodes.forEach(n => {
+            if (n.nodeType === 1) { if (n.classList.contains('reveal-on-scroll')) observer.observe(n); observe(n); }
+        }))).observe(portalMain, { childList: true, subtree: true });
+
+        // Sidebar Toggle
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener('click', () => {
+                const collapsed = sidebar.classList.contains('w-20');
+                sidebar.classList.toggle('w-72', collapsed);
+                sidebar.classList.toggle('w-20', !collapsed);
+                toggleIcon.classList.toggle('fa-chevron-left', collapsed);
+                toggleIcon.classList.toggle('fa-chevron-right', !collapsed);
+                sidebar.querySelectorAll('.sidebar-text').forEach(t => t.classList.toggle('hidden', !collapsed));
+                const title = document.getElementById('sidebarTitle');
+                if (title) title.classList.toggle('opacity-0', !collapsed);
+                setTimeout(() => lenis.update(), 300);
+            });
+        }
+    })();
+</script>
+{% endblock %}
