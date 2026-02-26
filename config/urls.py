@@ -26,7 +26,7 @@ urlpatterns = [
     path('analytics/', include('analytics.urls')),
     path('payment/', include('payment.urls')),
     path('contract/', include('contract.urls')),
-    path('convo/', include('convo.urls')),
+    path('chat/', include('chat.urls')),
     path('support/', include('helpdesk.urls')),
     path('accounts/', include('accounts.urls')),
     path('', include('core.urls')),

@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'analytics',
     'payment',
     'contract',
-    'convo',
+    'chat',
     'helpdesk',
 ]
 

@@ -18,7 +18,7 @@
             {% if other_user == user %}
             {% with other_user=convo.participants.all|last %}{% endwith %}
             {% endif %}
-            <a href="{% url 'convo:chat_box' convo.id %}"
+            <a href="{% url 'chat:chat_box' convo.id %}"
                 class="flex items-center gap-6 p-8 hover:bg-slate-50 transition-all group no-underline">
                 <div
                     class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-xl font-black text-slate-400 group-hover:bg-arion-blue-light group-hover:text-white transition-colors">

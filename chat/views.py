@@ -8,7 +8,7 @@ from accounts.models import User
 def chat_list(request):
     """List all conversations for the current user."""
     conversations = request.user.conversations.all()
-    return render(request, 'convo/chat_list.html', {'conversations': conversations})
+    return render(request, 'chat/chat_list.html', {'conversations': conversations})
 
 @login_required
 def chat_box(request, conversation_id):
@@ -28,9 +28,9 @@ def chat_box(request, conversation_id):
                 content=content
             )
             conversation.save() # Update updated_at
-            return redirect('convo:chat_box', conversation_id=conversation_id)
+            return redirect('chat:chat_box', conversation_id=conversation_id)
             
-    return render(request, 'convo/chat_box.html', {
+    return render(request, 'chat/chat_box.html', {
         'conversation': conversation,
         'chat_messages': messages
     })
@@ -40,7 +40,7 @@ def start_conversation(request, user_id):
     """Start or retrieve a conversation with a specific user."""
     other_user = get_object_or_404(User, id=user_id)
     if other_user == request.user:
-        return redirect('convo:chat_list')
+        return redirect('chat:chat_list')
         
     # Check if conversation already exists
     conversation = Conversation.objects.filter(participants=request.user).filter(participants=other_user).first()
@@ -49,4 +49,4 @@ def start_conversation(request, user_id):
         conversation = Conversation.objects.create()
         conversation.participants.add(request.user, other_user)
         
-    return redirect('convo:chat_box', conversation_id=conversation.id)
+    return redirect('chat:chat_box', conversation_id=conversation.id)
