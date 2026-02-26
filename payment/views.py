@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import KYCForm
 from .models import KYC
+from booking.models import BookingRequest
+from contract.utils import generate_contract
 
 @login_required
 def kyc_form_view(request):
@@ -51,10 +53,27 @@ def razorpay_checkout(request):
     """Interface mimicking Razorpay payment process."""
     amount = request.GET.get('amount', '500')
     item = request.GET.get('item', 'Security Deposit')
+    booking_id = request.GET.get('booking_id')
     
     context = {
         'amount': amount,
         'item': item,
-        'user': request.user
+        'user': request.user,
+        'booking_id': booking_id
     }
     return render(request, 'payment/razorpay_interface.html', context)
+
+@login_required
+def payment_success(request, booking_id):
+    """Callback view to handle successful payment."""
+    booking = get_object_or_404(BookingRequest, id=booking_id, tenant=request.user)
+    
+    # Mark as PAID
+    booking.status = 'PAID'
+    booking.save()
+    
+    # Generate Contract Automatically
+    generate_contract(booking)
+    
+    messages.success(request, f"Payment successful! Contract generated for {booking.property.title}.")
+    return redirect('tenant:dashboard')

@@ -9,7 +9,7 @@
 <div class="space-y-6">
     {% for booking in bookings %}
     <div
-        class="bg-white border border-slate-200 rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start hover:shadow-xl transition-all border-l-8 {% if booking.status == 'PENDING' %}border-amber-400{% elif booking.status == 'APPROVED' %}border-emerald-500{% else %}border-red-400{% endif %}">
+        class="bg-white border border-slate-200 rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start hover:shadow-xl transition-all border-l-8 {% if booking.status == 'PENDING' %}border-amber-400{% elif booking.status == 'APPROVED' %}border-emerald-500{% elif booking.status == 'PAID' %}border-arion-blue{% else %}border-red-400{% endif %}">
 
         <div class="flex-1">
             <div class="flex items-center gap-3 mb-4">
@@ -25,7 +25,7 @@
 
             <div class="bg-slate-50 rounded-2xl p-4 mb-4">
                 <p class="text-xs font-black uppercase text-slate-400 mb-2">Requesting for:</p>
-                <p class="text-md font-bold text-blue-600">{{ booking.property.title }}</p>
+                <p class="text-md font-bold text-arion-blue">{{ booking.property.title }}</p>
             </div>
 
             <div class="prose prose-sm italic text-slate-600">
@@ -38,7 +38,7 @@
             <div class="text-right mb-4">
                 <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">Status</p>
                 <p
-                    class="text-sm font-black {% if booking.status == 'PENDING' %}text-amber-600{% elif booking.status == 'APPROVED' %}text-emerald-600{% else %}text-red-500{% endif %} mt-1">
+                    class="text-sm font-black {% if booking.status == 'PENDING' %}text-amber-600{% elif booking.status == 'APPROVED' %}text-emerald-600{% elif booking.status == 'PAID' %}text-arion-blue{% else %}text-red-500{% endif %} mt-1">
                     {{ booking.status }}
                 </p>
             </div>
@@ -53,6 +53,14 @@
                     class="w-full bg-red-50 hover:bg-red-100 text-red-500 font-black py-3 rounded-xl text-center text-sm transition-all border border-red-100">
                     <i class="fas fa-times mr-2"></i> Reject Request
                 </a>
+            </div>
+            {% elif booking.status == 'PAID' %}
+            <div class="flex flex-col gap-2">
+                <a href="{% url 'contract:view' booking.contract.id %}"
+                    class="w-full bg-slate-900 text-white font-black py-3 rounded-xl text-center text-sm transition-all border border-slate-800 no-underline">
+                    <i class="fas fa-file-contract mr-2 text-arion-orange"></i> View Generated Contract
+                </a>
+                <p class="text-[10px] text-center font-bold text-emerald-500 uppercase mt-2">Security Deposit Paid</p>
             </div>
             {% else %}
             <div class="text-center p-4 bg-slate-50 rounded-2xl">

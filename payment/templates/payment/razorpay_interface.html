@@ -117,10 +117,18 @@
 
         <!-- Footer Button -->
         <div class="p-4 bg-slate-50">
+            {% if booking_id %}
+            <a href="{% url 'payment:payment_success' booking_id %}"
+                class="block w-full text-center bg-[#3395ff] hover:bg-blue-600 text-white font-bold py-4 rounded transition-all shadow-md active:scale-[0.98] no-underline">
+                Pay ₹{{ amount }}
+            </a>
+            {% else %}
             <button
-                class="w-full bg-[#3395ff] hover:bg-blue-600 text-white font-bold py-4 rounded transition-all shadow-md active:scale-[0.98]">
+                class="w-full bg-[#3395ff] hover:bg-blue-600 text-white font-bold py-4 rounded transition-all shadow-md active:scale-[0.98]"
+                onclick="window.history.back()">
                 Pay ₹{{ amount }}
             </button>
+            {% endif %}
             <div class="mt-4 flex items-center justify-center gap-2 opacity-30 grayscale">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" class="h-4">
                 <div class="h-3 w-[1px] bg-slate-400 mx-1"></div>

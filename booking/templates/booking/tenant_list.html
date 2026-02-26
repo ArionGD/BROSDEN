@@ -38,6 +38,23 @@
                     class="bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter shadow-sm">
                     <i class="fas fa-circle-check mr-1 text-sm"></i> Approved
                 </span>
+                <div class="mt-4">
+                    <a href="{% url 'payment:checkout' %}?amount={{ booking.property.price }}&item=Security Deposit for {{ booking.property.title }}&booking_id={{ booking.id }}"
+                        class="block bg-arion-blue-light hover:bg-arion-blue text-white px-6 py-3 rounded-xl text-xs font-black transition-all shadow-lg shadow-blue-100 no-underline text-center">
+                        <i class="fas fa-wallet mr-2"></i> Pay Security Deposit
+                    </a>
+                </div>
+                {% elif booking.status == 'PAID' %}
+                <span
+                    class="bg-blue-100 text-arion-blue px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter shadow-sm">
+                    <i class="fas fa-receipt mr-1"></i> Paid & Contracted
+                </span>
+                <div class="mt-4">
+                    <a href="{% url 'contract:view' booking.contract.id %}"
+                        class="block bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-black transition-all shadow-lg no-underline text-center">
+                        <i class="fas fa-file-contract mr-2 text-arion-orange"></i> View Contract
+                    </a>
+                </div>
                 {% elif booking.status == 'REJECTED' %}
                 <span
                     class="bg-red-100 text-red-700 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter shadow-sm">

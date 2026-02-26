@@ -7,6 +7,7 @@ class BookingRequest(models.Model):
         ('PENDING', 'Pending'),
         ('APPROVED', 'Approved'),
         ('REJECTED', 'Rejected'),
+        ('PAID', 'Paid'),
         ('CANCELLED', 'Cancelled'),
     )
 
