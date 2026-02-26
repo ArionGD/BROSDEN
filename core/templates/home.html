@@ -69,8 +69,7 @@
 <section class="bg-arion-blue py-8">
     <div class="container mx-auto px-6">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {% for stat in "12,000+ Properties,98% Verified Listings,India's Top 10 Cities,4.9★ Average
-            Rating"|split:"," %}
+            {% for stat in home_stats %}
             <div class="text-white">
                 <p class="text-2xl md:text-3xl font-black">{{ stat|truncatechars:8 }}</p>
                 <p class="text-blue-200 text-xs font-bold uppercase tracking-widest mt-1">{{ stat|slice:"8:" }}</p>
@@ -91,32 +90,27 @@
                     class="text-arion-blue">Category</span></h2>
         </div>
 
-        {% with cats="Apartments|fa-building,Villas|fa-house-chimney,Commercial|fa-shop,Plots|fa-map" %}
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {% for item in cats|split:"," %}
-            {% with name=item|split:"|" %}
+            {% for cat in categories %}
             <a href="{% url 'property:browse' %}"
                 class="group relative aspect-[4/3] rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
                 <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=600&q=80"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="">
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
                 <div class="absolute bottom-0 inset-x-0 p-6">
-                    <i class="fas {{ item|split:'|'|last }} text-2xl text-white mb-2 block opacity-80"></i>
-                    <h3 class="text-xl font-black text-white">{{ item|split:'|'|first }}</h3>
+                    <i class="fas {{ cat.icon }} text-2xl text-white mb-2 block opacity-80"></i>
+                    <h3 class="text-xl font-black text-white">{{ cat.name }}</h3>
                     <span
                         class="text-xs font-bold text-white/50 uppercase tracking-widest group-hover:text-arion-orange transition-colors">
                         Explore <i class="fas fa-arrow-right ml-1"></i>
                     </span>
                 </div>
-                <!-- Highlight bar on hover -->
                 <div
                     class="absolute bottom-0 inset-x-0 h-1 bg-arion-orange scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left">
                 </div>
             </a>
-            {% endwith %}
             {% endfor %}
         </div>
-        {% endwith %}
     </div>
 </section>
 
@@ -138,13 +132,13 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {% for p in "Skyview Premium,Marine Luxury Villa,Suburban Family Home"|split:"," %}
+            {% for p in featured_properties %}
             <div
                 class="group bg-white border border-slate-100 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-400">
                 <div class="relative h-56 overflow-hidden">
                     <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"
                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                        alt="{{ p }}">
+                        alt="{{ p.name }}">
                     <div class="absolute top-4 left-4">
                         <span
                             class="bg-arion-blue text-white text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-lg">Arion
@@ -152,19 +146,19 @@
                     </div>
                     <div
                         class="absolute bottom-4 right-4 bg-white/95 backdrop-blur px-4 py-2 rounded-2xl font-black text-slate-900 text-lg shadow-lg">
-                        ₹ 85.5 L
+                        {{ p.price }}
                     </div>
                 </div>
                 <div class="p-7">
                     <h3 class="text-lg font-black text-slate-900 group-hover:text-arion-blue transition-colors mb-2">{{
-                        p }}</h3>
+                        p.name }}</h3>
                     <p class="text-slate-400 font-medium text-sm flex items-center gap-2 mb-5">
-                        <i class="fas fa-location-dot text-arion-orange"></i> Jubilee Hills, Hyderabad
+                        <i class="fas fa-location-dot text-arion-orange"></i> {{ p.loc }}
                     </p>
                     <div class="flex items-center justify-between pt-5 border-t border-slate-50">
                         <div class="flex gap-4 text-slate-400 font-bold text-sm">
-                            <span><i class="fas fa-bed mr-2 text-arion-blue"></i>3 BHK</span>
-                            <span><i class="fas fa-maximize mr-2 text-arion-blue"></i>1.8k sqft</span>
+                            <span><i class="fas fa-bed mr-2 text-arion-blue"></i>{{ p.beds }}</span>
+                            <span><i class="fas fa-maximize mr-2 text-arion-blue"></i>{{ p.size }}</span>
                         </div>
                         <a href="{% url 'property:browse' %}"
                             class="w-9 h-9 bg-slate-100 hover:bg-arion-blue text-slate-400 hover:text-white rounded-xl flex items-center justify-center transition-all">
@@ -197,21 +191,16 @@
         </div>
 
         <div class="grid md:grid-cols-3 gap-8">
-            {% for feat in "fa-shield-halved|Secured Transactions|Every property undergoes 45 verification checks before
-            listing on our platform.|arion-orange,fa-bolt|AI-Powered Matching|Our engine matches your lifestyle and
-            budget to ideal units in under 60 seconds.|arion-blue,fa-headset|24/7 Concierge|Dedicated managers guide you
-            from document signing to complete possession.|arion-orange"|split:"," %}
-            {% with parts=feat|split:"|" %}
+            {% for feat in home_features %}
             <div
                 class="group p-10 bg-white/5 border border-white/10 rounded-[2.5rem] hover:-translate-y-3 hover:bg-white/10 transition-all duration-500">
                 <div
                     class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                    <i class="fas {{ parts.0 }} text-2xl text-white"></i>
+                    <i class="fas {{ feat.icon }} text-2xl text-white"></i>
                 </div>
-                <h3 class="text-xl font-black text-white mb-4">{{ parts.1 }}</h3>
-                <p class="text-slate-400 font-medium leading-relaxed">{{ parts.2 }}</p>
+                <h3 class="text-xl font-black text-white mb-4">{{ feat.title }}</h3>
+                <p class="text-slate-400 font-medium leading-relaxed">{{ feat.desc }}</p>
             </div>
-            {% endwith %}
             {% endfor %}
         </div>
     </div>
@@ -272,31 +261,27 @@
         </div>
 
         <div class="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
-            {% for t in "Arjun Sharma|Software Engineer, Amazon|Transparent process and zero brokerage actually meant
-            zero hidden costs. Highly recommend for working professionals.|arion-blue,Priya Reddy|Property Owner,
-            Gachibowli|My rental income increased 15% after listing with Arion. The KYC process for tenants is
-            incredibly thorough.|arion-orange"|split:"," %}
-            {% with p=t|split:"|" %}
+            {% for t in testimonials %}
             <div
                 class="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
                 <div class="flex gap-1 text-arion-orange mb-6 text-sm">
-                    {% for i in "1,2,3,4,5"|split:"," %}<i class="fas fa-star"></i>{% endfor %}
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                        class="fas fa-star"></i><i class="fas fa-star"></i>
                 </div>
                 <p class="text-slate-600 font-semibold text-lg leading-relaxed italic mb-8">
-                    "{{ p.2 }}"
+                    "{{ t.text }}"
                 </p>
                 <div class="flex items-center gap-4">
                     <div
-                        class="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-white text-xl {% if p.3 == 'arion-blue' %}bg-arion-blue{% else %}bg-arion-orange{% endif %}">
-                        {{ p.0|slice:":1" }}
+                        class="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-white text-xl {% if t.color == 'arion-blue' %}bg-arion-blue{% else %}bg-arion-orange{% endif %}">
+                        {{ t.name|slice:":1" }}
                     </div>
                     <div>
-                        <p class="font-black text-slate-900">{{ p.0 }}</p>
-                        <p class="text-sm font-semibold text-slate-400">{{ p.1 }}</p>
+                        <p class="font-black text-slate-900">{{ t.name }}</p>
+                        <p class="text-sm font-semibold text-slate-400">{{ t.role }}</p>
                     </div>
                 </div>
             </div>
-            {% endwith %}
             {% endfor %}
         </div>
     </div>
