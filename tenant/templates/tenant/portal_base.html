@@ -28,19 +28,6 @@
     (function () {
         const portalMain = document.getElementById('portal-main');
 
-
-        // Reveal observer scoped to portal
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(e => e.target.classList.toggle('is-revealed', e.isIntersecting));
-        }, { root: portalMain, threshold: 0.08 });
-
-        const observe = (root) => root.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-        observe(portalMain);
-
-        new MutationObserver((muts) => muts.forEach(m => m.addedNodes.forEach(n => {
-            if (n.nodeType === 1) { if (n.classList.contains('reveal-on-scroll')) observer.observe(n); observe(n); }
-        }))).observe(portalMain, { childList: true, subtree: true });
-
         // Sidebar Toggle
         const sidebar = document.getElementById('sidebar');
         const toggleBtn = document.getElementById('sidebarToggle');
