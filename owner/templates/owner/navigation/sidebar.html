@@ -1,0 +1,60 @@
+<aside id="sidebar"
+    class="w-72 h-full bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 transition-all duration-300 relative">
+    <div class="p-8 overflow-hidden">
+        <!-- Brand Logo -->
+        <div class="flex items-center gap-2 mb-10 px-4">
+            <div class="flex items-center justify-center w-8 h-8 bg-arion-blue rounded-lg text-white text-xs">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="flex items-baseline sidebar-text">
+                <span class="text-xl font-black tracking-tighter text-slate-900">den</span>
+                <span class="w-1.5 h-1.5 bg-arion-orange rounded-full ml-0.5"></span>
+            </div>
+        </div>
+
+        <h2 id="sidebarTitle"
+            class="text-xs font-black uppercase tracking-widest text-slate-400 mb-8 px-4 transition-opacity duration-200">
+            Owner Suite</h2>
+        <nav class="space-y-2">
+            <a href="{% url 'analytics:owner_dashboard' %}"
+                class="flex items-center px-4 py-3 bg-blue-50 text-arion-blue rounded-xl font-bold transition-all shadow-sm">
+                <i class="fas fa-chart-pie w-6 mr-3"></i> <span
+                    class="sidebar-text transition-opacity duration-200">Dashboard</span>
+            </a>
+            <a href="{% url 'property:owner_list' %}"
+                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
+                <i class="fas fa-city w-6 mr-3"></i> <span class="sidebar-text transition-opacity duration-200">My
+                    Properties</span>
+            </a>
+            <a href="{% url 'booking:owner_bookings' %}"
+                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
+                <i class="fas fa-bell w-6 mr-3"></i> <span
+                    class="sidebar-text transition-opacity duration-200">Requests</span>
+            </a>
+            <a href="{% url 'payment:kyc_form' %}"
+                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
+                <i class="fas fa-shield-halved w-6 mr-3"></i> <span
+                    class="sidebar-text transition-opacity duration-200">KYC Status</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="mt-auto p-8 border-t border-slate-100 overflow-hidden">
+        <a href="#"
+            class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all mb-2">
+            <i class="fas fa-gear w-6 mr-3"></i> <span
+                class="sidebar-text transition-opacity duration-200">Settings</span>
+        </a>
+        <a href="{% url 'accounts:logout' %}"
+            class="flex items-center px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl font-semibold transition-all mb-6">
+            <i class="fas fa-right-from-bracket w-6 mr-3"></i> <span
+                class="sidebar-text transition-opacity duration-200">Logout</span>
+        </a>
+
+        <!-- Toggle Button -->
+        <button id="sidebarToggle"
+            class="w-full h-12 bg-arion-orange hover:bg-arion-blue text-white rounded-xl flex items-center justify-center shadow-lg shadow-orange-100 transition-all active:scale-95 group">
+            <i id="toggleIcon" class="fas fa-chevron-left text-sm"></i>
+        </button>
+    </div>
+</aside>

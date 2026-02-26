@@ -4,70 +4,54 @@
 
 {% block content %}
 <div class="flex h-[calc(100vh-80px)] overflow-hidden bg-white">
-    <!-- Sidebar - Fixed Full Height -->
-    <aside class="w-72 h-full bg-white border-r border-slate-200 flex flex-col shadow-xl z-20">
-        <div class="p-8">
-            <h2 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-8 px-4">Menu</h2>
-            <nav class="space-y-2">
-                <a href="{% url 'analytics:tenant_dashboard' %}"
-                    class="flex items-center px-4 py-3 bg-blue-50 text-blue-600 rounded-xl font-bold transition-all shadow-sm">
-                    <i class="fas fa-chart-line w-6 mr-3"></i> Dashboard
-                </a>
-                <a href="{% url 'property:browse' %}"
-                    class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                    <i class="fas fa-house-circle-check w-6 mr-3"></i> Marketplace
-                </a>
-                <a href="{% url 'booking:tenant_bookings' %}"
-                    class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                    <i class="fas fa-calendar-check w-6 mr-3"></i> My Bookings
-                </a>
-                <a href="#"
-                    class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                    <i class="fas fa-wallet w-6 mr-3"></i> Payments
-                </a>
-                <a href="#"
-                    class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                    <i class="fas fa-comment-dots w-6 mr-3"></i> Support
-                </a>
-            </nav>
-        </div>
-
-        <div class="mt-auto p-8 border-t border-slate-100">
-            <a href="{% url 'accounts:logout' %}"
-                class="flex items-center px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl font-semibold transition-all">
-                <i class="fas fa-right-from-bracket w-6 mr-3"></i> Logout
-            </a>
-        </div>
-    </aside>
+    <!-- Sidebar Navigation -->
+    {% include "tenant/navigation/sidebar.html" %}
 
     <!-- Main Area - Fixed Header + Scrollable Content -->
     <div class="flex-1 flex flex-col h-full overflow-hidden">
-        <!-- Portal Header -->
-        <header class="bg-white border-b border-slate-200 p-8 flex items-center justify-between shadow-sm z-10">
-            <div>
-                <h1 class="text-3xl font-black text-slate-900 tracking-tight">Tenant Portal</h1>
-                <p class="text-slate-500 font-medium mt-1 text-sm">Manage your rental experience seamlessly.</p>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="text-right hidden sm:block">
-                    <p class="text-sm font-bold text-slate-900">{{ user.username }}</p>
-                    <p class="text-[10px] text-slate-400 font-black uppercase">Verified Tenant</p>
-                </div>
-                <div
-                    class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-inner">
-                    <i class="fas fa-user"></i>
-                </div>
-            </div>
-        </header>
+        <!-- Portal Header Navigation -->
+        {% include "tenant/navigation/header.html" %}
 
         <!-- Dynamic Content Area - Scrollable -->
-        <main class="flex-1 overflow-y-auto p-10 bg-white">
+        <main class="flex-1 overflow-y-auto p-10 bg-white overscroll-none">
             <div class="max-w-6xl mx-auto">
                 {% block portal_content %}{% endblock %}
             </div>
         </main>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const sidebarTexts = document.querySelectorAll('.sidebar-text');
+        const sidebarTitle = document.getElementById('sidebarTitle');
+
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener('click', function () {
+                if (sidebar.classList.contains('w-72')) {
+                    // Collapse
+                    sidebar.classList.remove('w-72');
+                    sidebar.classList.add('w-20');
+                    toggleIcon.classList.remove('fa-chevron-left');
+                    toggleIcon.classList.add('fa-chevron-right');
+                    sidebarTexts.forEach(t => t.classList.add('opacity-0', 'hidden'));
+                    if (sidebarTitle) sidebarTitle.classList.add('opacity-0');
+                } else {
+                    // Expand
+                    sidebar.classList.remove('w-20');
+                    sidebar.classList.add('w-72');
+                    toggleIcon.classList.remove('fa-chevron-right');
+                    toggleIcon.classList.add('fa-chevron-left');
+                    sidebarTexts.forEach(t => t.classList.remove('opacity-0', 'hidden'));
+                    if (sidebarTitle) sidebarTitle.classList.remove('opacity-0');
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}
 
 {% block footer %}{% endblock %}

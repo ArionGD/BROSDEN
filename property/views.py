@@ -5,7 +5,8 @@ from .forms import PropertyForm
 from analytics.models import PropertyView, SearchActivity
 from accounts.decorators import tenant_required, owner_required
 
-@tenant_required
+from django.contrib.auth.decorators import login_required
+
 def browse_properties(request):
     """View for Tenants to browse all properties."""
     query = request.GET.get('q')
@@ -49,6 +50,7 @@ def add_property(request):
         form = PropertyForm()
     return render(request, 'property/add_form.html', {'form': form})
 
+@login_required
 def property_detail(request, pk):
     """Public/Shared view for property details."""
     prop = get_object_or_404(Property, pk=pk)

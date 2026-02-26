@@ -1,0 +1,50 @@
+<div class="max-w-xl w-full">
+    <div class="bg-white rounded-[3rem] p-12 shadow-2xl border border-slate-100">
+        <div class="text-center mb-10">
+            <div
+                class="inline-flex items-center justify-center w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl mb-6 shadow-sm">
+                <i class="fas fa-id-card text-3xl"></i>
+            </div>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight">KYC Verification</h1>
+            <p class="text-slate-500 font-medium mt-3">Identity verification is mandatory for secure transactions.</p>
+        </div>
+
+        <form method="POST" class="space-y-8">
+            {% csrf_token %}
+
+            <div class="space-y-6">
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Full Statutory
+                        Name</label>
+                    {{ form.full_name }}
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">ID Document
+                            Type</label>
+                        {{ form.id_type }}
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">ID
+                            Number</label>
+                        {{ form.id_number }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-blue-50/50 p-6 rounded-2xl flex gap-4 items-start border border-blue-100">
+                <i class="fas fa-shield-halved text-blue-600 mt-1"></i>
+                <p class="text-xs font-bold text-slate-700 leading-relaxed">
+                    Your data is encrypted and used only for internal verification. We never share your ID details with
+                    third parties.
+                </p>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl shadow-lg shadow-blue-200 transition-all transform hover:-translate-y-1 active:scale-95 text-lg">
+                Verify Identity <i class="fas fa-arrow-right ml-2 text-sm"></i>
+            </button>
+        </form>
+    </div>
+</div>
