@@ -40,6 +40,73 @@
             background: #f8fafc;
         }
 
+        /* Message Toasts */
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast-message {
+            pointer-events: auto;
+            min-width: 300px;
+            max-width: 500px;
+            background: #0f172a;
+            /* Slate 900 */
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 1.25rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: toast-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            border-left: 4px solid #1A73E8;
+        }
+
+        .toast-message.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast-message.success {
+            border-left-color: #10b981;
+        }
+
+        .toast-message.warning {
+            border-left-color: #f59e0b;
+        }
+
+        @keyframes toast-in {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes toast-out {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+        }
+
         /* Lenis required baseline */
         html.lenis,
         html.lenis body {
@@ -126,20 +193,31 @@
     <div id="main-scroll-container">
         {% include "navigation/header.html" %}
 
-        <main style="min-height: calc(100vh - 80px);">
+        <!-- Floating Notifications -->
+        <div class="toast-container" id="toast-container">
             {% if messages %}
-            <div class="container mx-auto px-4 mt-6">
-                {% for message in messages %}
-                <div
-                    class="px-6 py-4 rounded-2xl shadow-lg mb-4 {% if message.tags == 'error' %}bg-red-500 text-white{% else %}bg-slate-900 text-white{% endif %} font-bold flex items-center">
-                    <i
-                        class="fas {% if message.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %} mr-3"></i>
-                    {{ message }}
+            {% for message in messages %}
+            <div class="toast-message {% if message.tags %}{{ message.tags }}{% endif %} shadow-2xl" role="alert">
+                <div class="flex-shrink-0">
+                    {% if message.tags == 'error' %}
+                    <i class="fas fa-circle-exclamation text-red-400"></i>
+                    {% elif message.tags == 'success' %}
+                    <i class="fas fa-circle-check text-emerald-400"></i>
+                    {% else %}
+                    <i class="fas fa-circle-info text-arion-blue-light"></i>
+                    {% endif %}
                 </div>
-                {% endfor %}
+                <p class="text-sm font-bold tracking-tight">{{ message }}</p>
+                <button onclick="this.parentElement.remove()"
+                    class="ml-auto text-slate-500 hover:text-white transition-colors">
+                    <i class="fas fa-xmark text-xs"></i>
+                </button>
             </div>
+            {% endfor %}
             {% endif %}
+        </div>
 
+        <main style="min-height: calc(100vh - 80px);">
             {% block content %}{% endblock %}
         </main>
 
@@ -180,6 +258,14 @@
                 }))).observe(document.body, { childList: true, subtree: true });
 
                 window.addEventListener('resize', () => lenis.update());
+
+                // Auto-remove toasts after 5 seconds
+                document.querySelectorAll('.toast-message').forEach(toast => {
+                    setTimeout(() => {
+                        toast.style.animation = 'toast-out 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                        setTimeout(() => toast.remove(), 500);
+                    }, 5000);
+                });
             })();
     </script>
 
