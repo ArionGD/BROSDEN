@@ -1,0 +1,108 @@
+{% extends user.role|lower|add:"/portal_base.html" %}
+
+{% block title %}Ticket #{{ ticket.id }} | BrosDen-AV{% endblock %}
+
+{% block portal_content %}
+<div class="max-w-4xl mx-auto py-10 reveal-on-scroll">
+    <!-- Header -->
+    <div class="mb-10 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <a href="{% url 'helpdesk:ticket_list' %}"
+                class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all no-underline">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h2 class="text-3xl font-black text-slate-800 tracking-tight">{{ ticket.subject }}</h2>
+                <div class="flex items-center gap-3 mt-1">
+                    <span class="text-[10px] font-mono font-black text-slate-400 uppercase">#TK-{{
+                        ticket.id|stringformat:"04d" }}</span>
+                    <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{
+                        ticket.category.name }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest
+                {% if ticket.priority == 'LOW' %}bg-slate-100 text-slate-600
+                {% elif ticket.priority == 'MEDIUM' %}bg-blue-100 text-blue-600
+                {% elif ticket.priority == 'HIGH' %}bg-amber-100 text-amber-600
+                {% else %}bg-red-100 text-red-600{% endif %}">
+                {{ ticket.get_priority_display }}
+            </span>
+            <span class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest
+                {% if ticket.status == 'OPEN' %}bg-blue-600 text-white
+                {% elif ticket.status == 'IN_PROGRESS' %}bg-amber-500 text-white
+                {% elif ticket.status == 'RESOLVED' %}bg-emerald-500 text-white
+                {% else %}bg-slate-500 text-white{% endif %}">
+                {{ ticket.get_status_display }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Ticket Description & Replies -->
+    <div class="space-y-8">
+        <!-- Original Issue -->
+        <div class="bg-white rounded-[3rem] p-10 md:p-16 shadow-xl border border-slate-100">
+            <div class="flex items-start gap-6">
+                <div
+                    class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 font-black">
+                    {{ ticket.user.username|slice:":1"|upper }}
+                </div>
+                <div class="flex-1">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-black text-slate-900">{{ ticket.user.username }} <span
+                                class="text-slate-400 font-medium ml-2 text-xs">(Author)</span></h4>
+                        <span class="text-[10px] font-black text-slate-300 uppercase">{{ ticket.created_at|date:"d M Y,
+                            H:i" }}</span>
+                    </div>
+                    <div class="prose prose-slate max-w-none">
+                        <p class="text-slate-600 leading-relaxed">{{ ticket.description|linebreaks }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Replies -->
+        {% for reply in ticket.replies.all %}
+        <div class="flex items-start gap-6 {% if reply.is_staff_reply %}flex-row-reverse{% endif %}">
+            <div
+                class="w-12 h-12 rounded-2xl flex items-center justify-center font-black
+                {% if reply.is_staff_reply %}bg-arion-blue text-white shadow-lg shadow-blue-100{% else %}bg-slate-100 text-slate-400{% endif %}">
+                {% if reply.is_staff_reply %}A{% else %}{{ reply.user.username|slice:":1"|upper }}{% endif %}
+            </div>
+            <div class="flex-1 bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-sm font-black text-slate-900">
+                        {% if reply.is_staff_reply %}Arion Support{% else %}{{ reply.user.username }}{% endif %}
+                        {% if reply.is_staff_reply %}<span
+                            class="bg-arion-orange text-white text-[8px] px-2 py-1 rounded-full uppercase ml-2">Official</span>{%
+                        endif %}
+                    </h4>
+                    <span class="text-[9px] font-black text-slate-300 uppercase">{{ reply.timestamp|date:"d M, H:i"
+                        }}</span>
+                </div>
+                <p class="text-sm text-slate-600 leading-relaxed">{{ reply.message|linebreaks }}</p>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Reply Form -->
+        <div class="bg-white rounded-[3rem] p-10 shadow-2xl border border-slate-100 mt-12">
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
+                <div class="space-y-3">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Add a
+                        Reply</label>
+                    <textarea name="message" required rows="4" placeholder="Type your response here..."
+                        class="w-full bg-slate-50 border-2 border-transparent rounded-3xl py-6 px-8 text-sm font-bold text-slate-800 focus:outline-none focus:border-arion-blue-light focus:bg-white transition-all"></textarea>
+                </div>
+                <button type="submit"
+                    class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-sm hover:bg-black transition-all">
+                    Post Reply <i class="fas fa-reply ml-2 text-arion-orange"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

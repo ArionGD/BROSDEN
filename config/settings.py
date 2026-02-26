@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'analytics',
     'payment',
     'contract',
+    'convo',
+    'helpdesk',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'

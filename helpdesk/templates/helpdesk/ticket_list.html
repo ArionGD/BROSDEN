@@ -1,0 +1,83 @@
+{% extends user.role|lower|add:"/portal_base.html" %}
+
+{% block title %}My Tickets | BrosDen-AV{% endblock %}
+
+{% block portal_content %}
+<div class="max-w-5xl mx-auto reveal-on-scroll">
+    <div class="mb-10 flex justify-between items-end">
+        <div>
+            <h2 class="text-4xl font-black text-slate-900 tracking-tight">Support Tickets</h2>
+            <p class="text-slate-500 font-medium mt-1">Track the status of your requests and queries.</p>
+        </div>
+        <a href="{% url 'helpdesk:create_ticket' %}"
+            class="bg-arion-blue text-white px-8 py-4 rounded-2xl font-black text-sm no-underline shadow-lg shadow-blue-100 hover:bg-black transition-all">
+            New Ticket
+        </a>
+    </div>
+
+    <div class="bg-white rounded-[3rem] shadow-xl border border-slate-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50 border-b border-slate-100">
+                        <th class="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Reference
+                        </th>
+                        <th class="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Subject
+                        </th>
+                        <th class="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Status
+                        </th>
+                        <th class="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Date</th>
+                        <th class="px-10 py-6"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    {% for ticket in tickets %}
+                    <tr class="hover:bg-slate-50 transition-all group">
+                        <td class="px-10 py-8">
+                            <span class="font-mono text-xs font-black text-slate-400">#TK-{{
+                                ticket.id|stringformat:"04d" }}</span>
+                        </td>
+                        <td class="px-10 py-8">
+                            <div>
+                                <h4 class="text-sm font-black text-slate-900">{{ ticket.subject }}</h4>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">{{
+                                    ticket.category.name }}</p>
+                            </div>
+                        </td>
+                        <td class="px-10 py-8">
+                            <span class="px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest
+                                {% if ticket.status == 'OPEN' %}bg-blue-100 text-blue-600
+                                {% elif ticket.status == 'IN_PROGRESS' %}bg-amber-100 text-amber-600
+                                {% elif ticket.status == 'RESOLVED' %}bg-emerald-100 text-emerald-600
+                                {% else %}bg-slate-100 text-slate-500{% endif %}">
+                                {{ ticket.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="px-10 py-8">
+                            <p class="text-xs font-bold text-slate-500">{{ ticket.created_at|date:"d M, Y" }}</p>
+                        </td>
+                        <td class="px-10 py-8 text-right">
+                            <a href="{% url 'helpdesk:ticket_detail' ticket.id %}"
+                                class="w-10 h-10 bg-white border border-slate-100 rounded-xl flex items-center justify-center text-slate-300 group-hover:bg-arion-blue group-hover:text-white group-hover:border-arion-blue transition-all no-underline shadow-sm mx-auto">
+                                <i class="fas fa-chevron-right text-xs"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="py-24 text-center">
+                            <div
+                                class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                                <i class="fas fa-ticket-alt text-slate-200 text-4xl"></i>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-900">No support tickets</h3>
+                            <p class="text-slate-500 mt-2 font-medium">Any issues you submit will appear here.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

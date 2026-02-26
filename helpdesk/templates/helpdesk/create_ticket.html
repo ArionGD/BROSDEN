@@ -1,0 +1,70 @@
+{% extends user.role|lower|add:"/portal_base.html" %}
+
+{% block title %}Submit a Ticket | BrosDen-AV{% endblock %}
+
+{% block portal_content %}
+<div class="max-w-3xl mx-auto py-10 reveal-on-scroll">
+    <div class="mb-10 flex items-center justify-between">
+        <div>
+            <h2 class="text-4xl font-black text-slate-800 tracking-tight">Submit a Ticket</h2>
+            <p class="text-slate-500 font-medium mt-1">Tell us more about your issue and we'll help you solve it.</p>
+        </div>
+        <a href="{% url 'helpdesk:home' %}"
+            class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all no-underline">
+            <i class="fas fa-times"></i>
+        </a>
+    </div>
+
+    <form method="POST" class="bg-white rounded-[3rem] p-10 md:p-16 shadow-2xl border border-slate-100 space-y-8">
+        {% csrf_token %}
+
+        <div class="space-y-3">
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Issue Category</label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {% for category in categories %}
+                <label class="cursor-pointer group">
+                    <input type="radio" name="category" value="{{ category.id }}" class="hidden peer" required {% if
+                        forloop.first %}checked{% endif %}>
+                    <div
+                        class="p-6 bg-slate-50 rounded-3xl border-2 border-transparent peer-checked:border-arion-blue peer-checked:bg-blue-50/50 group-hover:bg-slate-100 transition-all text-center">
+                        <i class="fas {{ category.icon }} text-xl text-slate-400 peer-checked:text-arion-blue mb-2"></i>
+                        <p class="text-xs font-black text-slate-600 peer-checked:text-arion-blue">{{ category.name }}
+                        </p>
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Subject</label>
+            <input type="text" name="subject" required placeholder="Briefly describe the issue"
+                class="w-full bg-slate-50 border-2 border-transparent rounded-2xl py-5 px-8 text-sm font-bold text-slate-800 focus:outline-none focus:border-arion-blue-light focus:bg-white transition-all">
+        </div>
+
+        <div class="space-y-3">
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Description</label>
+            <textarea name="description" required rows="5" placeholder="Please provide as much detail as possible..."
+                class="w-full bg-slate-50 border-2 border-transparent rounded-3xl py-6 px-8 text-sm font-bold text-slate-800 focus:outline-none focus:border-arion-blue-light focus:bg-white transition-all"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+            <div class="space-y-3">
+                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Priority</label>
+                <select name="priority"
+                    class="w-full bg-slate-50 border-2 border-transparent rounded-2xl py-5 px-8 text-sm font-bold text-slate-800 focus:outline-none focus:border-arion-blue-light focus:bg-white transition-all">
+                    <option value="LOW">Low - General Inquiry</option>
+                    <option value="MEDIUM" selected>Medium - Issue</option>
+                    <option value="HIGH">High - Urgent Problem</option>
+                    <option value="URGENT">Urgent - Blocking Workflow</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit"
+            class="w-full bg-slate-900 text-white py-6 rounded-[2rem] font-black text-sm hover:bg-black shadow-2xl shadow-slate-200 transition-all mt-6">
+            Launch Ticket <i class="fas fa-paper-plane ml-2 text-arion-orange"></i>
+        </button>
+    </form>
+</div>
+{% endblock %}
