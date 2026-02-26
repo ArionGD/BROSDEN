@@ -33,7 +33,7 @@
                     class="flex items-center gap-3 bg-slate-50 hover:bg-slate-100 p-1.5 pr-4 rounded-full transition-all border border-slate-100 group">
                     <!-- Profile Icon Component -->
                     <div
-                        class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-md shadow-blue-100">
+                        class="w-10 h-10 bg-arion-blue rounded-full flex items-center justify-center text-white font-bold shadow-md shadow-blue-100">
                         {{ user.username|slice:":1"|upper }}
                     </div>
                     <div class="text-left hidden md:block">
@@ -55,19 +55,19 @@
 
                     {% if user.role == 'TENANT' %}
                     <a href="{% url 'analytics:tenant_dashboard' %}"
-                        class="flex items-center px-4 py-3 text-sm font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors mx-2 rounded-xl no-underline">
+                        class="flex items-center px-4 py-3 text-sm font-bold text-slate-700 hover:bg-arion-blue/10 hover:text-arion-blue transition-colors mx-2 rounded-xl no-underline">
                         <i class="fas fa-chart-line w-6"></i> My Dashboard
                     </a>
                     {% elif user.role == 'OWNER' %}
                     <a href="{% url 'analytics:owner_dashboard' %}"
-                        class="flex items-center px-4 py-3 text-sm font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors mx-2 rounded-xl no-underline">
+                        class="flex items-center px-4 py-3 text-sm font-bold text-slate-700 hover:bg-arion-blue/10 hover:text-arion-blue transition-colors mx-2 rounded-xl no-underline">
                         <i class="fas fa-chart-pie w-6"></i> Owner Portal
                     </a>
                     {% endif %}
 
                     <a href="#"
-                        class="flex items-center px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors mx-2 rounded-xl no-underline">
-                        <i class="fas fa-user-circle w-6 text-slate-400 group-hover:text-blue-500"></i> My Profile
+                        class="flex items-center px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors mx-2 rounded-xl group no-underline">
+                        <i class="fas fa-user-circle w-6 text-slate-400 group-hover:text-arion-blue"></i> My Profile
                     </a>
 
                     <div class="border-t border-slate-50 mt-2 pt-2">
