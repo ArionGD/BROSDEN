@@ -58,13 +58,19 @@
 
         <!-- Action Buttons -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
-            <a href="{% url 'contract:view' contract.id %}"
-                class="bg-slate-900 text-white py-4 rounded-2xl font-black text-sm text-center shadow-lg hover:bg-black transition-all no-underline">
-                <i class="fas fa-file-contract mr-2 text-arion-orange"></i> View Contract
+            <a href="{% url 'contract:view' contract.id %}" target="_blank"
+                class="bg-arion-blue-light text-white py-4 rounded-2xl font-black text-sm text-center shadow-lg hover:bg-arion-blue transition-all no-underline">
+                <i class="fas fa-file-signature mr-2"></i> Open Digital Contract
             </a>
-            <a href="{% url 'payment:view_receipt' receipt.id %}" target="_blank"
-                class="bg-slate-100 text-slate-600 py-4 rounded-2xl font-black text-sm text-center hover:bg-slate-200 transition-all no-underline">
-                <i class="fas fa-file-invoice-dollar mr-2 text-arion-blue"></i> View Security Deposit Receipt
+            <a href="{% url 'contract:contract_receipt' contract.id %}" target="_blank"
+                class="bg-slate-900 text-white py-4 rounded-2xl font-black text-sm text-center shadow-lg hover:bg-black transition-all no-underline">
+                <i class="fas fa-certificate mr-2 text-arion-orange"></i> Contract Receipt
+            </a>
+        </div>
+        <div class="mt-4">
+            <a href="{% url 'contract:deposit_receipt' receipt.id %}" target="_blank"
+                class="block w-full bg-slate-100 text-slate-600 py-4 rounded-2xl font-black text-sm text-center hover:bg-slate-200 transition-all no-underline">
+                <i class="fas fa-file-invoice-dollar mr-2 text-arion-blue"></i> Security Deposit Receipt
             </a>
         </div>
     </div>

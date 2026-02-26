@@ -1,0 +1,129 @@
+{% extends user.role|lower|add:"/portal_base.html" %}
+
+{% block title %}Security Deposit Receipt | BrosDen-AV{% endblock %}
+
+{% block portal_content %}
+<div class="max-w-2xl mx-auto py-10 reveal-on-scroll">
+    <div class="mb-10 flex justify-between items-end">
+        <div>
+            <span
+                class="bg-arion-blue/10 text-arion-blue text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Financial
+                Document</span>
+            <h2 class="text-4xl font-black text-slate-900 tracking-tight mt-3">Deposit Receipt</h2>
+            <p class="text-slate-500 font-medium mt-1">Acknowledgment of security deposit payment.</p>
+        </div>
+        <button onclick="window.print()"
+            class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2">
+            <i class="fas fa-print"></i> Print
+        </button>
+    </div>
+
+    <!-- Letterpad -->
+    <div class="bg-white rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden">
+        <div class="h-4 bg-arion-blue"></div>
+        <div class="p-12 md:p-16 relative">
+            <!-- Watermark -->
+            <div
+                class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none">
+                <i class="fas fa-money-bill-transfer text-[15rem]"></i>
+            </div>
+
+            <div class="relative z-10">
+                <div class="flex justify-between items-start mb-16">
+                    <div>
+                        <div class="flex items-center gap-2 mb-4">
+                            <div
+                                class="w-8 h-8 bg-arion-blue rounded-lg flex items-center justify-center text-white font-bold text-xs">
+                                B</div>
+                            <span class="font-black text-slate-900 tracking-tighter">BROSDEN <span
+                                    class="text-arion-orange">PORTAL</span></span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed">
+                            BrosDen Digital Services Pvt Ltd<br>
+                            Fintech Division, Arion Core<br>
+                            Bangalore, KA, India.
+                        </p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Date Issued</p>
+                        <p class="text-sm font-bold text-slate-900">{{ receipt.created_at|date:"d M Y" }}</p>
+                        <div class="mt-4">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Receipt No.</p>
+                            <p class="text-sm font-mono font-bold text-arion-blue">{{ receipt.transaction_id|slice:"-8:"
+                                }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100">
+                        <div class="grid grid-cols-2 gap-y-6">
+                            <div>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Received From
+                                </p>
+                                <p class="text-md font-bold text-slate-900">{{ receipt.user.username }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Payment For
+                                </p>
+                                <p class="text-md font-bold text-slate-900">{{ receipt.property_title }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Payment Mode
+                                </p>
+                                <p class="text-sm font-bold text-slate-600">Razorpay (Digital)</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Category</p>
+                                <span
+                                    class="bg-emerald-100 text-emerald-700 text-[10px] font-black px-3 py-1 rounded-full uppercase">Security
+                                    Deposit</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-8 flex justify-between items-center border-t-2 border-dashed border-slate-100">
+                        <span class="text-xl font-black text-slate-900">Total Amount Paid</span>
+                        <div class="text-right">
+                            <span class="text-4xl font-black text-arion-blue">₹{{ receipt.amount }}</span>
+                            <p class="text-[10px] text-slate-400 font-bold italic mt-1">Inclusive of all processing fees
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-20 flex justify-between items-end">
+                    <div class="opacity-30 grayscale">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" class="h-6">
+                    </div>
+                    <div class="text-right">
+                        <div class="w-32 h-1 bg-slate-100 mb-2 ml-auto"></div>
+                        <p class="text-[10px] font-black uppercase text-slate-400">System Verified</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media print {
+
+        header,
+        .sidebar-section,
+        .toast-container,
+        button {
+            display: none !important;
+        }
+
+        .max-w-2xl {
+            max-width: 100% !important;
+            margin: 0 !important;
+        }
+
+        body {
+            background: white !important;
+        }
+    }
+</style>
+{% endblock %}
