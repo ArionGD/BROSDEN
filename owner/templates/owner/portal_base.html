@@ -28,19 +28,6 @@
     (function () {
         const portalMain = document.getElementById('portal-main');
 
-        // Heavy Lenis for portal workspace
-        const lenis = new Lenis({
-            wrapper: portalMain,
-            content: portalMain.firstElementChild,
-            duration: 3.5,
-            easing: (t) => Math.min(1, 1 - Math.pow(1 - t, 4)),
-            smoothWheel: true,
-            wheelMultiplier: 0.35,
-            lerp: 0.01,
-            touchMultiplier: 1.5,
-        });
-
-        (function raf(time) { lenis.raf(time); requestAnimationFrame(raf); })(0);
 
         // Reveal observer scoped to portal
         const observer = new IntersectionObserver((entries) => {
@@ -69,7 +56,6 @@
                 sidebar.querySelectorAll('.sidebar-text').forEach(t => t.classList.toggle('hidden', !collapsed));
                 const title = document.getElementById('sidebarTitle');
                 if (title) title.classList.toggle('opacity-0', !collapsed);
-                setTimeout(() => lenis.update(), 300);
             });
         }
     })();
