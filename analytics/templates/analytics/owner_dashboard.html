@@ -63,7 +63,8 @@
                         }} views</span>
                 </div>
                 <div class="w-full bg-slate-50 h-2 rounded-full overflow-hidden">
-                    <div class="bg-blue-500 h-full rounded-full" style="width: {{ view.total_views }}%"></div>
+                    <div class="bg-blue-500 h-full rounded-full view-bar"
+                        data-width="{{ view.percentage|floatformat:0 }}"></div>
                 </div>
             </div>
             {% empty %}
@@ -81,27 +82,36 @@
         data: {
             labels: ['Approved', 'Pending', 'Rejected'],
             datasets: [{
-                data: [{{ approved_requests }}, {{ pending_requests }}, {{ total_requests| add: approved_requests | add: pending_requests | add: "-total_requests" }}],
-        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
-        borderWidth: 0,
-        hoverOffset: 10
+                data: [
+                    Number('{{ approved_requests }}'),
+                    Number('{{ pending_requests }}'),
+                    Number('{{ rejected_requests }}')
+                ],
+                backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                borderWidth: 0,
+                hoverOffset: 10
             }]
         },
         options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: {
-                    usePointStyle: true,
-                    padding: 30,
-                    font: { weight: 'bold' }
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 30,
+                        font: { weight: 'bold' }
+                    }
                 }
-            }
-        },
-        cutout: '70%'
-    }
+            },
+            cutout: '70%'
+        }
+    });
+
+    // Animate Progress Bars
+    document.querySelectorAll('.view-bar').forEach(bar => {
+        bar.style.width = bar.getAttribute('data-width') + '%';
     });
 </script>
 {% endblock %}

@@ -24,8 +24,9 @@
         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Success Rate</p>
         <h3 class="text-5xl font-black text-blue-600">{{ success_rate }}%</h3>
         <div class="w-full bg-slate-100 h-2 rounded-full mt-6 overflow-hidden">
-            <div class="bg-blue-500 h-full rounded-full" style="width: {{ success_rate }}%"></div>
+            <div id="success-rate-bar" class="bg-blue-500 h-full rounded-full"></div>
         </div>
+        <script>document.getElementById('success-rate-bar').style.width = "{{ success_rate|floatformat:0 }}%";</script>
     </div>
 </div>
 
