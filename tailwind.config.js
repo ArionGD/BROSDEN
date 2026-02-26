@@ -9,6 +9,7 @@ module.exports = {
             colors: {
                 arion: {
                     blue: '#1A73E8',
+                    'blue-light': '#4285F4', // More vibrant, lighter blue
                     orange: '#E75A27',
                 },
             },
