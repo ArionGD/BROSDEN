@@ -96,17 +96,6 @@
                             Request Booking <i class="fas fa-paper-plane ml-2 text-sm"></i>
                         </button>
                     </form>
-                    {% elif not user.is_authenticated %}
-                    <a href="{% url 'accounts:login' %}"
-                        class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-lg shadow-blue-200 text-center text-lg">
-                        Login to Request <i class="fas fa-lock ml-2 text-sm"></i>
-                    </a>
-                    {% else %}
-                    <div class="bg-slate-50 p-6 rounded-2xl text-center border-2 border-dashed border-slate-200">
-                        <i class="fas fa-user-shield text-slate-300 text-2xl mb-3"></i>
-                        <p class="text-xs font-bold text-slate-500 italic">Only tenants can request bookings.</p>
-                    </div>
-                    {% endif %}
 
                     <form action="{% url 'wishlist:toggle' property.id %}" method="POST">
                         {% csrf_token %}
@@ -127,6 +116,18 @@
                         class="w-full bg-slate-50 hover:bg-slate-100 text-slate-600 font-black py-4 rounded-2xl transition-all">
                         Schedule a Visit <i class="fas fa-calendar-alt ml-2"></i>
                     </button>
+                    {% elif not user.is_authenticated %}
+                    <a href="{% url 'accounts:login' %}"
+                        class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-lg shadow-blue-200 text-center text-lg">
+                        Login to Request <i class="fas fa-lock ml-2 text-sm"></i>
+                    </a>
+                    {% else %}
+                    <div class="bg-slate-50 p-6 rounded-2xl text-center border-2 border-dashed border-slate-200">
+                        <i class="fas fa-user-shield text-slate-300 text-2xl mb-3"></i>
+                        <p class="text-xs font-bold text-slate-500 italic">Only tenants can request bookings and
+                            reviews.</p>
+                    </div>
+                    {% endif %}
                 </div>
 
                 <div class="mt-10 pt-10 border-t border-slate-50 text-center">
