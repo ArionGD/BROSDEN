@@ -30,8 +30,9 @@
                 <thead>
                     <tr class="bg-slate-50 border-b border-slate-100">
                         <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Date</th>
-                        <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">{% if
-                            is_owner %}Paid By{% else %}Recipient{% endif %}</th>
+                        <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                            {% if is_owner %}Paid By{% else %}Recipient{% endif %}
+                        </th>
                         <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Property
                         </th>
                         <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Type</th>
