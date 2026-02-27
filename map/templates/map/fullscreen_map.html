@@ -1,0 +1,126 @@
+{% if user.role == 'TENANT' %}
+{% extends "tenant/portal_base.html" %}
+{% else %}
+{% extends "owner/portal_base.html" %}
+{% endif %}
+
+{% block portal_content %}
+<div class="h-[calc(100vh-140px)] w-full rounded-[2.5rem] overflow-hidden border border-slate-200 shadow-2xl relative">
+    <!-- Map Container -->
+    <div id="fullScreenMap" class="w-full h-full bg-slate-50"></div>
+
+    <!-- Float Search Overlay -->
+    <div class="absolute top-6 left-6 z-20 w-80">
+        <div class="bg-white/80 backdrop-blur-xl border border-white/20 p-4 rounded-3xl shadow-2xl">
+            <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <i class="fas fa-search-location text-blue-600"></i> Explore Area
+            </h3>
+            <div class="relative">
+                <input type="text" id="mapSearch" placeholder="Enter city or locality..."
+                    class="w-full px-5 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-blue-100 outline-none transition-all">
+                <button onclick="searchMap()"
+                    class="absolute right-2 top-2 w-8 h-8 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-100 flex items-center justify-center">
+                    <i class="fas fa-search text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MapLibre Core -->
+<link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
+<script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const properties = [
+            {% for property in properties %}
+            {
+            id: {{ property.id }},
+        title: "{{ property.title|escapejs }}",
+        price: "{{ property.price }}",
+        lat: {{ property.latitude |default: 0 }},
+        lng: {{ property.longitude |default: 0 }},
+        city: "{{ property.city|escapejs }}",
+        url: "{% url 'property:detail' property.pk %}"
+            }{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+        ];
+
+    const map = new maplibregl.Map({
+        container: 'fullScreenMap',
+        style: 'https://tiles.openfreemap.org/styles/liberty',
+        center: properties.length > 0 ? [properties[0].lng, properties[0].lat] : [78.4867, 17.3850],
+        zoom: 12,
+        pitch: 45,
+        antialias: true
+    });
+
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
+
+    properties.forEach(prop => {
+        // Create Custom Marker element
+        const el = document.createElement('div');
+        el.className = 'map-marker';
+        el.innerHTML = `
+                <div class="group relative flex flex-col items-center">
+                    <div class="bg-white px-3 py-1.5 rounded-full shadow-2xl border border-slate-100 mb-2 transform transition-transform group-hover:scale-110">
+                        <span class="text-xs font-black text-blue-600">₹${prop.price}</span>
+                    </div>
+                    <div class="w-8 h-8 bg-blue-600 rounded-2xl rotate-45 flex items-center justify-center shadow-lg border-2 border-white">
+                        <i class="fas fa-house text-white -rotate-45 text-[10px]"></i>
+                    </div>
+                </div>
+            `;
+
+        const popup = new maplibregl.Popup({ offset: 25 })
+            .setHTML(`
+                    <div class="p-2">
+                        <h4 class="font-black text-slate-800 mb-1">${prop.title}</h4>
+                        <p class="text-[10px] text-slate-500 mb-3">${prop.city}</p>
+                        <a href="${prop.url}" class="block text-center py-2 bg-blue-600 text-white rounded-lg text-xs font-bold no-underline">View Details</a>
+                    </div>
+                `);
+
+        new maplibregl.Marker({ element: el })
+            .setLngLat([prop.lng, prop.lat])
+            .setPopup(popup)
+            .addTo(map);
+    });
+
+    window.searchMap = async function () {
+        const query = document.getElementById('mapSearch').value;
+        if (!query) return;
+
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
+            const data = await response.json();
+            if (data && data.length > 0) {
+                map.flyTo({
+                    center: [parseFloat(data[0].lon), parseFloat(data[0].lat)],
+                    zoom: 14,
+                    essential: true
+                });
+            }
+        } catch (e) { }
+    };
+    });
+</script>
+
+<style>
+    .maplibregl-popup-content {
+        border-radius: 20px !important;
+        padding: 12px !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    .map-marker {
+        cursor: pointer;
+    }
+
+    .maplibregl-ctrl-logo,
+    .maplibregl-ctrl-attrib {
+        display: none !important;
+    }
+</style>
+{% endblock %}

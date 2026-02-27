@@ -10,16 +10,20 @@
     <div id="propertyMap" class="h-[350px] w-full z-10 bg-slate-50" data-lat="{{ property.latitude|default:'' }}"
         data-lng="{{ property.longitude|default:'' }}">
     </div>
-
     <div class="p-6 bg-white flex items-center gap-4">
         <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-arion-blue">
             <i class="fas fa-map-marked-alt"></i>
         </div>
-        <div>
+        <div class="flex-1">
             <p class="text-xs font-bold text-slate-900">{{ property.address|truncatechars:40 }}</p>
             <p class="text-[10px] text-slate-400 font-medium tracking-wide">High-performance 3D visual (Open Source).
             </p>
         </div>
+        <a href="https://www.google.com/maps/search/?api=1&query={% if property.latitude and property.longitude %}{{ property.latitude }},{{ property.longitude }}{% else %}{{ property.address|urlencode }},{{ property.city|urlencode }}{% endif %}"
+            target="_blank"
+            class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all group overflow-hidden relative">
+            <i class="fas fa-map-location-dot transition-transform group-hover:scale-110"></i>
+        </a>
     </div>
 </div>
 
