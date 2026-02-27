@@ -20,6 +20,11 @@ class Property(models.Model):
     bedrooms = models.IntegerField(default=0)
     bathrooms = models.IntegerField(default=0)
     sqft = models.IntegerField(default=0)
+    
+    # Financial Settings
+    security_deposit_months = models.IntegerField(default=2, help_text="Number of months of rent for security deposit")
+    contract_fee_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=10.00, help_text="Percentage of security deposit for contract fee")
+    
     is_verified = models.BooleanField(default=False)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
@@ -28,6 +33,20 @@ class Property(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_financial_breakdown(self):
+        """Returns a dictionary with security deposit, contract fee and total."""
+        security_deposit = self.price * self.security_deposit_months
+        contract_fee = (security_deposit * self.contract_fee_percentage) / 100
+        total = security_deposit + contract_fee
+        return {
+            'monthly_rent': self.price,
+            'security_deposit': security_deposit,
+            'security_months': self.security_deposit_months,
+            'contract_fee': contract_fee,
+            'contract_percentage': self.contract_fee_percentage,
+            'total': total
+        }
 
     class Meta:
         verbose_name_plural = "Properties"

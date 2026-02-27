@@ -40,13 +40,18 @@
                     <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 text-center">Receipt
                         Details</p>
                     <div class="space-y-4">
-                        <div class="flex justify-between border-b border-slate-50 pb-3">
-                            <span class="text-slate-500 font-medium">Transaction ID</span>
-                            <span class="text-slate-900 font-mono text-sm">{{ receipt.transaction_id }}</span>
+                        <div class="flex justify-between border-b border-slate-50 pb-3 italic">
+                            <span class="text-slate-500 font-medium">Security Deposit Component</span>
+                            <span class="text-slate-900 font-bold">₹{{ receipt.security_deposit_amount }}</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-50 pb-3 italic">
+                            <span class="text-slate-500 font-medium">Auto-Contract Fee Component</span>
+                            <span class="text-slate-900 font-bold">₹{{ receipt.contract_fee_amount }}</span>
                         </div>
                         <div class="flex justify-between border-b border-slate-50 pb-3">
-                            <span class="text-slate-500 font-medium">Payment Reason</span>
-                            <span class="text-slate-900 font-bold">{{ receipt.get_payment_type_display }}</span>
+                            <span class="text-slate-500 font-medium">Transaction ID</span>
+                            <span class="text-slate-900 font-mono text-sm tracking-tighter">{{ receipt.transaction_id
+                                }}</span>
                         </div>
                         <div class="flex justify-between border-b border-slate-50 pb-3">
                             <span class="text-slate-500 font-medium">Property</span>
@@ -54,7 +59,7 @@
                         </div>
                         <div class="flex justify-between">
                             <span class="text-slate-500 font-medium">Paid By</span>
-                            <span class="text-arion-blue font-bold">{{ receipt.user.username }}</span>
+                            <span class="text-blue-600 font-black">{{ receipt.user.username }}</span>
                         </div>
                     </div>
                 </div>

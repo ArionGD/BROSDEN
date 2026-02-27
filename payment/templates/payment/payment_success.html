@@ -35,23 +35,29 @@
         </div>
 
         <div class="space-y-6">
-            <div class="flex justify-between">
-                <span class="text-slate-500 font-medium">Payment for</span>
-                <span class="text-slate-900 font-bold">Security Deposit</span>
+            <div class="flex justify-between text-xs">
+                <span class="text-slate-500 font-medium tracking-wide">Security Deposit ({{ breakdown.security_months }}
+                    months)</span>
+                <span class="text-slate-900 font-bold">₹{{ breakdown.security_deposit }}</span>
+            </div>
+            <div class="flex justify-between text-xs">
+                <span class="text-slate-500 font-medium tracking-wide">Auto-Contract Fee ({{
+                    breakdown.contract_percentage }}%)</span>
+                <span class="text-slate-900 font-bold">₹{{ breakdown.contract_fee }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-slate-500 font-medium">Property</span>
-                <span class="text-slate-900 font-bold">{{ booking.property.title }}</span>
+                <span class="text-slate-500 font-medium tracking-wide">Property</span>
+                <span class="text-slate-900 font-bold italic">{{ booking.property.title }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-slate-500 font-medium">Tenant</span>
-                <span class="text-slate-900 font-bold text-arion-blue">{{ user.username }}</span>
+                <span class="text-slate-500 font-medium tracking-wide">Tenant Participant</span>
+                <span class="text-slate-900 font-bold text-blue-600">{{ user.username }}</span>
             </div>
 
             <div class="pt-6 border-t border-slate-100">
                 <div class="flex justify-between items-center">
-                    <span class="text-lg font-black text-slate-900">Total Paid</span>
-                    <span class="text-3xl font-black text-arion-blue">₹{{ amount }}</span>
+                    <span class="text-lg font-black text-slate-900 uppercase tracking-tighter">Total Collected</span>
+                    <span class="text-3xl font-black text-blue-600">₹{{ amount }}</span>
                 </div>
             </div>
         </div>

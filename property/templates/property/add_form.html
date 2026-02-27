@@ -62,6 +62,18 @@
                 {{ form.sqft }}
             </div>
 
+            <!-- Financial Settings -->
+            <div class="space-y-2">
+                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Security Deposit
+                    (Months)</label>
+                {{ form.security_deposit_months }}
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Contract Fee (%)</label>
+                {{ form.contract_fee_percentage }}
+            </div>
+
             <!-- Geolocation Section -->
             <div class="md:col-span-2 pt-6">
                 <div class="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden group">

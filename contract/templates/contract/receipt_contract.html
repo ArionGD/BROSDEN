@@ -73,6 +73,11 @@
                                 <span class="text-slate-400 text-xs">Principal Tenant</span>
                                 <span class="text-sm font-bold">{{ contract.booking.tenant.username }}</span>
                             </div>
+                            <div class="flex justify-between border-b border-slate-800 pb-3">
+                                <span class="text-slate-400 text-xs">Total Amount Paid</span>
+                                <span class="text-sm font-black text-arion-orange">₹{{
+                                    contract.booking.paymentreceipt_set.first.amount }}</span>
+                            </div>
                             <div class="flex justify-between">
                                 <span class="text-slate-400 text-xs">Validation Status</span>
                                 <span class="text-sm font-black text-emerald-400">ACTIVATED & SIGNED</span>

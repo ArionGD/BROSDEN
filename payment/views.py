@@ -43,34 +43,43 @@ def owner_kyc_view(request):
 
 @login_required
 def razorpay_checkout(request):
-    """Interface mimicking Razorpay payment process."""
-    amount = request.GET.get('amount', '500')
-    item = request.GET.get('item', 'Security Deposit')
+    """Interface mimicking Razorpay payment process with financial breakdown."""
     booking_id = request.GET.get('booking_id')
+    if not booking_id:
+        return redirect('booking:tenant_bookings')
+        
+    booking = get_object_or_404(BookingRequest, id=booking_id, tenant=request.user)
+    breakdown = booking.property.get_financial_breakdown()
     
     context = {
-        'amount': amount,
-        'item': item,
+        'booking': booking,
+        'breakdown': breakdown,
+        'amount': breakdown['total'],
+        'item': f"Security Deposit + Contract Fee for {booking.property.title}",
         'user': request.user,
-        'booking_id': booking_id
     }
     return render(request, 'payment/razorpay_interface.html', context)
 
 @login_required
 def payment_success(request, booking_id):
-    """Callback view to handle successful payment."""
+    """Callback view to handle successful payment with financial breakdown."""
     booking = get_object_or_404(BookingRequest, id=booking_id, tenant=request.user)
+    
+    # Calculate Breakdown
+    breakdown = booking.property.get_financial_breakdown()
     
     # Mark as PAID
     booking.status = 'PAID'
     booking.save()
     
-    # Create Payment Receipt
+    # Create Payment Receipt with Details
     receipt = PaymentReceipt.objects.create(
         user=request.user,
         booking=booking,
         property_title=booking.property.title,
-        amount=booking.property.price,
+        amount=breakdown['total'],
+        security_deposit_amount=breakdown['security_deposit'],
+        contract_fee_amount=breakdown['contract_fee'],
         transaction_id=f"TID_{booking.id}_{booking.tenant.id}_{timezone.now().strftime('%U%H%M')}",
         payment_type='SECURITY_DEPOSIT'
     )
@@ -87,8 +96,8 @@ def payment_success(request, booking_id):
         
     try:
         from notifications.models import send_notification
-        send_notification(request.user, "Payment Successful", f"Your security deposit for {booking.property.title} was received.", 'PAYMENT')
-        send_notification(booking.property.owner, "Payment Received", f"Security deposit for {booking.property.title} was paid by {request.user.username}.", 'PAYMENT')
+        send_notification(request.user, "Payment Successful", f"Your security deposit and contract fee for {booking.property.title} was received.", 'PAYMENT')
+        send_notification(booking.property.owner, "Payment Received", f"Security deposit and contract fee for {booking.property.title} was paid by {request.user.username}.", 'PAYMENT')
     except Exception:
         pass
         
@@ -96,11 +105,12 @@ def payment_success(request, booking_id):
         'booking': booking,
         'contract': contract,
         'receipt': receipt,
+        'breakdown': breakdown,
         'amount': receipt.amount,
         'transaction_id': receipt.transaction_id
     }
     
-    messages.success(request, f"Payment successful! Security Deposit for {booking.property.title} received.")
+    messages.success(request, f"Payment successful! Security Deposit and Contract Fee for {booking.property.title} received.")
     return render(request, 'payment/payment_success.html', context)
 
 @login_required

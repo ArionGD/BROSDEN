@@ -39,9 +39,9 @@
                     <i class="fas fa-circle-check mr-1 text-sm"></i> Approved
                 </span>
                 <div class="mt-4">
-                    <a href="{% url 'payment:checkout' %}?amount={{ booking.property.price }}&item=Security Deposit for {{ booking.property.title }}&booking_id={{ booking.id }}"
-                        class="block bg-arion-blue-light hover:bg-arion-blue text-white px-6 py-3 rounded-xl text-xs font-black transition-all shadow-lg shadow-blue-100 no-underline text-center">
-                        <i class="fas fa-wallet mr-2"></i> Pay Security Deposit
+                    <a href="{% url 'payment:checkout' %}?booking_id={{ booking.id }}"
+                        class="block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-xs font-black transition-all shadow-lg shadow-blue-100 no-underline text-center">
+                        <i class="fas fa-wallet mr-2"></i> Pay & Start Contract
                     </a>
                 </div>
                 {% elif booking.status == 'PAID' %}
