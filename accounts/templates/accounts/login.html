@@ -16,18 +16,6 @@
                 <p class="text-slate-500 font-medium mt-2">Login to access your portal</p>
             </div>
 
-            {% if messages %}
-            <div class="mb-6">
-                {% for message in messages %}
-                <div
-                    class="px-4 py-3 rounded-xl {% if message.tags == 'error' %}bg-red-50 text-red-600{% else %}bg-blue-50 text-blue-600{% endif %} text-sm font-bold flex items-center">
-                    <i
-                        class="fas {% if message.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %} mr-2"></i>
-                    {{ message }}
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
 
             <form method="POST" class="space-y-6">
                 {% csrf_token %}

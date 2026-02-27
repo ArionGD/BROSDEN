@@ -26,7 +26,7 @@ class UserRegistrationForm(forms.ModelForm):
                 'placeholder': 'Enter your email'
             }),
             'role': forms.Select(attrs={
-                'class': 'w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800'
+                'class': COMMON_INPUT_CLASS
             }),
             'phone_number': forms.TextInput(attrs={
                 'class': COMMON_INPUT_CLASS,

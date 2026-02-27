@@ -4,36 +4,34 @@ from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import UserRegistrationForm
 
+def _handle_post_registration(request, user, password):
+    """Helper to send welcome emails and notifications after registration."""
+    try:
+        from mailer.services import send_welcome_email
+        send_welcome_email(user, password, request)
+    except Exception:
+        pass 
+
+    try:
+        from notifications.models import send_notification
+        send_notification(user, "Welcome!", "Your account has been created successfully.", 'SYSTEM')
+    except Exception:
+        pass
+
 def register_view(request):
     if request.user.is_authenticated:
-        return redirect('index')
+        return redirect(request.user.get_dashboard_url())
     
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
-            user.save()
+    form = UserRegistrationForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        user = form.save(commit=False)
+        user.set_password(form.cleaned_data['password'])
+        user.save()
+        
+        _handle_post_registration(request, user, form.cleaned_data['password'])
             
-            try:
-                from mailer.services import send_welcome_email
-                send_welcome_email(user, form.cleaned_data['password'], request)
-            except Exception as e:
-                pass # Fail silently if mailer is not fully configured
-
-            try:
-                from notifications.models import send_notification
-                send_notification(user, "Welcome!", "Your account has been created successfully.", 'SYSTEM')
-            except Exception as e:
-                pass
-                
-            messages.success(request, "Registration successful! You can now login. Check your email for your credentials.")
-            return redirect('accounts:login')
-        else:
-            for error in form.non_field_errors():
-                messages.error(request, error)
-    else:
-        form = UserRegistrationForm()
+        messages.success(request, "Registration successful! Please login with your credentials.")
+        return redirect('accounts:login')
     
     return render(request, 'accounts/register.html', {'form': form})
 
@@ -41,22 +39,12 @@ def login_view(request):
     if request.user.is_authenticated:
         return redirect(request.user.get_dashboard_url())
 
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, f"Welcome back, {username}!")
-                return redirect(user.get_dashboard_url())
-            else:
-                messages.error(request, "Invalid username or password.")
-        else:
-            messages.error(request, "Invalid username or password.")
-    else:
-        form = AuthenticationForm()
+    form = AuthenticationForm(request, data=request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        user = form.get_user()
+        login(request, user)
+        messages.success(request, f"Welcome back, {user.username}!")
+        return redirect(user.get_dashboard_url())
     
     return render(request, 'accounts/login.html', {'form': form})
 

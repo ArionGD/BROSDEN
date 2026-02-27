@@ -24,11 +24,7 @@ class User(AbstractUser):
 
     @property
     def is_kyc_verified(self):
-        try:
-            return self.kyc.is_verified
-        except Exception:
-            # If KYC object doesn't exist, return False
-            return False
+        return hasattr(self, 'kyc') and self.kyc.is_verified
 
     @property
     def portal_base(self):
