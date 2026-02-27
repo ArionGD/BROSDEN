@@ -108,6 +108,15 @@
                     </div>
                     {% endif %}
 
+                    <form action="{% url 'wishlist:toggle' property.id %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="w-full {% if is_wishlisted %}bg-arion-orange text-white{% else %}bg-slate-50 text-slate-600 hover:bg-slate-100{% endif %} font-black py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
+                            <i class="fas fa-heart"></i>
+                            {% if is_wishlisted %}Saved to Wishlist{% else %}Add to Wishlist{% endif %}
+                        </button>
+                    </form>
+
                     <button
                         class="w-full bg-slate-50 hover:bg-slate-100 text-slate-600 font-black py-4 rounded-2xl transition-all">
                         Schedule a Visit <i class="fas fa-calendar-alt ml-2"></i>

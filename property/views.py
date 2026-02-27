@@ -18,7 +18,16 @@ def browse_properties(request):
             
         properties = properties.filter(title__icontains=query) | properties.filter(city__icontains=query)
     properties = properties.order_by('-created_at')
-    return render(request, 'property/browse.html', {'properties': properties})
+    
+    wishlist_ids = []
+    if request.user.is_authenticated and request.user.role == 'TENANT':
+        from wishlist.models import Wishlist
+        wishlist_ids = Wishlist.objects.filter(user=request.user).values_list('property_id', flat=True)
+        
+    return render(request, 'property/browse.html', {
+        'properties': properties,
+        'wishlist_ids': wishlist_ids
+    })
 
 @owner_required
 def owner_property_list(request):
@@ -55,4 +64,12 @@ def property_detail(request, pk):
     if request.user.is_authenticated:
         PropertyView.objects.create(property=prop, viewer=request.user)
         
-    return render(request, 'property/detail.html', {'property': prop})
+    is_wishlisted = False
+    if request.user.is_authenticated and request.user.role == 'TENANT':
+        from wishlist.models import Wishlist
+        is_wishlisted = Wishlist.objects.filter(user=request.user, property=prop).exists()
+        
+    return render(request, 'property/detail.html', {
+        'property': prop,
+        'is_wishlisted': is_wishlisted
+    })

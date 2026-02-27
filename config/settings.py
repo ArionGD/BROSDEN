@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'helpdesk',
     'notifications',
     'mailer',
+    'wishlist',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
