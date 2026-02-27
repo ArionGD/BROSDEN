@@ -1,0 +1,10 @@
+{% extends portal_base %}
+{% block title %}Notifications | BrosDen-AV{% endblock %}
+
+{% block portal_content %}
+{% include "notifications/_notification_body.html" %}
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+{% endblock %}

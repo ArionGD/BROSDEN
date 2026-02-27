@@ -15,33 +15,30 @@ _READ_CHOICES = [
 
 @login_required
 def notification_list(request):
-    """Main in-app notification page — works for both Owner and Tenant."""
+    """Unified notification list using the dynamic portal_base."""
     qs = Notification.objects.filter(recipient=request.user)
 
-    filter_type = request.GET.get('type', 'ALL')
-    if filter_type != 'ALL':
-        qs = qs.filter(notification_type=filter_type)
+    # Simplified Filters
+    f_type = request.GET.get('type', 'ALL')
+    if f_type != 'ALL':
+        qs = qs.filter(notification_type=f_type)
 
-    read_filter = request.GET.get('read', 'ALL')
-    if read_filter == 'UNREAD':
-        qs = qs.filter(is_read=False)
-    elif read_filter == 'READ':
-        qs = qs.filter(is_read=True)
+    read_f = request.GET.get('read', 'ALL')
+    if read_f in ['UNREAD', 'READ']:
+        qs = qs.filter(is_read=(read_f == 'READ'))
 
     page_obj = Paginator(qs, 15).get_page(request.GET.get('page'))
     unread_count = Notification.objects.filter(recipient=request.user, is_read=False).count()
 
-    context = {
+    return render(request, 'notifications/notification_list.html', {
         'page_obj':      page_obj,
         'unread_count':  unread_count,
-        'filter_type':   filter_type,
-        'read_filter':   read_filter,
+        'filter_type':   f_type,
+        'read_filter':   read_f,
         'type_choices':  Notification.TYPE_CHOICES,
         'read_choices':  _READ_CHOICES,
-    }
-
-    template = 'notifications/owner_notifications.html' if request.user.is_owner else 'notifications/tenant_notifications.html'
-    return render(request, template, context)
+        'portal_base':   request.user.portal_base
+    })
 
 
 @login_required
