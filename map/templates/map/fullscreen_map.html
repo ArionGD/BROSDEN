@@ -146,6 +146,8 @@
                 .addTo(map);
         });
 
+        let searchMarker = null;
+
         window.searchMap = async function () {
             const query = document.getElementById('mapSearch').value;
             if (!query) return;
@@ -153,11 +155,34 @@
                 const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
                 const data = await response.json();
                 if (data && data.length > 0) {
+                    const dest = [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+
+                    if (searchMarker) searchMarker.remove();
+
+                    const el = document.createElement('div');
+                    el.className = 'search-marker';
+                    el.innerHTML = `<div class="w-10 h-10 bg-red-500 rounded-full border-4 border-white shadow-2xl flex items-center justify-center animate-bounce">
+                        <i class="fas fa-location-dot text-white text-sm"></i>
+                    </div>`;
+
+                    searchMarker = new maplibregl.Marker({ element: el })
+                        .setLngLat(dest)
+                        .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`
+                            <div class="p-3">
+                                <p class="text-[10px] font-black uppercase text-slate-400 mb-1">Search Result</p>
+                                <p class="text-xs font-bold text-slate-800">${data[0].display_name}</p>
+                            </div>
+                        `))
+                        .addTo(map);
+
                     map.flyTo({
-                        center: [parseFloat(data[0].lon), parseFloat(data[0].lat)],
-                        zoom: 14,
+                        center: dest,
+                        zoom: 15,
+                        pitch: 45,
                         essential: true
                     });
+
+                    searchMarker.togglePopup();
                 }
             } catch (e) { }
         };
