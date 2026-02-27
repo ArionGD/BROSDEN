@@ -4,9 +4,15 @@
 
 {% block content %}
 <div class="container mx-auto px-4 py-12">
-    <div class="mb-12">
-        <h2 class="text-4xl font-black text-slate-900 tracking-tight">Marketplace</h2>
-        <p class="text-slate-500 font-medium mt-1">Explore verified properties in your favorite cities.</p>
+    <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <h2 class="text-4xl font-black text-slate-900 tracking-tight">Marketplace</h2>
+            <p class="text-slate-500 font-medium mt-1">Explore verified properties in your favorite cities.</p>
+        </div>
+        <a href="{% url 'map:explore' %}"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black shadow-xl shadow-blue-100 flex items-center gap-3 transition-all transform hover:-translate-y-1 active:scale-95">
+            <i class="fas fa-map-location-dot"></i> View on Map
+        </a>
     </div>
 
     <!-- Filters Placeholder -->
