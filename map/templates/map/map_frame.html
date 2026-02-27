@@ -32,39 +32,67 @@
             const mapEl = document.getElementById('propertyMap');
             if (!mapEl) return;
 
-            const lat = parseFloat(mapEl.getAttribute('data-lat'));
-            const lng = parseFloat(mapEl.getAttribute('data-lng'));
+            let lat = parseFloat(mapEl.getAttribute('data-lat'));
+            let lng = parseFloat(mapEl.getAttribute('data-lng'));
 
-            const map = L.map('propertyMap', {
-                zoomControl: true,
-                attributionControl: false
-            }).setView([lat, lng], 15);
+            // If coordinates are missing, try to geocode the address
+            if (isNaN(lat) || isNaN(lng) || (lat === 17.385 && lng === 78.4867)) {
+                const address = "{{ property.address }}, {{ property.city }}";
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            initMap(parseFloat(data[0].lat), parseFloat(data[0].lon));
+                        } else {
+                            // Secondary fallback to just the city
+                            fetch(`https://nominatim.openstreetmap.org/search?format=json&q={{ property.city|urlencode }}`)
+                                .then(r => r.json())
+                                .then(cityData => {
+                                    if (cityData.length > 0) {
+                                        initMap(parseFloat(cityData[0].lat), parseFloat(cityData[0].lon));
+                                    } else {
+                                        initMap(lat || 17.385, lng || 78.4867); // Final default
+                                    }
+                                });
+                        }
+                    })
+                    .catch(() => initMap(lat || 17.385, lng || 78.4867));
+            } else {
+                initMap(lat, lng);
+            }
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
+            function initMap(lat, lon) {
+                const map = L.map('propertyMap', {
+                    zoomControl: true,
+                    attributionControl: false
+                }).setView([lat, lon], 15);
 
-            // Custom marker
-            const icon = L.divIcon({
-                className: 'custom-div-icon',
-                html: `
-                    <div class="relative flex items-center justify-center">
-                        <div class="w-10 h-10 bg-arion-blue rounded-2xl rotate-45 flex items-center justify-center shadow-lg border-4 border-white">
-                            <i class="fas fa-house text-white -rotate-45 text-xs"></i>
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                // Custom marker
+                const icon = L.divIcon({
+                    className: 'custom-div-icon',
+                    html: `
+                        <div class="relative flex items-center justify-center">
+                            <div class="w-10 h-10 bg-arion-blue rounded-2xl rotate-45 flex items-center justify-center shadow-lg border-4 border-white">
+                                <i class="fas fa-house text-white -rotate-45 text-xs"></i>
+                            </div>
+                            <div class="absolute -bottom-1 w-2 h-2 bg-arion-blue rotate-45"></div>
                         </div>
-                        <div class="absolute -bottom-1 w-2 h-2 bg-arion-blue rotate-45"></div>
-                    </div>
-                `,
-                iconSize: [40, 40],
-                iconAnchor: [20, 40]
-            });
+                    `,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 40]
+                });
 
-            L.marker([lat, lng], { icon: icon }).addTo(map);
+                L.marker([lat, lon], { icon: icon }).addTo(map);
 
-            // Fix for tiles not loading correctly in containers
-            setTimeout(() => {
-                map.invalidateSize();
-            }, 500);
+                // Fix for tiles not loading correctly in containers
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 500);
+            }
         });
     })();
 </script>

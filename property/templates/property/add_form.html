@@ -59,7 +59,89 @@
                 <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Area (sqft)</label>
                 {{ form.sqft }}
             </div>
+
+            <!-- Geolocation Section -->
+            <div class="md:col-span-2 pt-6">
+                <div class="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden group">
+                    <div
+                        class="absolute -top-10 -right-10 w-40 h-40 bg-arion-blue/20 rounded-full blur-3xl transition-all group-hover:bg-arion-blue/30">
+                    </div>
+                    <div class="relative flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div class="flex-1">
+                            <h4 class="text-xl font-black mb-2 flex items-center gap-2">
+                                <i class="fas fa-location-crosshairs text-arion-orange"></i> Precise Map Location
+                            </h4>
+                            <p class="text-slate-400 text-sm font-medium">For better visibility, pin your property's
+                                exact location on our map.</p>
+                        </div>
+                        <button type="button" onclick="getLocation()"
+                            class="bg-white text-slate-900 px-8 py-4 rounded-2xl font-black shadow-xl hover:bg-arion-orange hover:text-white transition-all transform active:scale-95 whitespace-nowrap">
+                            Pin My Location <i class="fas fa-bullseye ml-2"></i>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6 mt-8">
+                        <div class="space-y-2">
+                            <label
+                                class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Latitude</label>
+                            {{ form.latitude }}
+                        </div>
+                        <div class="space-y-2">
+                            <label
+                                class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Longitude</label>
+                            {{ form.longitude }}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <script>
+            function getLocation() {
+                const btn = event.currentTarget;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = 'Fetching... <i class="fas fa-spinner fa-spin ml-2"></i>';
+                btn.disabled = true;
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            document.getElementById('id_latitude').value = position.coords.latitude.toFixed(6);
+                            document.getElementById('id_longitude').value = position.coords.longitude.toFixed(6);
+                            btn.innerHTML = 'Location Saved! <i class="fas fa-check-circle ml-2"></i>';
+                            btn.classList.add('bg-emerald-500', 'text-white');
+                            setTimeout(() => {
+                                btn.innerHTML = originalText;
+                                btn.classList.remove('bg-emerald-500', 'text-white');
+                                btn.disabled = false;
+                            }, 3000);
+                        },
+                        (error) => {
+                            let msg = "Check permissions or use a secure connection.";
+                            if (error.code == 1) msg = "Permission denied.";
+                            alert("Geolocation error: " + msg);
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
+                        }
+                    );
+                } else {
+                    alert("Geolocation is not supported by this browser.");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            }
+
+            // Style the lat/lng inputs inside the dark box
+            document.addEventListener('DOMContentLoaded', () => {
+                ['id_latitude', 'id_longitude'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.classList.remove('bg-slate-50', 'border-slate-200');
+                        el.classList.add('bg-white/10', 'border-white/10', 'text-white', 'placeholder-white/20');
+                    }
+                });
+            });
+        </script>
 
         <div class="pt-8 border-t border-slate-100 flex gap-4">
             <button type="submit"
