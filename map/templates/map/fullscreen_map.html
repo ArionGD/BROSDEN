@@ -1,7 +1,8 @@
 {% extends base_template %}
 
 {% block portal_content %}
-<div class="h-[calc(100vh-140px)] w-full rounded-[2.5rem] overflow-hidden border border-slate-200 shadow-2xl relative">
+<div
+    class="h-[calc(100vh-180px)] w-full rounded-[2rem] overflow-hidden border-4 border-slate-100 shadow-xl relative bg-white">
     <!-- Map Container -->
     <div id="fullScreenMap" class="w-full h-full bg-slate-50" data-focus="{{ focus_id|default:'' }}"></div>
 
@@ -34,8 +35,8 @@
             "id": {{ property.id }},
             "title": "{{ property.title|escapejs }}",
             "price": "{{ property.price }}",
-            "lat": {{ property.latitude |default: 0 }},
-            "lng": {{ property.longitude |default: 0 }},
+            "lat": {{ property.latitude|default:0 }},
+            "lng": {{ property.longitude|default:0 }},
             "city": "{{ property.city|escapejs }}",
             "url": "{% url 'property:detail' property.pk %}"
         }{% if not forloop.last %}, {% endif %}
