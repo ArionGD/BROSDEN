@@ -165,14 +165,19 @@
                         property.pk }}</p>
                 </div>
             </div>
+
+            <!-- Reviews Sidebar Block -->
+            <div class="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-2xl">
+                <h3
+                    class="text-xl font-black text-slate-900 mb-8 border-b border-slate-50 pb-6 flex items-center gap-2">
+                    <i class="fas fa-star text-amber-400 text-sm"></i> Reviews
+                </h3>
+                <div class="space-y-6">
+                    {% include 'reviews/_reviews_list.html' with reviews=property.reviews.all %}
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Reviews Section -->
-    <div class="container mx-auto px-4 py-20 border-t border-slate-50">
-        <div class="max-w-4xl">
-            {% include 'reviews/_reviews_list.html' with reviews=property.reviews.all %}
-        </div>
-    </div>
 </div>
 {% endblock %}
