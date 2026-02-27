@@ -41,7 +41,7 @@ def add_property(request):
     # Enforce KYC
     if not request.user.is_kyc_verified:
         messages.warning(request, "Please complete your KYC verification before listing a property.")
-        return redirect('/payment/kyc/?next=' + request.path)
+        return redirect('payment:owner_kyc')
 
     if request.method == 'POST':
         form = PropertyForm(request.POST)
