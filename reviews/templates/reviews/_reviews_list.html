@@ -1,0 +1,42 @@
+<div class="space-y-8">
+    <div class="flex items-center justify-between mb-8">
+        <h3 class="text-3xl font-black text-slate-900 tracking-tight">Tenant Reviews</h3>
+        <div class="px-6 py-3 bg-white border border-slate-200 rounded-2xl shadow-sm">
+            <span class="text-[10px] font-black uppercase text-slate-400 block tracking-widest">Average Rating</span>
+            <div class="flex items-center gap-2 mt-1">
+                <i class="fas fa-star text-amber-400"></i>
+                <span class="text-xl font-black text-slate-900">{% if reviews %}{{
+                    reviews.0.property.reviews.all|dictsort:"rating"|last }}{% else %}0.0{% endif %}</span>
+            </div>
+        </div>
+    </div>
+
+    {% for review in reviews %}
+    <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100">
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 font-black">
+                    {% if review.is_anonymous %}A{% else %}{{ review.tenant.username|slice:":1"|upper }}{% endif %}
+                </div>
+                <div>
+                    <h4 class="font-black text-slate-900 text-sm">{% if review.is_anonymous %}Anonymous Tenant{% else
+                        %}{{ review.tenant.username }}{% endif %}</h4>
+                    <span class="text-[10px] font-black text-slate-300 uppercase">{{ review.created_at|date:"d M, Y"
+                        }}</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-1 text-amber-400">
+                {% for i in "12345" %}
+                <i class="{% if forloop.counter <= review.rating %}fas{% else %}far{% endif %} fa-star text-xs"></i>
+                {% endfor %}
+            </div>
+        </div>
+        <p class="text-sm text-slate-600 leading-relaxed italic">"{{ review.comment }}"</p>
+    </div>
+    {% empty %}
+    <div class="bg-slate-50 rounded-[2rem] p-12 text-center border-2 border-dashed border-slate-100">
+        <p class="text-slate-400 font-bold italic">No reviews yet for this property.</p>
+    </div>
+    {% endfor %}
+</div>

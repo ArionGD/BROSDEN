@@ -31,5 +31,6 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('notifications/', include('notifications.urls')),
     path('wishlist/', include('wishlist.urls')),
+    path('reviews/', include('reviews.urls')),
     path('', include('core.urls')),
 ]

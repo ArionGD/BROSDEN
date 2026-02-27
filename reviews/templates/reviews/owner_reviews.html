@@ -1,0 +1,73 @@
+{% extends portal_base %}
+
+{% block title %}Property Reviews | BrosDen-AV{% endblock %}
+
+{% block portal_content %}
+<div class="max-w-6xl mx-auto py-10">
+    <div class="mb-10 flex items-center justify-between">
+        <div>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight">Property Reviews</h1>
+            <p class="text-slate-500 font-medium mt-1">Feedback from tenants about your managed properties.</p>
+        </div>
+    </div>
+
+    <div class="space-y-6">
+        {% for review in reviews %}
+        <div
+            class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-slate-100 flex flex-col md:flex-row gap-8 items-start">
+            <!-- Property Info -->
+            <div class="w-full md:w-64 flex-shrink-0">
+                <div class="h-40 bg-slate-50 rounded-3xl mb-4 flex items-center justify-center text-slate-200">
+                    <i class="fas fa-image text-3xl"></i>
+                </div>
+                <h3 class="text-lg font-black text-slate-900 line-clamp-1">{{ review.property.title }}</h3>
+                <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest mt-1">{{ review.property.city
+                    }}</p>
+                <a href="{% url 'property:detail' review.property.id %}"
+                    class="mt-4 inline-block text-arion-blue text-xs font-bold hover:underline">View Listing</a>
+            </div>
+
+            <!-- Review Content -->
+            <div class="flex-1">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 bg-arion-blue/10 rounded-2xl flex items-center justify-center text-arion-blue font-black">
+                            {% if review.is_anonymous %}A{% else %}{{ review.tenant.username|slice:":1"|upper }}{% endif
+                            %}
+                        </div>
+                        <div>
+                            <h4 class="font-black text-slate-900">{% if review.is_anonymous %}Anonymous Tenant{% else
+                                %}{{ review.tenant.username }}{% endif %}</h4>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{
+                                review.created_at|date:"d M Y" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-1 bg-amber-50 px-4 py-2 rounded-xl text-amber-500">
+                        {% for i in "12345" %}
+                        <i
+                            class="{% if forloop.counter <= review.rating %}fas{% else %}far{% endif %} fa-star text-sm"></i>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div
+                    class="bg-slate-50/50 rounded-3xl p-6 border border-slate-100 italic text-slate-600 leading-relaxed">
+                    "{{ review.comment }}"
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="py-32 text-center bg-white rounded-[3rem] border border-dashed border-slate-200">
+            <div class="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8">
+                <i class="fas fa-star-half-stroke text-4xl text-slate-200"></i>
+            </div>
+            <h2 class="text-2xl font-black text-slate-800">No reviews yet</h2>
+            <p class="text-slate-500 font-medium mt-2 max-w-sm mx-auto">Once tenants start reviewing your properties,
+                their feedback will appear here.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
