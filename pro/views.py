@@ -17,7 +17,7 @@ def pro_landing(request):
 @owner_required
 def upgrade_tier(request, tier):
     """Placeholder view to handle upgrade requests."""
-    if tier not in ['BASIC', 'PLATINUM']:
+    if tier not in ['PRO', 'GOLD']:
         messages.error(request, "Invalid membership tier.")
         return redirect('pro:landing')
         

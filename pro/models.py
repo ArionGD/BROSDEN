@@ -3,7 +3,7 @@ from django.conf import settings
 
 class ProMembership(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='pro_membership')
-    tier = models.CharField(max_length=50, choices=[('BASIC', 'Basic Pro'), ('PLATINUM', 'Platinum Pro')], default='BASIC')
+    tier = models.CharField(max_length=50, choices=[('PRO', 'BrosDen Pro'), ('GOLD', 'BrosDen Gold')], default='PRO')
     is_active = models.BooleanField(default=False)
     starts_at = models.DateTimeField(null=True, blank=True)
     expires_at = models.DateTimeField(null=True, blank=True)

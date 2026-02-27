@@ -17,7 +17,7 @@
 
     <!-- Pricing Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-        <!-- Basic Pro Card -->
+        <!-- Pro Card -->
         <div
             class="bg-white rounded-[3.5rem] p-12 border border-slate-100 shadow-xl relative overflow-hidden group hover:shadow-2xl transition-all duration-500">
             <div
@@ -30,7 +30,7 @@
                     <i class="fas fa-rocket text-2xl"></i>
                 </div>
 
-                <h3 class="text-3xl font-black text-slate-900 mb-2">Basic Pro</h3>
+                <h3 class="text-3xl font-black text-slate-900 mb-2">BrosDen Pro</h3>
                 <p class="text-slate-400 font-bold text-sm uppercase tracking-widest mb-8">Boost your visibility</p>
 
                 <div class="text-5xl font-black text-slate-900 mb-10">
@@ -52,14 +52,14 @@
                     </li>
                 </ul>
 
-                <a href="{% url 'pro:upgrade' 'BASIC' %}"
+                <a href="{% url 'pro:upgrade' 'PRO' %}"
                     class="block w-full bg-slate-900 text-white py-6 rounded-3xl font-black text-center hover:bg-black transition-all shadow-xl shadow-slate-200">
                     Get Started <i class="fas fa-arrow-right ml-2 text-arion-orange"></i>
                 </a>
             </div>
         </div>
 
-        <!-- Platinum Pro Card -->
+        <!-- Gold Card -->
         <div
             class="bg-slate-900 rounded-[3.5rem] p-12 border border-slate-800 shadow-2xl relative overflow-hidden group hover:shadow-blue-900/20 transition-all duration-500">
             <div
@@ -77,7 +77,7 @@
                         Value</span>
                 </div>
 
-                <h3 class="text-3xl font-black text-white mb-2">Platinum Pro</h3>
+                <h3 class="text-3xl font-black text-white mb-2">BrosDen Gold</h3>
                 <p class="text-slate-400 font-bold text-sm uppercase tracking-widest mb-8 text-blue-400">Total dominance
                 </p>
 
@@ -100,9 +100,9 @@
                     </li>
                 </ul>
 
-                <a href="{% url 'pro:upgrade' 'PLATINUM' %}"
+                <a href="{% url 'pro:upgrade' 'GOLD' %}"
                     class="block w-full bg-arion-blue text-white py-6 rounded-3xl font-black text-center hover:bg-blue-600 transition-all shadow-xl shadow-blue-500/20">
-                    Go Platinum <i class="fas fa-bolt ml-2 text-arion-orange"></i>
+                    Go Gold <i class="fas fa-bolt ml-2 text-arion-orange"></i>
                 </a>
             </div>
         </div>
