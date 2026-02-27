@@ -1,0 +1,56 @@
+{# BLOCK 1 — HERO #}
+<section class="relative min-h-[700px] flex items-center overflow-hidden">
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80"
+            class="w-full h-full object-cover" alt="Hero property">
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/75 to-slate-900/20"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10 py-24">
+        <div class="max-w-2xl">
+            <span
+                class="inline-flex items-center gap-2 px-4 py-1.5 mb-8 text-xs font-black uppercase tracking-[0.2em] text-white bg-arion-orange rounded-full">
+                <i class="fas fa-star text-yellow-300 text-[10px]"></i> THE ARION STANDARD
+            </span>
+            <h1 class="text-6xl md:text-7xl font-black text-white leading-[1.05] tracking-tighter mb-6">
+                Elevate Your<br><span class="text-arion-blue">Living Space.</span>
+            </h1>
+            <p class="text-slate-300 text-xl font-medium mb-10 leading-relaxed max-w-lg">
+                Premium, verified properties for discerning tenants and owners. Zero brokerage, full transparency.
+            </p>
+
+            <!-- Search -->
+            <div class="bg-white/10 backdrop-blur-2xl rounded-[2rem] border border-white/20 p-3 shadow-2xl">
+                <form action="{% url 'property:browse' %}" method="GET" class="flex flex-col md:flex-row gap-3">
+                    <div class="flex-1 bg-white rounded-[1.5rem] flex items-center px-5 py-3.5 gap-3">
+                        <i class="fas fa-location-dot text-arion-blue opacity-60 text-lg"></i>
+                        <input type="text" name="q" placeholder="Locality, project or landmark..."
+                            class="w-full outline-none font-semibold text-slate-700 placeholder:text-slate-400 text-base bg-transparent">
+                    </div>
+                    <div class="md:w-44 bg-white rounded-[1.5rem] flex items-center px-5 py-3.5 gap-3">
+                        <i class="fas fa-filter text-arion-orange opacity-60"></i>
+                        <select name="type"
+                            class="w-full outline-none font-semibold text-slate-700 appearance-none bg-transparent text-base">
+                            <option value="">All Types</option>
+                            <option>Buy</option>
+                            <option>Rent</option>
+                        </select>
+                    </div>
+                    <button type="submit"
+                        class="bg-arion-blue hover:bg-blue-700 text-white px-10 py-3.5 rounded-[1.5rem] font-black tracking-wide transition-all active:scale-95 shadow-lg shadow-blue-500/30 whitespace-nowrap">
+                        SEARCH
+                    </button>
+                </form>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="mt-8 flex flex-wrap gap-6 text-sm font-semibold text-white/60">
+                <span class="flex items-center gap-2"><i class="fas fa-shield-halved text-arion-blue"></i> 45-Point
+                    Verification</span>
+                <span class="flex items-center gap-2"><i class="fas fa-ban text-arion-orange"></i> Zero Brokerage</span>
+                <span class="flex items-center gap-2"><i class="fas fa-headset text-arion-blue"></i> 24/7
+                    Concierge</span>
+            </div>
+        </div>
+    </div>
+</section>

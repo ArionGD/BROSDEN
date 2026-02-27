@@ -1,0 +1,39 @@
+{# BLOCK 6 — DUAL CTA #}
+<section class="py-24 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Owner -->
+            <div class="relative rounded-[3rem] overflow-hidden bg-slate-100 p-14 group">
+                <div class="relative z-10">
+                    <span class="text-arion-orange font-black uppercase tracking-widest text-xs mb-5 block">For
+                        Owners</span>
+                    <h2 class="text-4xl font-black text-slate-900 mb-5 tracking-tight">Maximize Your <br>Returns.</h2>
+                    <p class="text-slate-500 font-medium mb-10 leading-relaxed max-w-sm">Access verified corporate
+                        tenants. Manage your portfolio, contracts, and payments — all in one dashboard.</p>
+                    <a href="{% url 'accounts:register' %}"
+                        class="inline-flex items-center gap-3 bg-arion-orange text-white font-black px-8 py-4 rounded-2xl shadow-xl shadow-orange-200 hover:scale-105 active:scale-95 transition-all">
+                        LIST YOUR PROPERTY <i class="fas fa-plus text-sm"></i>
+                    </a>
+                </div>
+                <i
+                    class="fas fa-house-chimney text-[220px] text-slate-300/40 absolute -right-8 -bottom-10 -rotate-12 group-hover:rotate-0 transition-transform duration-700"></i>
+            </div>
+            <!-- Tenant -->
+            <div class="relative rounded-[3rem] overflow-hidden bg-slate-900 p-14 group">
+                <div class="relative z-10">
+                    <span class="text-arion-blue font-black uppercase tracking-widest text-xs mb-5 block">For
+                        Tenants</span>
+                    <h2 class="text-4xl font-black text-white mb-5 tracking-tight">Find Your <br>Sanctuary.</h2>
+                    <p class="text-slate-400 font-medium mb-10 leading-relaxed max-w-sm">Zero brokerage, digital
+                        agreements, and automated rent payments. Moving made frictionless.</p>
+                    <a href="{% url 'property:browse' %}"
+                        class="inline-flex items-center gap-3 bg-white text-slate-900 font-black px-8 py-4 rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all">
+                        START BROWSING <i class="fas fa-compass text-arion-blue text-sm"></i>
+                    </a>
+                </div>
+                <i
+                    class="fas fa-key text-[220px] text-white/5 absolute -right-8 -bottom-10 -rotate-12 group-hover:rotate-0 transition-transform duration-700"></i>
+            </div>
+        </div>
+    </div>
+</section>

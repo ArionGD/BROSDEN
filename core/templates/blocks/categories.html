@@ -1,0 +1,32 @@
+{# BLOCK 3 — CATEGORIES #}
+<section class="py-24 bg-slate-50">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <span class="text-arion-orange font-black uppercase tracking-widest text-xs mb-3 block">Explore</span>
+            <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Browse by <span
+                    class="text-arion-blue">Category</span></h2>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for cat in categories %}
+            <a href="{% url 'property:browse' %}"
+                class="group relative aspect-[4/3] rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=600&q=80"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
+                <div class="absolute bottom-0 inset-x-0 p-6">
+                    <i class="fas {{ cat.icon }} text-2xl text-white mb-2 block opacity-80"></i>
+                    <h3 class="text-xl font-black text-white">{{ cat.name }}</h3>
+                    <span
+                        class="text-xs font-bold text-white/50 uppercase tracking-widest group-hover:text-arion-orange transition-colors">
+                        Explore <i class="fas fa-arrow-right ml-1"></i>
+                    </span>
+                </div>
+                <div
+                    class="absolute bottom-0 inset-x-0 h-1 bg-arion-orange scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left">
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>

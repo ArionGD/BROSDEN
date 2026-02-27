@@ -17,6 +17,20 @@
                             'blue-light': '#4285F4',
                             orange: '#E75A27'
                         }
+                    },
+                    keyframes: {
+                        'toast-in': {
+                            '0%': { opacity: '0', transform: 'translateY(-20px) scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+                        },
+                        'toast-out': {
+                            '0%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+                            '100%': { opacity: '0', transform: 'translateY(-20px) scale(0.95)' },
+                        }
+                    },
+                    animation: {
+                        'toast-in': 'toast-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'toast-out': 'toast-out 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                     }
                 }
             }
@@ -32,83 +46,9 @@
         html,
         body {
             font-family: 'Inter', sans-serif;
-            margin: 0;
-            background: #f8fafc;
-            overscroll-behavior: none;
         }
 
-        /* Message Toasts */
-        .toast-container {
-            position: fixed;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9999;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .toast-message {
-            pointer-events: auto;
-            min-width: 300px;
-            max-width: 500px;
-            background: #0f172a;
-            /* Slate 900 */
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 1.25rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: toast-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            border-left: 4px solid #1A73E8;
-        }
-
-        .toast-message.error {
-            border-left-color: #ef4444;
-        }
-
-        .toast-message.success {
-            border-left-color: #10b981;
-        }
-
-        .toast-message.warning {
-            border-left-color: #f59e0b;
-        }
-
-        @keyframes toast-in {
-            from {
-                opacity: 0;
-                transform: translateY(-20px) scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes toast-out {
-            from {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-
-            to {
-                opacity: 0;
-                transform: translateY(-20px) scale(0.95);
-            }
-        }
-
-        body.no-global-scroll {
-            overflow: hidden !important;
-        }
-
-        /* Arion Scrollbar */
+        /* Custom Scrollbar */
         @media (min-width: 1024px) {
             ::-webkit-scrollbar {
                 width: 8px;
@@ -129,9 +69,6 @@
             }
         }
 
-
-
-        /* Portal scrollbar (inside cards) */
         .portal-scroll::-webkit-scrollbar {
             width: 8px;
         }
@@ -154,17 +91,20 @@
     {% block extra_head %}{% endblock %}
 </head>
 
-<body class="bg-slate-50 {% block body_class %}{% endblock %}">
+<body class="bg-slate-50 overflow-x-hidden {% block body_class %}{% endblock %}">
     {% block header %}
     {% include "navigation/header.html" %}
     {% endblock %}
 
-    <!-- Floating Notifications -->
-    <div class="toast-container" id="toast-container">
+    <!-- Floating Notifications / Toasts -->
+    <div class="fixed top-24 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none flex flex-col items-center gap-3 w-full px-4"
+        id="toast-container">
         {% if messages %}
         {% for message in messages %}
-        <div class="toast-message {% if message.tags %}{{ message.tags }}{% endif %} shadow-2xl" role="alert">
-            <div class="flex-shrink-0">
+        <div class="pointer-events-auto min-w-[300px] max-w-[500px] bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-toast-in border-l-4 
+            {% if message.tags == 'error' %}border-red-500{% elif message.tags == 'success' %}border-emerald-500{% elif message.tags == 'warning' %}border-amber-500{% else %}border-arion-blue{% endif %}"
+            role="alert">
+            <div class="flex-shrink-0 text-lg">
                 {% if message.tags == 'error' %}
                 <i class="fas fa-circle-exclamation text-red-400"></i>
                 {% elif message.tags == 'success' %}
@@ -173,17 +113,17 @@
                 <i class="fas fa-circle-info text-arion-blue-light"></i>
                 {% endif %}
             </div>
-            <p class="text-sm font-bold tracking-tight">{{ message }}</p>
-            <button onclick="this.parentElement.remove()"
-                class="ml-auto text-slate-500 hover:text-white transition-colors">
-                <i class="fas fa-xmark text-xs"></i>
+            <p class="text-[15px] font-bold tracking-tight flex-1">{{ message }}</p>
+            <button onclick="this.closest('[role=alert]').remove()"
+                class="ml-4 text-slate-500 hover:text-white transition-colors p-1">
+                <i class="fas fa-xmark text-sm"></i>
             </button>
         </div>
         {% endfor %}
         {% endif %}
     </div>
 
-    <main style="min-height: calc(100vh - 80px);">
+    <main class="min-h-[calc(100vh-80px)]">
         {% block content %}{% endblock %}
     </main>
 
@@ -195,9 +135,10 @@
     <script>
             (function () {
                 // Auto-remove toasts after 5 seconds
-                document.querySelectorAll('.toast-message').forEach(toast => {
+                document.querySelectorAll('[role="alert"]').forEach(toast => {
                     setTimeout(() => {
-                        toast.style.animation = 'toast-out 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                        toast.classList.remove('animate-toast-in');
+                        toast.classList.add('animate-toast-out');
                         setTimeout(() => toast.remove(), 500);
                     }, 5000);
                 });
