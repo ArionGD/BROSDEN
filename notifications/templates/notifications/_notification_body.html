@@ -73,11 +73,9 @@ Expects context: page_obj, unread_count, filter_type, read_filter, type_choices
         id="notif-{{ notif.pk }}" {% if notif.link %}data-link="{{ notif.link }}" {% endif %}>
 
         <!-- Icon -->
-        <div class="w-12 h-12 flex-shrink-0 rounded-2xl flex items-center justify-center shadow-inner
-            {% if color == 'blue' %}bg-blue-100 text-blue-600{% elif color == 'green' %}bg-green-100 text-green-600
-            {% elif color == 'purple' %}bg-purple-100 text-purple-600{% elif color == 'indigo' %}bg-indigo-100 text-indigo-600
-            {% elif color == 'orange' %}bg-orange-100 text-orange-600{% elif color == 'cyan' %}bg-cyan-100 text-cyan-600
-            {% elif color == 'yellow' %}bg-yellow-100 text-yellow-700{% else %}bg-slate-100 text-slate-600{% endif %}">
+        <div
+            class="w-12 h-12 flex-shrink-0 rounded-2xl flex items-center justify-center shadow-inner
+            {% if color == 'blue' %}bg-blue-100 text-blue-600{% elif color == 'green' %}bg-green-100 text-green-600{% elif color == 'purple' %}bg-purple-100 text-purple-600{% elif color == 'indigo' %}bg-indigo-100 text-indigo-600{% elif color == 'orange' %}bg-orange-100 text-orange-600{% elif color == 'cyan' %}bg-cyan-100 text-cyan-600{% elif color == 'yellow' %}bg-yellow-100 text-yellow-700{% else %}bg-slate-100 text-slate-600{% endif %}">
             <i class="fas {{ icon }} text-lg"></i>
         </div>
 
@@ -98,10 +96,7 @@ Expects context: page_obj, unread_count, filter_type, read_filter, type_choices
             <div class="flex items-center gap-2 mt-3">
                 <span
                     class="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full
-                    {% if color == 'blue' %}bg-blue-50 text-blue-600{% elif color == 'green' %}bg-green-50 text-green-600
-                    {% elif color == 'purple' %}bg-purple-50 text-purple-600{% elif color == 'indigo' %}bg-indigo-50 text-indigo-600
-                    {% elif color == 'orange' %}bg-orange-50 text-orange-600{% elif color == 'cyan' %}bg-cyan-50 text-cyan-600
-                    {% elif color == 'yellow' %}bg-yellow-50 text-yellow-700{% else %}bg-slate-100 text-slate-600{% endif %}">
+                    {% if color == 'blue' %}bg-blue-50 text-blue-600{% elif color == 'green' %}bg-green-50 text-green-600{% elif color == 'purple' %}bg-purple-50 text-purple-600{% elif color == 'indigo' %}bg-indigo-50 text-indigo-600{% elif color == 'orange' %}bg-orange-50 text-orange-600{% elif color == 'cyan' %}bg-cyan-50 text-cyan-600{% elif color == 'yellow' %}bg-yellow-50 text-yellow-700{% else %}bg-slate-100 text-slate-600{% endif %}">
                     {{ notif.get_notification_type_display }}
                 </span>
                 {% if notif.link %}<span class="text-[10px] text-slate-400 font-medium"><i
