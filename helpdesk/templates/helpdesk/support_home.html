@@ -27,8 +27,8 @@
                 <i class="fas {{ category.icon }} text-3xl"></i>
             </div>
             <h3 class="text-xl font-black text-slate-900 mb-2">{{ category.name }}</h3>
-            <p class="text-slate-500 text-sm font-medium leading-relaxed">{{ category.description|default:"Common
-                questions and guides for this category." }}</p>
+            <p class="text-slate-500 text-sm font-medium leading-relaxed">
+                {{ category.description|default:"FAQs and guides for this category." }}</p>
             <a href="#"
                 class="mt-6 text-arion-blue font-black text-xs uppercase tracking-widest no-underline group-hover:text-arion-orange transition-colors">View
                 Articles <i class="fas fa-arrow-right ml-2 text-[10px]"></i></a>
