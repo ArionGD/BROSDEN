@@ -90,45 +90,12 @@
 
                 const map = new maplibregl.Map({
                     container: 'propertyMap',
-                    style: 'https://tiles.openfreemap.org/styles/liberty',
+                    style: 'https://tiles.openfreemap.org/styles/liberty', // High-POI visibility style
                     center: center,
                     zoom: 17,
-                    pitch: 45,
+                    pitch: 0, // Flat 2D View
                     bearing: 0,
                     antialias: true
-                });
-
-                map.on('load', () => {
-                    // Minimal Sky effect for performance
-                    map.setSky({
-                        "sky-color": "#1990ff",
-                        "sky-horizon-blend": 0.3,
-                        "horizon-color": "#ffffff"
-                    });
-
-                    // Add 3D Buildings - Optimized
-                    const layers = map.getStyle().layers;
-                    let labelLayerId;
-                    for (let i = 0; i < layers.length; i++) {
-                        if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
-                            labelLayerId = layers[i].id;
-                            break;
-                        }
-                    }
-
-                    map.addLayer({
-                        'id': '3d-buildings',
-                        'source': 'openmaptiles',
-                        'source-layer': 'building',
-                        'type': 'fill-extrusion',
-                        'minzoom': 15,
-                        'paint': {
-                            'fill-extrusion-color': '#cbd5e1',
-                            'fill-extrusion-height': ['get', 'render_height'],
-                            'fill-extrusion-base': ['get', 'render_min_height'],
-                            'fill-extrusion-opacity': 0.6
-                        }
-                    }, labelLayerId);
                 });
 
                 map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'top-right');
@@ -137,14 +104,11 @@
                 el.className = 'custom-marker';
                 el.innerHTML = `
                     <div class="group relative flex flex-col items-center">
-                        <div class="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-2xl border border-white/50 mb-2 transform transition-all group-hover:scale-110 group-hover:-translate-y-1">
-                            <span class="text-[9px] font-black text-slate-800 uppercase tracking-widest">{{ property.title|truncatechars:15 }}</span>
+                        <div class="bg-white/95 px-3 py-1.5 rounded-lg shadow-md border border-slate-200 mb-1 transform transition-all group-hover:-translate-y-1">
+                            <span class="text-[10px] font-bold text-slate-800 tracking-tight">{{ property.title|truncatechars:15 }}</span>
                         </div>
-                        <div class="relative">
-                            <div class="absolute inset-0 bg-blue-500 blur-lg opacity-40"></div>
-                            <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-2xl rotate-45 flex items-center justify-center shadow-lg border-2 border-white relative">
-                                <i class="fas fa-house text-white -rotate-45 text-xs"></i>
-                            </div>
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white relative transition-transform group-hover:scale-110">
+                            <i class="fas fa-house text-white text-[10px]"></i>
                         </div>
                     </div>
                 `;

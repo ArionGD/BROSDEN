@@ -71,45 +71,12 @@
 
         const map = new maplibregl.Map({
             container: 'fullScreenMap',
-            style: 'https://tiles.openfreemap.org/styles/liberty',
+            style: 'https://tiles.openfreemap.org/styles/liberty', // High-POI visibility style
             center: center,
             zoom: zoom,
-            pitch: 45,
+            pitch: 0, // Flat 2D View
             bearing: 0,
             antialias: true
-        });
-
-        map.on('load', () => {
-            // Minimal Sky effect for performance
-            map.setSky({
-                "sky-color": "#1990ff",
-                "sky-horizon-blend": 0.3,
-                "horizon-color": "#ffffff"
-            });
-
-            // Add 3D Buildings - Optimized Opacity
-            const layers = map.getStyle().layers;
-            let labelLayerId;
-            for (let i = 0; i < layers.length; i++) {
-                if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
-                    labelLayerId = layers[i].id;
-                    break;
-                }
-            }
-
-            map.addLayer({
-                'id': '3d-buildings',
-                'source': 'openmaptiles',
-                'source-layer': 'building',
-                'type': 'fill-extrusion',
-                'minzoom': 15,
-                'paint': {
-                    'fill-extrusion-color': '#e2e8f0',
-                    'fill-extrusion-height': ['get', 'render_height'],
-                    'fill-extrusion-base': ['get', 'render_min_height'],
-                    'fill-extrusion-opacity': 0.6
-                }
-            }, labelLayerId);
         });
 
         map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
@@ -119,14 +86,11 @@
             el.className = 'map-marker';
             el.innerHTML = `
                 <div class="group relative flex flex-col items-center">
-                    <div class="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-2xl border border-white/50 mb-2 transform transition-all group-hover:scale-110 group-hover:-translate-y-1 max-w-[140px] truncate">
-                        <span class="text-[9px] font-black text-slate-800 uppercase tracking-tight">${prop.title}</span>
+                    <div class="bg-white/95 px-3 py-1.5 rounded-lg shadow-md border border-slate-200 mb-1 transform transition-all group-hover:-translate-y-1 max-w-[130px] truncate">
+                        <span class="text-[10px] font-bold text-slate-800 tracking-tight">${prop.title}</span>
                     </div>
-                    <div class="relative">
-                        <div class="absolute inset-0 bg-blue-500 blur-lg opacity-40 group-hover:opacity-70 transition-opacity"></div>
-                        <div class="w-9 h-9 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-2xl rotate-45 flex items-center justify-center shadow-lg border-2 border-white relative">
-                            <i class="fas fa-house text-white -rotate-45 text-[11px]"></i>
-                        </div>
+                    <div class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white relative z-10 transition-transform group-hover:scale-110">
+                        <i class="fas fa-home text-white text-[10px]"></i>
                     </div>
                 </div>
             `;
