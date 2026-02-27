@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'reviews',
     'pro',
     'badge',
-    'map_app',
+    'map',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
