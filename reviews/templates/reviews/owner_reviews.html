@@ -33,14 +33,23 @@
                     <div class="flex items-center gap-4">
                         <div
                             class="w-12 h-12 bg-arion-blue/10 rounded-2xl flex items-center justify-center text-arion-blue font-black">
-                            {% if review.is_anonymous %}A{% else %}{{ review.tenant.username|slice:":1"|upper }}{% endif
-                            %}
+                            {% if review.is_anonymous %}
+                            A
+                            {% else %}
+                            {{ review.tenant.username|slice:":1"|upper }}
+                            {% endif %}
                         </div>
                         <div>
-                            <h4 class="font-black text-slate-900">{% if review.is_anonymous %}Anonymous Tenant{% else
-                                %}{{ review.tenant.username }}{% endif %}</h4>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{
-                                review.created_at|date:"d M Y" }}</p>
+                            <h4 class="font-black text-slate-900">
+                                {% if review.is_anonymous %}
+                                Anonymous Tenant
+                                {% else %}
+                                {{ review.tenant.username }}
+                                {% endif %}
+                            </h4>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                                {{ review.created_at|date:"d M Y" }}
+                            </p>
                         </div>
                     </div>
 
