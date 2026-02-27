@@ -55,6 +55,26 @@ def add_property(request):
         form = PropertyForm()
     return render(request, 'property/add_form.html', {'form': form})
 
+@owner_required
+def edit_property(request, pk):
+    """View for Owners to edit an existing property."""
+    prop = get_object_or_404(Property, pk=pk, owner=request.user)
+
+    if request.method == 'POST':
+        form = PropertyForm(request.POST, instance=prop)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Property updated successfully!")
+            return redirect('property:owner_list')
+    else:
+        form = PropertyForm(instance=prop)
+    
+    return render(request, 'property/add_form.html', {
+        'form': form,
+        'is_edit': True,
+        'property': prop
+    })
+
 @login_required
 def property_detail(request, pk):
     """Public/Shared view for property details."""
