@@ -7,12 +7,11 @@ from .models import KYC, PaymentReceipt
 from booking.models import BookingRequest
 from contract.utils import generate_contract
 
-@login_required
-def kyc_form_view(request):
-    """View to handle common KYC registration for both roles."""
+def _shared_kyc_logic(request, template_name):
+    """Shared core logic for KYC processing."""
     if hasattr(request.user, 'kyc') and request.user.kyc.is_verified:
         messages.info(request, "Your KYC is already verified.")
-        return redirect('index')
+        return redirect(request.user.get_dashboard_url())
 
     kyc = getattr(request.user, 'kyc', None)
 
@@ -21,17 +20,26 @@ def kyc_form_view(request):
         if form.is_valid():
             kyc_obj = form.save(commit=False)
             kyc_obj.user = request.user
-            kyc_obj.is_verified = True # Auto-verify for simulation
+            kyc_obj.is_verified = True 
             kyc_obj.save()
-            messages.success(request, "KYC submitted and verified successfully!")
-            return redirect(request.GET.get('next', 'index'))
+            messages.success(request, "KYC verified successfully!")
+            return redirect(request.user.get_dashboard_url())
     else:
         form = KYCForm(instance=kyc)
     
-    return render(request, 'payment/kyc_form.html', {
-        'form': form, 
-        'portal_base': request.user.portal_base
-    })
+    return render(request, template_name, {'form': form})
+
+@login_required
+def tenant_kyc_view(request):
+    if request.user.role != 'TENANT':
+        return redirect('index')
+    return _shared_kyc_logic(request, 'payment/tenant_kyc.html')
+
+@login_required
+def owner_kyc_view(request):
+    if request.user.role != 'OWNER':
+        return redirect('index')
+    return _shared_kyc_logic(request, 'payment/owner_kyc.html')
 
 @login_required
 def razorpay_checkout(request):
@@ -98,5 +106,30 @@ def payment_success(request, booking_id):
 @login_required
 def view_receipt(request, receipt_id):
     """View to display a specific payment receipt."""
-    receipt = get_object_or_404(PaymentReceipt, id=receipt_id, user=request.user)
-    return render(request, 'payment/receipt_view.html', {'receipt': receipt})
+    receipt = get_object_or_404(PaymentReceipt, id=receipt_id)
+    # Security: Ensure only participant can view
+    if receipt.user != request.user and receipt.booking.property.owner != request.user:
+        messages.error(request, "Access denied.")
+        return redirect('index')
+    return render(request, 'contract/view_deposit.html', {
+        'receipt': receipt,
+        'portal_base': request.user.portal_base
+    })
+
+@login_required
+def payment_history(request):
+    """View to show payment history (Outbound for Tenants, Inbound for Owners)."""
+    if request.user.role == 'OWNER':
+        # Received payments
+        payments = PaymentReceipt.objects.filter(booking__property__owner=request.user).order_by('-created_at')
+        is_owner = True
+    else:
+        # Paid payments
+        payments = PaymentReceipt.objects.filter(user=request.user).order_by('-created_at')
+        is_owner = False
+
+    return render(request, 'payment/payment_history.html', {
+        'payments': payments,
+        'is_owner': is_owner,
+        'portal_base': request.user.portal_base
+    })

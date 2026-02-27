@@ -20,8 +20,14 @@ def view_contract(request, contract_id):
 @login_required
 def view_deposit_receipt(request, receipt_id):
     """Dedicated receipt for the Security Deposit payment."""
-    receipt = get_object_or_404(PaymentReceipt, id=receipt_id, user=request.user)
-    return render(request, 'contract/receipt_deposit.html', {'receipt': receipt})
+    receipt = get_object_or_404(PaymentReceipt, id=receipt_id)
+    if not (request.user == receipt.user or request.user == receipt.booking.property.owner):
+        return render(request, '403.html', status=403)
+        
+    return render(request, 'contract/view_deposit.html', {
+        'receipt': receipt,
+        'portal_base': request.user.portal_base
+    })
 
 
 @login_required

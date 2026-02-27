@@ -1,4 +1,4 @@
-{% extends "tenant/portal_base.html" %}
+{% extends portal_base %}
 
 {% block title %}Payment Receipt | BrosDen-AV{% endblock %}
 
@@ -40,15 +40,15 @@
                     <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 text-center">Receipt
                         Details</p>
                     <div class="space-y-4">
-                        <div class="flex justify-between">
+                        <div class="flex justify-between border-b border-slate-50 pb-3">
                             <span class="text-slate-500 font-medium">Transaction ID</span>
                             <span class="text-slate-900 font-mono text-sm">{{ receipt.transaction_id }}</span>
                         </div>
-                        <div class="flex justify-between">
+                        <div class="flex justify-between border-b border-slate-50 pb-3">
                             <span class="text-slate-500 font-medium">Payment Reason</span>
                             <span class="text-slate-900 font-bold">{{ receipt.get_payment_type_display }}</span>
                         </div>
-                        <div class="flex justify-between">
+                        <div class="flex justify-between border-b border-slate-50 pb-3">
                             <span class="text-slate-500 font-medium">Property</span>
                             <span class="text-slate-900 font-bold">{{ receipt.property_title }}</span>
                         </div>
@@ -67,9 +67,46 @@
                 </div>
             </div>
 
+            {% if receipt.booking.contract %}
+            <!-- Linked Contract Section -->
+            <div class="mt-16 pt-16 border-t-2 border-dashed border-slate-100">
+                <div class="flex items-center gap-3 mb-10">
+                    <div
+                        class="w-10 h-10 bg-arion-orange/10 text-arion-orange rounded-xl flex items-center justify-center">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-slate-900">Linked Digital Contract</h3>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Validated & Electronically
+                            Signed</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 rounded-[2rem] p-8 md:p-12 relative border border-slate-100">
+                    <div
+                        class="prose prose-slate max-w-none prose-p:text-slate-500 prose-p:text-sm prose-p:leading-relaxed">
+                        {{ receipt.booking.contract.content|linebreaks }}
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-slate-200 grid grid-cols-2 gap-8 text-center">
+                        <div>
+                            <p class="text-[9px] font-black uppercase text-slate-400 mb-2">Tenant Hash</p>
+                            <p class="text-xs font-serif italic text-slate-900">{{ receipt.booking.tenant.username }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-black uppercase text-slate-400 mb-2">Owner Hash</p>
+                            <p class="text-xs font-serif italic text-slate-900">{{
+                                receipt.booking.property.owner.username }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
             <div class="mt-12 text-center">
-                <p class="text-[9px] font-black uppercase text-slate-300 tracking-widest">This is a computer generated
-                    document. No signature required.</p>
+                <p class="text-[9px] font-black uppercase text-slate-300 tracking-widest">This is a consolidated
+                    financial & legal document. No signature required.</p>
             </div>
         </div>
     </div>
@@ -85,7 +122,7 @@
             display: none !important;
         }
 
-        .max-w-2xl {
+        .max-w-4xl {
             max-width: 100% !important;
             margin: 0 !important;
         }

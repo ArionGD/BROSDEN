@@ -38,12 +38,17 @@
                         class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full hidden">0</span>
                 </span>
             </a>
+            <a href="{% url 'payment:history' %}"
+                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
+                <i class="fas fa-file-invoice-dollar w-6 mr-3 text-green-500"></i> <span
+                    class="sidebar-text transition-opacity duration-200">Payments</span>
+            </a>
             <a href="{% url 'helpdesk:home' %}"
                 class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
                 <i class="fas fa-headset w-6 mr-3 text-arion-orange"></i> <span
                     class="sidebar-text transition-opacity duration-200">Support</span>
             </a>
-            <a href="{% url 'payment:kyc_form' %}"
+            <a href="{% url 'payment:owner_kyc' %}"
                 class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
                 <i class="fas fa-shield-halved w-6 mr-3"></i> <span
                     class="sidebar-text transition-opacity duration-200">KYC Status</span>
