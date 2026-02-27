@@ -30,11 +30,7 @@ def owner_property_list(request):
 def add_property(request):
     """View for Owners to add a new property."""
     # Enforce KYC
-    try:
-        if not request.user.kyc.is_verified:
-            messages.warning(request, "Please complete your KYC verification before listing a property.")
-            return redirect('/payment/kyc/?next=' + request.path)
-    except Exception:
+    if not request.user.is_kyc_verified:
         messages.warning(request, "Please complete your KYC verification before listing a property.")
         return redirect('/payment/kyc/?next=' + request.path)
 

@@ -36,17 +36,9 @@ def kyc_form_view(request):
     else:
         form = KYCForm(instance=kyc)
     
-    # Identify the correct base template based on role
-    base_template = 'base.html'
-    if request.user.is_authenticated:
-        if request.user.role == 'OWNER':
-            base_template = 'owner/portal_base.html'
-        else:
-            base_template = 'tenant/portal_base.html'
-            
     return render(request, 'payment/kyc_form.html', {
         'form': form, 
-        'base_template': base_template
+        'base_template': request.user.portal_base
     })
 
 @login_required
@@ -86,6 +78,20 @@ def payment_success(request, booking_id):
     # Generate Contract Automatically
     contract = generate_contract(booking)
     
+    try:
+        from mailer.services import send_contract_created_email
+        send_contract_created_email(contract, request.user, request)
+        send_contract_created_email(contract, booking.property.owner, request)
+    except Exception:
+        pass
+        
+    try:
+        from notifications.models import send_notification
+        send_notification(request.user, "Payment Successful", f"Your security deposit for {booking.property.title} was received.", 'PAYMENT')
+        send_notification(booking.property.owner, "Payment Received", f"Security deposit for {booking.property.title} was paid by {request.user.username}.", 'PAYMENT')
+    except Exception:
+        pass
+        
     context = {
         'booking': booking,
         'contract': contract,

@@ -1,13 +1,15 @@
 from django import forms
 from .models import User
 
+COMMON_INPUT_CLASS = 'w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800'
+
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'class': 'w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800',
+        'class': COMMON_INPUT_CLASS,
         'placeholder': '••••••••'
     }))
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'class': 'w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800',
+        'class': COMMON_INPUT_CLASS,
         'placeholder': '••••••••'
     }))
 
@@ -16,18 +18,18 @@ class UserRegistrationForm(forms.ModelForm):
         fields = ['username', 'email', 'role', 'phone_number']
         widgets = {
             'username': forms.TextInput(attrs={
-                'class': 'w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800',
+                'class': COMMON_INPUT_CLASS,
                 'placeholder': 'Choose a username'
             }),
             'email': forms.EmailInput(attrs={
-                'class': 'w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800',
+                'class': COMMON_INPUT_CLASS,
                 'placeholder': 'Enter your email'
             }),
             'role': forms.Select(attrs={
                 'class': 'w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800'
             }),
             'phone_number': forms.TextInput(attrs={
-                'class': 'w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800',
+                'class': COMMON_INPUT_CLASS,
                 'placeholder': 'Phone number'
             }),
         }

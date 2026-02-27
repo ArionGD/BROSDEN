@@ -14,7 +14,20 @@ def register_view(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
-            messages.success(request, "Registration successful! You can now login.")
+            
+            try:
+                from mailer.services import send_welcome_email
+                send_welcome_email(user, form.cleaned_data['password'], request)
+            except Exception as e:
+                pass # Fail silently if mailer is not fully configured
+
+            try:
+                from notifications.models import send_notification
+                send_notification(user, "Welcome!", "Your account has been created successfully.", 'SYSTEM')
+            except Exception as e:
+                pass
+                
+            messages.success(request, "Registration successful! You can now login. Check your email for your credentials.")
             return redirect('accounts:login')
         else:
             for error in form.non_field_errors():
@@ -26,11 +39,7 @@ def register_view(request):
 
 def login_view(request):
     if request.user.is_authenticated:
-        if request.user.role == 'TENANT':
-            return redirect('tenant:dashboard')
-        elif request.user.role == 'OWNER':
-            return redirect('owner:dashboard')
-        return redirect('index')
+        return redirect(request.user.get_dashboard_url())
 
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -41,13 +50,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f"Welcome back, {username}!")
-                
-                # Redirect based on role
-                if user.role == 'TENANT':
-                    return redirect('tenant:dashboard')
-                elif user.role == 'OWNER':
-                    return redirect('owner:dashboard')
-                return redirect('index')
+                return redirect(user.get_dashboard_url())
             else:
                 messages.error(request, "Invalid username or password.")
         else:

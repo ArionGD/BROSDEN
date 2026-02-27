@@ -11,11 +11,8 @@ from accounts.decorators import tenant_required, owner_required
 def create_booking(request, property_id):
     """Allow tenants to request a booking."""
     # Enforce KYC before allowing booking
-    try:
-        if not request.user.kyc.is_verified:
-            messages.warning(request, "Please complete your KYC verification before requesting a booking.")
-            return redirect(f"{reverse('payment:kyc_form')}?next={request.path}")
-    except Exception:
+    # Enforce KYC before allowing booking
+    if not request.user.is_kyc_verified:
         messages.warning(request, "Please complete your KYC verification before requesting a booking.")
         return redirect(f"{reverse('payment:kyc_form')}?next={request.path}")
 
@@ -28,7 +25,14 @@ def create_booking(request, property_id):
 
     if request.method == 'POST':
         message = request.POST.get('message', '')
-        BookingRequest.objects.create(property=prop, tenant=request.user, message=message)
+        booking = BookingRequest.objects.create(property=prop, tenant=request.user, message=message)
+        
+        try:
+            from notifications.models import send_notification
+            send_notification(prop.owner, "New Booking Request", f"You have a new booking request for {prop.title} from {request.user.username}.", 'BOOKING')
+        except Exception:
+            pass
+
         messages.success(request, "Booking request sent successfully!")
         return redirect('booking:tenant_bookings')
 
@@ -56,9 +60,26 @@ def handle_booking(request, booking_id, action):
 
     if action == 'approve':
         booking.status = 'APPROVED'
+        try:
+            from mailer.services import send_booking_approved_email
+            send_booking_approved_email(booking, request)
+        except Exception:
+            pass
+            
+        try:
+            from notifications.models import send_notification
+            send_notification(booking.tenant, "Booking Approved", f"Your booking for {booking.property.title} has been approved!", 'BOOKING')
+        except Exception:
+            pass
+            
         messages.success(request, f"Booking for {booking.property.title} approved!")
     elif action == 'reject':
         booking.status = 'REJECTED'
+        try:
+            from notifications.models import send_notification
+            send_notification(booking.tenant, "Booking Rejected", f"Your booking for {booking.property.title} was rejected.", 'BOOKING')
+        except Exception:
+            pass
         messages.warning(request, f"Booking for {booking.property.title} rejected.")
 
     booking.save()

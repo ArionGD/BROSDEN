@@ -1,37 +1,60 @@
 {% extends "mailer/emails/base_email.html" %}
 {% block email_content %}
-<div class="hero-band">
-    <div class="hero-icon blue">🎉</div>
+<!-- Hero Section -->
+<div class="bg-slate-50 border-b border-slate-200 px-10 py-7 flex items-center gap-5">
+    <div
+        class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
+        🎉
+    </div>
     <div>
-        <h1>Welcome to BrosDen-AV!</h1>
-        <p>Your account is ready to go</p>
+        <h1 class="text-xl font-extrabold text-slate-900 leading-tight">Welcome to BrosDen-AV!</h1>
+        <p class="text-sm text-slate-500 mt-0.5">Your account is ready to go</p>
     </div>
 </div>
-<div class="email-body">
-    <p class="greeting">Hi {{ user.first_name|default:user.username }},</p>
-    <p class="message-text">
+
+<!-- Main Body -->
+<div class="p-10">
+    <p class="text-[15px] font-bold text-slate-900 mb-2">Hi {{ user.first_name|default:user.username }},</p>
+    <p class="text-sm text-slate-600 leading-relaxed mb-6">
         Welcome aboard! Your BrosDen-AV account has been successfully created.
         Whether you're looking for your next home or managing your properties,
         we've built everything you need in one place.
     </p>
-    <div class="info-card">
-        <div class="info-row">
-            <span class="info-label">Username</span>
-            <span class="info-value">{{ user.username }}</span>
+
+    <!-- Credential Card -->
+    <div class="bg-slate-50 border border-slate-200 rounded-xl px-6 py-5 my-6">
+        <div class="flex justify-between items-center py-2 border-b border-slate-200 text-xs">
+            <span class="text-slate-500 font-semibold">Website Details</span>
+            <span class="text-slate-900 font-bold"><a href="{{ website_link }}" class="text-blue-600 no-underline">{{
+                    website_link }}</a></span>
         </div>
-        <div class="info-row">
-            <span class="info-label">Email</span>
-            <span class="info-value">{{ user.email }}</span>
+        <div class="flex justify-between items-center py-2 border-b border-slate-200 text-xs">
+            <span class="text-slate-500 font-semibold">Username</span>
+            <span class="text-slate-900 font-bold">{{ user.username }}</span>
         </div>
-        <div class="info-row">
-            <span class="info-label">Role</span>
-            <span class="info-value">{{ user.get_role_display }}</span>
+        <div class="flex justify-between items-center py-2 border-b border-slate-200 text-xs">
+            <span class="text-slate-500 font-semibold">Email</span>
+            <span class="text-slate-900 font-bold">{{ user.email }}</span>
+        </div>
+        <div class="flex justify-between items-center py-2 border-b border-slate-200 text-xs">
+            <span class="text-slate-500 font-semibold">Password</span>
+            <span class="text-slate-900 font-bold">{{ password }}</span>
+        </div>
+        <div class="flex justify-between items-center py-2 text-xs">
+            <span class="text-slate-500 font-semibold">Role</span>
+            <span class="text-slate-900 font-bold">{{ user.get_role_display }}</span>
         </div>
     </div>
-    <div class="cta-wrap">
-        <a href="#" class="cta-btn">Go to My Dashboard →</a>
+
+    <!-- CTA Area -->
+    <div class="text-center my-8">
+        <a href="{{ login_link }}"
+            class="inline-block bg-gradient-to-br from-blue-600 to-blue-800 text-white font-black px-9 py-4 rounded-xl text-sm tracking-wide shadow-lg shadow-blue-500/30 no-underline hover:scale-[1.02] transition-transform">
+            LOGIN TO DASHBOARD →
+        </a>
     </div>
-    <p class="message-text" style="font-size:13px; color:#94a3b8;">
+
+    <p class="text-[13px] text-slate-400 leading-relaxed italic text-center">
         If you didn't create this account, please ignore this email or contact support immediately.
     </p>
 </div>

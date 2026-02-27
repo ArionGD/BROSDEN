@@ -3,10 +3,10 @@ from django.shortcuts import render
 def index(request):
     context = {
         'home_stats': [
-            "12,000+ Properties",
-            "98% Verified Listings",
-            "India's Top 10 Cities",
-            "4.9★ Average Rating"
+            {'value': "12,000+", 'label': "Properties"},
+            {'value': "98%", 'label': "Verified Listings"},
+            {'value': "India's", 'label': "Top 10 Cities"},
+            {'value': "4.9★", 'label': "Average Rating"}
         ],
         'home_features': [
             {'icon': 'fa-shield-halved', 'title': 'Secured Transactions', 'desc': 'Every property undergoes 45 verification checks before listing.', 'color': 'arion-orange'},
