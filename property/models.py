@@ -21,6 +21,8 @@ class Property(models.Model):
     bathrooms = models.IntegerField(default=0)
     sqft = models.IntegerField(default=0)
     is_verified = models.BooleanField(default=False)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
