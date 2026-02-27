@@ -31,38 +31,42 @@
 <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
 <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
 
+<script type="application/json" id="map-data">
+    [
+        {% for property in properties %}
+        {
+            "id": {{ property.id }},
+            "title": "{{ property.title|escapejs }}",
+            "price": "{{ property.price }}",
+            "lat": {{ property.latitude |default: 0 }},
+            "lng": {{ property.longitude |default: 0 }},
+            "city": "{{ property.city|escapejs }}",
+            "url": "{% url 'property:detail' property.pk %}"
+        }{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    ]
+</script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const properties = [
-            {% for property in properties %}
-            {
-            id: {{ property.id }},
-        title: "{{ property.title|escapejs }}",
-        price: "{{ property.price }}",
-        lat: {{ property.latitude |default: 0 }},
-        lng: {{ property.longitude |default: 0 }},
-        city: "{{ property.city|escapejs }}",
-        url: "{% url 'property:detail' property.pk %}"
-            }{% if not forloop.last %}, {% endif %}
-    {% endfor %}
-        ];
+        const properties = JSON.parse(document.getElementById('map-data').textContent);
 
-    const map = new maplibregl.Map({
-        container: 'fullScreenMap',
-        style: 'https://tiles.openfreemap.org/styles/liberty',
-        center: properties.length > 0 ? [properties[0].lng, properties[0].lat] : [78.4867, 17.3850],
-        zoom: 12,
-        pitch: 45,
-        antialias: true
-    });
+        const map = new maplibregl.Map({
+            container: 'fullScreenMap',
+            style: 'https://tiles.openfreemap.org/styles/liberty',
+            center: properties.length > 0 ? [properties[0].lng, properties[0].lat] : [78.4867, 17.3850],
+            zoom: 12,
+            pitch: 45,
+            antialias: true
+        });
 
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
+        map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
 
-    properties.forEach(prop => {
-        // Create Custom Marker element
-        const el = document.createElement('div');
-        el.className = 'map-marker';
-        el.innerHTML = `
+        properties.forEach(prop => {
+            // Create Custom Marker element
+            const el = document.createElement('div');
+            el.className = 'map-marker';
+            el.innerHTML = `
                 <div class="group relative flex flex-col items-center">
                     <div class="bg-white px-3 py-1.5 rounded-full shadow-2xl border border-slate-100 mb-2 transform transition-transform group-hover:scale-110">
                         <span class="text-xs font-black text-blue-600">₹${prop.price}</span>
@@ -73,8 +77,8 @@
                 </div>
             `;
 
-        const popup = new maplibregl.Popup({ offset: 25 })
-            .setHTML(`
+            const popup = new maplibregl.Popup({ offset: 25 })
+                .setHTML(`
                     <div class="p-2">
                         <h4 class="font-black text-slate-800 mb-1">${prop.title}</h4>
                         <p class="text-[10px] text-slate-500 mb-3">${prop.city}</p>
@@ -82,28 +86,28 @@
                     </div>
                 `);
 
-        new maplibregl.Marker({ element: el })
-            .setLngLat([prop.lng, prop.lat])
-            .setPopup(popup)
-            .addTo(map);
-    });
+            new maplibregl.Marker({ element: el })
+                .setLngLat([prop.lng, prop.lat])
+                .setPopup(popup)
+                .addTo(map);
+        });
 
-    window.searchMap = async function () {
-        const query = document.getElementById('mapSearch').value;
-        if (!query) return;
+        window.searchMap = async function () {
+            const query = document.getElementById('mapSearch').value;
+            if (!query) return;
 
-        try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
-            const data = await response.json();
-            if (data && data.length > 0) {
-                map.flyTo({
-                    center: [parseFloat(data[0].lon), parseFloat(data[0].lat)],
-                    zoom: 14,
-                    essential: true
-                });
-            }
-        } catch (e) { }
-    };
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
+                const data = await response.json();
+                if (data && data.length > 0) {
+                    map.flyTo({
+                        center: [parseFloat(data[0].lon), parseFloat(data[0].lat)],
+                        zoom: 14,
+                        essential: true
+                    });
+                }
+            } catch (e) { }
+        };
     });
 </script>
 
