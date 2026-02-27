@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'wishlist',
     'reviews',
     'pro',
+    'badge',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

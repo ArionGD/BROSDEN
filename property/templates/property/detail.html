@@ -76,8 +76,34 @@
         </div>
 
         <!-- Right: Action Sidebar -->
-        <div class="space-y-8">
-            <div class="bg-white border border-slate-200 rounded-[3rem] p-10 shadow-2xl sticky top-32">
+        <div class="space-y-8 sticky top-32">
+            <!-- Owner Info Card -->
+            {% load badge_tags %}
+            {% owner_badge property.owner as badge %}
+            <div class="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8 shadow-2xl text-center text-white">
+                <div
+                    class="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center text-slate-400 font-black text-2xl mx-auto mb-4 border-2 border-slate-700">
+                    {{ property.owner.username|slice:":1"|upper }}
+                </div>
+                <h3 class="text-lg font-black mb-1">{{ property.owner.username }}</h3>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-5">Property Owner</p>
+
+                <div
+                    class="inline-flex items-center gap-2 bg-slate-800/50 px-4 py-3 rounded-xl border border-slate-700/50">
+                    <!-- Tailwind arbitrary color mapping for the badge -->
+                    <i
+                        class="{{ badge.icon }} {% if badge.color == 'cyan' %}text-cyan-400{% elif badge.color == 'amber' %}text-amber-400{% elif badge.color == 'slate' %}text-slate-300{% elif badge.color == 'orange' %}text-orange-500{% elif badge.color == 'red' %}text-red-500{% else %}text-white{% endif %}"></i>
+                    <span
+                        class="text-sm font-black {% if badge.color == 'cyan' %}text-cyan-400{% elif badge.color == 'amber' %}text-amber-400{% elif badge.color == 'slate' %}text-slate-300{% elif badge.color == 'orange' %}text-orange-500{% elif badge.color == 'red' %}text-red-500{% else %}text-white{% endif %}">{{
+                        badge.name }} Seller</span>
+                </div>
+                {% if badge.avg > 0 %}
+                <p class="text-[10px] text-slate-400 mt-4 font-bold uppercase tracking-widest"><i
+                        class="fas fa-star text-amber-400 mr-1"></i> {{ badge.avg|floatformat:1 }} Average</p>
+                {% endif %}
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-2xl">
                 <h3 class="text-xl font-black text-slate-900 mb-8 border-b border-slate-50 pb-6">Interested?</h3>
 
                 <div class="space-y-6">

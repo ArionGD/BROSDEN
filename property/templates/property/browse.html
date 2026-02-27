@@ -29,17 +29,26 @@
         </select>
     </div>
 
+    {% load badge_tags %}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for prop in properties %}
+        {% owner_badge prop.owner as badge %}
         <div
             class="group bg-white rounded-[2rem] overflow-hidden border border-slate-200 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
             <div class="relative h-56 bg-slate-100 flex items-center justify-center text-slate-300">
                 <i class="fas fa-image text-3xl group-hover:scale-125 transition-transform"></i>
-                <div class="absolute top-4 left-4">
+                <div class="absolute top-4 left-4 flex flex-col gap-2 items-start">
                     {% if prop.is_verified %}
                     <span
                         class="bg-emerald-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-sm">Verified</span>
                     {% endif %}
+
+                    <span
+                        class="text-[10px] font-black uppercase px-2 py-1 rounded flex items-center gap-1 shadow-sm opacity-90 group-hover:opacity-100 transition-opacity {% if badge.color == 'cyan' %}bg-cyan-500 text-white{% elif badge.color == 'amber' %}bg-amber-500 text-white{% elif badge.color == 'slate' %}bg-slate-500 text-white{% elif badge.color == 'orange' %}bg-orange-500 text-white{% elif badge.color == 'red' %}bg-red-500 text-white{% else %}bg-white text-slate-400{% endif %}"
+                        title="{{ badge.name }} Seller">
+                        <i class="{{ badge.icon }}"></i> {% if badge.avg > 0 %}{{ badge.avg|floatformat:1 }}
+                        {% else %}NEW{% endif %}
+                    </span>
                 </div>
                 <div
                     class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-arion-blue font-black shadow-lg">
