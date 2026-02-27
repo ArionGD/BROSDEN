@@ -23,8 +23,11 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {% for category in categories %}
                 <label class="cursor-pointer group">
-                    <input type="radio" name="category" value="{{ category.id }}" class="hidden peer" required {% if
-                        forloop.first %}checked{% endif %}>
+                    {% if forloop.first %}
+                    <input type="radio" name="category" value="{{ category.id }}" class="hidden peer" required checked>
+                    {% else %}
+                    <input type="radio" name="category" value="{{ category.id }}" class="hidden peer" required>
+                    {% endif %}
                     <div
                         class="p-6 bg-slate-50 rounded-3xl border-2 border-transparent peer-checked:border-arion-blue peer-checked:bg-blue-50/50 group-hover:bg-slate-100 transition-all text-center">
                         <i class="fas {{ category.icon }} text-xl text-slate-400 peer-checked:text-arion-blue mb-2"></i>
