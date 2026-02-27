@@ -10,35 +10,27 @@ from contract.utils import generate_contract
 @login_required
 def kyc_form_view(request):
     """View to handle common KYC registration for both roles."""
-    try:
-        kyc = request.user.kyc
-        if kyc.is_verified:
-            messages.info(request, "Your KYC is already verified.")
-            return redirect('index')
-    except KYC.DoesNotExist:
-        kyc = None
+    if hasattr(request.user, 'kyc') and request.user.kyc.is_verified:
+        messages.info(request, "Your KYC is already verified.")
+        return redirect('index')
+
+    kyc = getattr(request.user, 'kyc', None)
 
     if request.method == 'POST':
         form = KYCForm(request.POST, instance=kyc)
         if form.is_valid():
             kyc_obj = form.save(commit=False)
             kyc_obj.user = request.user
-            # For this demo, we auto-verify to keep it smooth
-            kyc_obj.is_verified = True 
+            kyc_obj.is_verified = True # Auto-verify for simulation
             kyc_obj.save()
             messages.success(request, "KYC submitted and verified successfully!")
-            
-            # Check where they came from
-            next_url = request.GET.get('next')
-            if next_url:
-                return redirect(next_url)
-            return redirect('index')
+            return redirect(request.GET.get('next', 'index'))
     else:
         form = KYCForm(instance=kyc)
     
     return render(request, 'payment/kyc_form.html', {
         'form': form, 
-        'base_template': request.user.portal_base
+        'portal_base': request.user.portal_base
     })
 
 @login_required
