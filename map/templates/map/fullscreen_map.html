@@ -1,8 +1,4 @@
-{% if user.role == 'TENANT' %}
-{% extends "tenant/portal_base.html" %}
-{% else %}
-{% extends "owner/portal_base.html" %}
-{% endif %}
+{% extends base_template %}
 
 {% block portal_content %}
 <div class="h-[calc(100vh-140px)] w-full rounded-[2.5rem] overflow-hidden border border-slate-200 shadow-2xl relative">
