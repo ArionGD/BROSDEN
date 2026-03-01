@@ -20,7 +20,8 @@ def generate_contract(booking):
         amount=breakdown['security_deposit'],
         contract_fee=breakdown['contract_fee'],
         total_paid=breakdown['total'],
-        monthly_rent=breakdown['monthly_rent']
+        monthly_rent=breakdown['monthly_rent'],
+        start_date=booking.start_date.strftime('%B 1st, %Y') if booking.start_date else "TBD"
     )
 
     contract, created = Contract.objects.get_or_create(

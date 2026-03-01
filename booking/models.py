@@ -15,6 +15,7 @@ class BookingRequest(models.Model):
     tenant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='tenant_bookings')
     message = models.TextField(blank=True, help_text="Message to the owner")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    start_date = models.DateField(null=True, blank=True, help_text="Tenancy start date (always 1st of the month)")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

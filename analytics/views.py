@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.db.models import Count, Sum
 from property.models import Property
 from booking.models import BookingRequest
+from payment.models import PaymentReceipt
 from .models import PropertyView, SearchActivity
 from accounts.decorators import tenant_required, owner_required
 
@@ -16,13 +17,18 @@ def owner_analytics(request):
     total_requests = bookings.count()
     approved_requests = bookings.filter(status='APPROVED').count()
     pending_requests = bookings.filter(status='PENDING').count()
-    
     rejected_requests = bookings.filter(status='REJECTED').count()
     
     # Revenue (Estimate from approved properties prices)
     projected_revenue = user_properties.aggregate(Sum('price'))['price__sum'] or 0
     actual_revenue = bookings.filter(status='APPROVED').aggregate(Sum('property__price'))['property__price__sum'] or 0
     
+    # Actual Rent Collected (From PaymentReceipts)
+    total_rent_collected = PaymentReceipt.objects.filter(
+        booking__property__owner=request.user,
+        payment_type='RENT'
+    ).aggregate(Sum('amount'))['amount__sum'] or 0
+
     # Views per property
     views_query = PropertyView.objects.filter(property__owner=request.user).values('property__title').annotate(total_views=Count('id')).order_by('-total_views')[:5]
     views_data = list(views_query)
@@ -39,6 +45,7 @@ def owner_analytics(request):
         'rejected_requests': rejected_requests,
         'actual_revenue': actual_revenue,
         'projected_revenue': projected_revenue,
+        'total_rent_collected': total_rent_collected,
         'views_data': views_data,
         'max_views': max_views,
     }

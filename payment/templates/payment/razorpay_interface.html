@@ -165,8 +165,8 @@
 
         <!-- Footer Button -->
         <div class="p-4 bg-slate-50">
-            {% if booking_id %}
-            <a href="{% url 'payment:payment_success' booking_id %}"
+            {% if booking.id or booking_id %}
+            <a href="{% url 'payment:payment_success' booking.id|default:booking_id %}?type={{ payment_type }}"
                 class="block w-full text-center bg-[#3395ff] hover:bg-blue-600 text-white font-bold py-4 rounded transition-all shadow-md active:scale-[0.98] no-underline">
                 Pay ₹{{ amount }}
             </a>

@@ -45,18 +45,30 @@ def owner_kyc_view(request):
 def razorpay_checkout(request):
     """Interface mimicking Razorpay payment process with financial breakdown."""
     booking_id = request.GET.get('booking_id')
+    payment_type = request.GET.get('type', 'SECURITY_DEPOSIT') # Default to security deposit
+    
     if not booking_id:
         return redirect('booking:tenant_bookings')
         
     booking = get_object_or_404(BookingRequest, id=booking_id, tenant=request.user)
-    breakdown = booking.property.get_financial_breakdown()
+    
+    if payment_type == 'RENT':
+        amount = booking.property.price
+        item = f"Monthly Rent for {booking.property.title}"
+        breakdown = None # Rent doesn't need the same breakdown as initial deposit
+    else:
+        breakdown = booking.property.get_financial_breakdown()
+        amount = breakdown['total']
+        item = f"Security Deposit + Contract Fee for {booking.property.title}"
     
     context = {
         'booking': booking,
+        'booking_id': booking.id,
         'breakdown': breakdown,
-        'amount': breakdown['total'],
-        'item': f"Security Deposit + Contract Fee for {booking.property.title}",
+        'amount': amount,
+        'item': item,
         'user': request.user,
+        'payment_type': payment_type
     }
     return render(request, 'payment/razorpay_interface.html', context)
 
@@ -64,53 +76,83 @@ def razorpay_checkout(request):
 def payment_success(request, booking_id):
     """Callback view to handle successful payment with financial breakdown."""
     booking = get_object_or_404(BookingRequest, id=booking_id, tenant=request.user)
+    payment_type = request.GET.get('type', 'SECURITY_DEPOSIT')
     
-    # Calculate Breakdown
-    breakdown = booking.property.get_financial_breakdown()
-    
-    # Mark as PAID
-    booking.status = 'PAID'
-    booking.save()
-    
-    # Create Payment Receipt with Details
-    receipt = PaymentReceipt.objects.create(
-        user=request.user,
-        booking=booking,
-        property_title=booking.property.title,
-        amount=breakdown['total'],
-        security_deposit_amount=breakdown['security_deposit'],
-        contract_fee_amount=breakdown['contract_fee'],
-        transaction_id=f"TID_{booking.id}_{booking.tenant.id}_{timezone.now().strftime('%U%H%M')}",
-        payment_type='SECURITY_DEPOSIT'
-    )
-    
-    # Generate Contract Automatically
-    contract = generate_contract(booking)
-    
-    try:
-        from mailer.services import send_contract_created_email
-        send_contract_created_email(contract, request.user, request)
-        send_contract_created_email(contract, booking.property.owner, request)
-    except Exception:
-        pass
+    if payment_type == 'RENT':
+        # Logic for monthly rent payment
+        amount = booking.property.price
+        receipt = PaymentReceipt.objects.create(
+            user=request.user,
+            booking=booking,
+            property_title=booking.property.title,
+            amount=amount,
+            transaction_id=f"RENT_{booking.id}_{booking.tenant.id}_{timezone.now().strftime('%U%H%M')}",
+            payment_type='RENT',
+            period_month=timezone.now().month,
+            period_year=timezone.now().year
+        )
         
-    try:
-        from notifications.models import send_notification
-        send_notification(request.user, "Payment Successful", f"Your security deposit and contract fee for {booking.property.title} was received.", 'PAYMENT')
-        send_notification(booking.property.owner, "Payment Received", f"Security deposit and contract fee for {booking.property.title} was paid by {request.user.username}.", 'PAYMENT')
-    except Exception:
-        pass
+        try:
+            from notifications.models import send_notification
+            send_notification(request.user, "Rent Payment Successful", f"Your monthly rent for {booking.property.title} was received.", 'PAYMENT')
+            send_notification(booking.property.owner, "Rent Received", f"Monthly rent for {booking.property.title} was paid by {request.user.username}.", 'PAYMENT')
+        except Exception:
+            pass
+
+        messages.success(request, f"Monthly rent for {booking.property.title} paid successfully!")
         
-    context = {
-        'booking': booking,
-        'contract': contract,
-        'receipt': receipt,
-        'breakdown': breakdown,
-        'amount': receipt.amount,
-        'transaction_id': receipt.transaction_id
-    }
+        context = {
+            'booking': booking,
+            'receipt': receipt,
+            'amount': receipt.amount,
+            'transaction_id': receipt.transaction_id,
+            'payment_type': 'RENT'
+        }
+    else:
+        # Original Security Deposit Logic
+        breakdown = booking.property.get_financial_breakdown()
+        booking.status = 'PAID'
+        booking.save()
+        
+        receipt = PaymentReceipt.objects.create(
+            user=request.user,
+            booking=booking,
+            property_title=booking.property.title,
+            amount=breakdown['total'],
+            security_deposit_amount=breakdown['security_deposit'],
+            contract_fee_amount=breakdown['contract_fee'],
+            transaction_id=f"TID_{booking.id}_{booking.tenant.id}_{timezone.now().strftime('%U%H%M')}",
+            payment_type='SECURITY_DEPOSIT'
+        )
+        
+        contract = generate_contract(booking)
+        
+        try:
+            from mailer.services import send_contract_created_email
+            send_contract_created_email(contract, request.user, request)
+            send_contract_created_email(contract, booking.property.owner, request)
+        except Exception:
+            pass
+            
+        try:
+            from notifications.models import send_notification
+            send_notification(request.user, "Payment Successful", f"Your security deposit and contract fee for {booking.property.title} was received.", 'PAYMENT')
+            send_notification(booking.property.owner, "Payment Received", f"Security deposit and contract fee for {booking.property.title} was paid by {request.user.username}.", 'PAYMENT')
+        except Exception:
+            pass
+
+        messages.success(request, f"Payment successful! Security Deposit and Contract Fee for {booking.property.title} received.")
+        
+        context = {
+            'booking': booking,
+            'contract': contract,
+            'receipt': receipt,
+            'breakdown': breakdown,
+            'amount': receipt.amount,
+            'transaction_id': receipt.transaction_id,
+            'payment_type': 'SECURITY_DEPOSIT'
+        }
     
-    messages.success(request, f"Payment successful! Security Deposit and Contract Fee for {booking.property.title} received.")
     return render(request, 'payment/payment_success.html', context)
 
 @login_required

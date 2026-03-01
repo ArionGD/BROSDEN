@@ -25,7 +25,24 @@ def create_booking(request, property_id):
 
     if request.method == 'POST':
         message = request.POST.get('message', '')
-        booking = BookingRequest.objects.create(property=prop, tenant=request.user, message=message)
+        start_date_str = request.POST.get('start_date', '')
+        
+        try:
+            from datetime import datetime
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            # Ensure it's the 1st of the month
+            if start_date.day != 1:
+                start_date = start_date.replace(day=1)
+        except (ValueError, TypeError):
+            messages.error(request, "Invalid start date selected.")
+            return redirect('property:detail', pk=property_id)
+
+        booking = BookingRequest.objects.create(
+            property=prop, 
+            tenant=request.user, 
+            message=message,
+            start_date=start_date
+        )
         
         try:
             from notifications.models import send_notification

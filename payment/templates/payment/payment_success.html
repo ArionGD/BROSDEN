@@ -11,8 +11,13 @@
             <i class="fas fa-check"></i>
         </div>
         <h2 class="text-4xl font-black text-slate-900 tracking-tight">Payment Successful!</h2>
-        <p class="text-slate-500 font-medium mt-2">Your security deposit for {{ booking.property.title }} has been
-            received.</p>
+        <p class="text-slate-500 font-medium mt-2">
+            {% if payment_type == 'RENT' %}
+            Your monthly rent for <b>{{ booking.property.title }}</b> has been received.
+            {% else %}
+            Your security deposit for <b>{{ booking.property.title }}</b> has been received.
+            {% endif %}
+        </p>
     </div>
 
     <!-- Payment Receipt Card -->
@@ -35,6 +40,16 @@
         </div>
 
         <div class="space-y-6">
+            {% if payment_type == 'RENT' %}
+            <div class="flex justify-between">
+                <span class="text-slate-500 font-medium tracking-wide">Payment For</span>
+                <span class="text-slate-900 font-bold">Monthly Rent</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-slate-500 font-medium tracking-wide">Period</span>
+                <span class="text-slate-900 font-bold text-indigo-600">{% now "F Y" %}</span>
+            </div>
+            {% else %}
             <div class="flex justify-between text-xs">
                 <span class="text-slate-500 font-medium tracking-wide">Security Deposit ({{ breakdown.security_months }}
                     months)</span>
@@ -45,6 +60,8 @@
                     breakdown.contract_percentage }}%)</span>
                 <span class="text-slate-900 font-bold">₹{{ breakdown.contract_fee }}</span>
             </div>
+            {% endif %}
+
             <div class="flex justify-between">
                 <span class="text-slate-500 font-medium tracking-wide">Property</span>
                 <span class="text-slate-900 font-bold italic">{{ booking.property.title }}</span>
@@ -63,6 +80,14 @@
         </div>
 
         <!-- Action Buttons -->
+        {% if payment_type == 'RENT' %}
+        <div class="mt-12">
+            <a href="{% url 'tenant:rent_payments' %}"
+                class="block w-full bg-indigo-600 text-white py-4 rounded-2xl font-black text-sm text-center shadow-lg hover:bg-indigo-700 transition-all no-underline">
+                <i class="fas fa-calendar-check mr-2"></i> View Updated Rent Timeline
+            </a>
+        </div>
+        {% else %}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
             <a href="{% url 'contract:view' contract.id %}" target="_blank"
                 class="bg-arion-blue-light text-white py-4 rounded-2xl font-black text-sm text-center shadow-lg hover:bg-arion-blue transition-all no-underline">
@@ -79,6 +104,7 @@
                 <i class="fas fa-file-invoice-dollar mr-2 text-arion-blue"></i> Security Deposit Receipt
             </a>
         </div>
+        {% endif %}
     </div>
 
     <!-- Contextual Link -->

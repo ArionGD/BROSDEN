@@ -89,7 +89,32 @@ def property_detail(request, pk):
         from wishlist.models import Wishlist
         is_wishlisted = Wishlist.objects.filter(user=request.user, property=prop).exists()
         
+    # Calculate booking options (next 3 months, 1st date)
+    from datetime import timedelta
+    from django.utils import timezone
+    
+    current_date = timezone.now().date()
+    # Find the 1st of the next month
+    if current_date.month == 12:
+        next_month_start = current_date.replace(year=current_date.year + 1, month=1, day=1)
+    else:
+        next_month_start = current_date.replace(month=current_date.month + 1, day=1)
+    
+    booking_options = []
+    temp_date = next_month_start
+    for _ in range(3):
+        booking_options.append({
+            'value': temp_date.strftime('%Y-%m-%d'),
+            'label': temp_date.strftime('%B 1st, %Y')
+        })
+        # Move to 1st of next month
+        if temp_date.month == 12:
+            temp_date = temp_date.replace(year=temp_date.year + 1, month=1)
+        else:
+            temp_date = temp_date.replace(month=temp_date.month + 1)
+
     return render(request, 'property/detail.html', {
         'property': prop,
-        'is_wishlisted': is_wishlisted
+        'is_wishlisted': is_wishlisted,
+        'booking_options': booking_options
     })
