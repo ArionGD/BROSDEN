@@ -1,0 +1,47 @@
+{% extends process.booking.property.owner.portal_base|default:"core/base.html" %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="bg-gray-800/60 backdrop-blur-2xl border border-gray-700 rounded-3xl shadow-2xl overflow-hidden p-8">
+
+        <h2 class="text-2xl font-bold tracking-tight text-white mb-2">Upload Condition Report</h2>
+        <p class="text-sm text-gray-400 mb-6">Document the current state of {{ process.booking.property.title }} for the
+            tenant to verify.</p>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+
+            <div>
+                <label for="item_name" class="block text-sm font-medium text-gray-300">Item or Area Name</label>
+                <input type="text" name="item_name" id="item_name"
+                    class="mt-1 block w-full bg-gray-900 border border-gray-700 rounded-xl shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white"
+                    placeholder="e.g. Living Room Walls, Kitchen Sink" required>
+            </div>
+
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-300">Description of
+                    Condition</label>
+                <textarea name="description" id="description" rows="3"
+                    class="mt-1 block w-full bg-gray-900 border border-gray-700 rounded-xl shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white"
+                    placeholder="Minor scratch near window, otherwise clean." required></textarea>
+            </div>
+
+            <div>
+                <label for="image" class="block text-sm font-medium text-gray-300">Photo Evidence (Optional but
+                    recommended)</label>
+                <input type="file" name="image" id="image"
+                    class="mt-1 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-gray-700 dark:file:text-indigo-400">
+            </div>
+
+            <div class="pt-4 flex items-center justify-end space-x-4 border-t border-gray-700">
+                <a href="{% url 'onboarding:dashboard' process.id %}"
+                    class="text-sm font-medium text-gray-400 hover:text-white">Cancel</a>
+                <button type="submit"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Upload Report
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

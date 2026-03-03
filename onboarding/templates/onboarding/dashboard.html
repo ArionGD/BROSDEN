@@ -1,0 +1,111 @@
+{% extends portal_base|default:"core/base.html" %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="bg-gray-800/60 backdrop-blur-2xl border border-gray-700 rounded-3xl shadow-2xl overflow-hidden">
+
+        <!-- Header -->
+        <div
+            class="px-8 py-6 border-b border-gray-700 bg-gradient-to-r from-gray-900/40 to-transparent flex items-center justify-between">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-white drop-shadow">Move-in Checklist</h2>
+                <p class="text-sm text-gray-400 mt-1">{{ process.booking.property.title }}</p>
+            </div>
+            <div class="text-right">
+                <p class="text-sm text-gray-400 mb-1">Overall Progress</p>
+                <div class="flex items-center gap-3">
+                    <div class="w-32 bg-gray-800 rounded-full h-2">
+                        <div class="bg-indigo-500 h-2 rounded-full" {% if process
+                            %}style="width: {{ process.progress_percentage }}%;" {% endif %}>
+                        </div>
+                    </div>
+                    <span class="text-white font-medium">{{ process.progress_percentage|floatformat:0 }}%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Steps Timeline -->
+        <div class="p-8">
+            <div
+                class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-700 before:to-transparent">
+
+                <!-- Step 1: Inspection -->
+                <div
+                    class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div
+                        class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-white bg-{% if process.inspection_complete %}indigo-500{% else %}gray-800{% endif %} text-white font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-lg relative z-10 transition-colors duration-300">
+                        {% if process.inspection_complete %}<i class="fas fa-check"></i>{% else %}1{% endif %}
+                    </div>
+                    <div
+                        class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-gray-900/50 border border-gray-700 p-5 rounded-2xl shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/50">
+                        <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                            <i class="fas fa-camera text-indigo-400"></i> Condition Report
+                        </h3>
+                        <p class="text-gray-400 text-sm mt-2">Owner uploads photos; tenant verifies condition to protect
+                            deposit.</p>
+                        <div class="mt-4">
+                            {% if is_owner %}
+                            <a href="{% url 'onboarding:upload_condition' process.id %}"
+                                class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl">Upload
+                                Photos</a>
+                            {% endif %}
+                            <div
+                                class="mt-2 text-sm {% if process.inspection_complete %}text-green-400{% else %}text-yellow-400{% endif %}">
+                                {% if process.inspection_complete %}
+                                <i class="fas fa-check-circle mr-1"></i> Completed
+                                {% else %}
+                                <i class="fas fa-clock mr-1"></i> Pending Verification
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Room Inventory -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div
+                        class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-white bg-{% if process.inventory_confirmed %}indigo-500{% else %}gray-800{% endif %} text-white font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-lg relative z-10 transition-colors duration-300">
+                        {% if process.inventory_confirmed %}<i class="fas fa-check"></i>{% else %}2{% endif %}
+                    </div>
+                    <div
+                        class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-gray-900/50 border border-gray-700 p-5 rounded-2xl shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/50">
+                        <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                            <i class="fas fa-box-open text-indigo-400"></i> Room Inventory
+                        </h3>
+                        <p class="text-gray-400 text-sm mt-2">Confirm receipt of furnished items (Bed, Table, Mattress).
+                        </p>
+                        <div class="mt-4">
+                            {% for item in process.inventory_items.all %}
+                            <div
+                                class="flex items-center justify-between py-2 border-b border-gray-700/50 last:border-0">
+                                <span class="text-sm text-gray-300">{{ item.item_name }}</span>
+                                {% if item.is_confirmed_by_tenant %}
+                                <span class="text-green-400 text-xs"><i class="fas fa-check"></i> Confirmed</span>
+                                {% else %}
+                                {% if not is_owner %}
+                                <form action="{% url 'onboarding:confirm_inventory' item.id %}" method="post"
+                                    class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                        class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded">Verify</button>
+                                </form>
+                                {% else %}
+                                <span class="text-yellow-400 text-xs">Waiting for Tenant</span>
+                                {% endif %}
+                                {% endif %}
+                            </div>
+                            {% empty %}
+                            <p class="text-xs text-gray-500 italic">No inventory items listed.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional steps can be mapped identically down the line... -->
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

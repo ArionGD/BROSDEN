@@ -127,6 +127,10 @@ def payment_success(request, booking_id):
         
         contract = generate_contract(booking)
         
+        # Initialize Onboarding Process
+        from onboarding.models import OnboardingProcess
+        OnboardingProcess.objects.get_or_create(booking=booking)
+        
         try:
             from mailer.services import send_contract_created_email
             send_contract_created_email(contract, request.user, request)

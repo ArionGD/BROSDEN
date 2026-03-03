@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'pro',
     'badge',
     'map',
+    'vibe',
+    'onboarding',
+    'feedback',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

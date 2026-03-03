@@ -113,8 +113,13 @@ def property_detail(request, pk):
         else:
             temp_date = temp_date.replace(month=temp_date.month + 1)
 
+    from feedback.models import MonthlyFeedback
+    monthly_feedbacks = MonthlyFeedback.objects.filter(property=prop).order_by('-submitted_at')
+
     return render(request, 'property/detail.html', {
         'property': prop,
         'is_wishlisted': is_wishlisted,
-        'booking_options': booking_options
+        'booking_options': booking_options,
+        'monthly_feedbacks': monthly_feedbacks
     })
+

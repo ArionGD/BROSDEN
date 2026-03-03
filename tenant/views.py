@@ -7,7 +7,15 @@ from datetime import timedelta
 
 @tenant_required
 def dashboard(request):
-    return render(request, 'tenant/dashboard.html')
+    from onboarding.models import OnboardingProcess
+    from feedback.models import FeedbackRequest
+    onboarding_processes = OnboardingProcess.objects.filter(booking__tenant=request.user).order_by('-created_at')
+    pending_feedbacks = FeedbackRequest.objects.filter(contract__booking__tenant=request.user, status='PENDING')
+    return render(request, 'tenant/dashboard.html', {
+        'onboarding_processes': onboarding_processes,
+        'pending_feedbacks': pending_feedbacks
+    })
+
 
 @tenant_required
 def rent_payments(request):

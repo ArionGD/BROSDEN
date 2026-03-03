@@ -34,5 +34,8 @@ urlpatterns = [
     path('reviews/', include('reviews.urls')),
     path('pro/', include('pro.urls')),
     path('map/', include('map.urls')),
+    path('vibe/', include('vibe.urls')),
+    path('onboarding/', include('onboarding.urls')),
+    path('feedback/', include('feedback.urls')),
     path('', include('core.urls')),
 ]

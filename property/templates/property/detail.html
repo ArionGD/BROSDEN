@@ -76,6 +76,71 @@
 
             <!-- Map View Section -->
             {% include "map/map_frame.html" %}
+
+            <!-- Vibe Check Section -->
+            {% include "vibe/vibe_widget.html" %}
+
+            <!-- Continuous Feedback Loop Section -->
+            {% if monthly_feedbacks %}
+            <div class="mt-12">
+                <h3 class="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
+                    <i class="fas fa-history text-indigo-500"></i> Continuous Feedback Loop
+                    <span
+                        class="text-xs font-bold uppercase tracking-widest text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full">Live
+                        Monitor</span>
+                </h3>
+                <p class="text-slate-500 mb-8 border-l-4 border-indigo-200 pl-4 py-1">Real-time monthly ratings directly
+                    from active tenants to give you an accurate picture of what it's like to live here.</p>
+
+                <div
+                    class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent">
+                    {% for feedback in monthly_feedbacks %}
+                    <div
+                        class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                        <!-- Timeline Marker -->
+                        <div
+                            class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10 transition-colors duration-300">
+                            <i class="fas fa-comment-dots text-sm"></i>
+                        </div>
+
+                        <!-- Timeline Content -->
+                        <div
+                            class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white border border-slate-200 p-6 rounded-[2rem] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:border-indigo-300">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h4 class="font-bold text-slate-900">{{ feedback.submitted_at|date:"F Y" }} Review
+                                    </h4>
+                                    <p class="text-xs text-slate-500">By Tenant: {{ feedback.tenant.username }}</p>
+                                </div>
+                                <div
+                                    class="bg-amber-50 text-amber-600 font-black px-3 py-1 rounded-xl flex items-center gap-1 border border-amber-100">
+                                    <i class="fas fa-star text-xs"></i> {{ feedback.get_average_rating|floatformat:1 }}
+                                </div>
+                            </div>
+
+                            <div
+                                class="grid grid-cols-2 gap-3 mb-4 text-sm bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                                <div class="flex justify-between"><span class="text-slate-500">Maintenance</span> <span
+                                        class="font-bold text-slate-800">{{ feedback.maintenance_rating }}/5</span>
+                                </div>
+                                <div class="flex justify-between"><span class="text-slate-500">Response</span> <span
+                                        class="font-bold text-slate-800">{{ feedback.responsiveness_rating }}/5</span>
+                                </div>
+                                <div class="flex justify-between"><span class="text-slate-500">Safety</span> <span
+                                        class="font-bold text-slate-800">{{ feedback.safety_rating }}/5</span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Vibe</span> <span
+                                        class="font-bold text-slate-800">{{ feedback.vibe_rating }}/5</span></div>
+                            </div>
+
+                            {% if feedback.comments %}
+                            <p class="text-sm text-slate-600 italic">"{{ feedback.comments }}"</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
         </div>
 
         <!-- Right: Action Sidebar -->
