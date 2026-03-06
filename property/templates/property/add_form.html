@@ -34,6 +34,12 @@
                 {{ form.property_type }}
             </div>
 
+            <div class="space-y-2">
+                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Total Capacity
+                    (Tenants)</label>
+                {{ form.total_capacity }}
+            </div>
+
             <!-- Location -->
             <div class="space-y-2">
                 <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">City</label>
@@ -147,11 +153,15 @@
 
             // Style the lat/lng inputs inside the dark box
             document.addEventListener('DOMContentLoaded', () => {
-                ['id_latitude', 'id_longitude'].forEach(id => {
+                ['id_latitude', 'id_longitude', 'id_total_capacity'].forEach(id => {
                     const el = document.getElementById(id);
                     if (el) {
-                        el.classList.remove('bg-slate-50', 'border-slate-200');
-                        el.classList.add('bg-white/10', 'border-white/10', 'text-white', 'placeholder-white/20');
+                        if (id === 'id_total_capacity') {
+                            // Ensure it has a reasonable default or is visible
+                        } else {
+                            el.classList.remove('bg-slate-50', 'border-slate-200');
+                            el.classList.add('bg-white/10', 'border-white/10', 'text-white', 'placeholder-white/20');
+                        }
                     }
                 });
             });

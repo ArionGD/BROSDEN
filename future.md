@@ -1,5 +1,3 @@
-Based on my research into industrial property management standards, here is the professional step-by-step process that typically follows the signing of a contract and payment confirmation:
-
 1. The Onboarding Phase (Immediate Actions)
 Listing Removal: The property is officially updated in the company's internal CRM and removed from public marketing platforms (Marketplace) to prevent duplicate inquiries.
 Portal Access: The tenant is granted full access to their Tenant Dashboard, where they can view their executed digital lease, payment history, and future rent schedule.

@@ -4,10 +4,7 @@ from django.conf import settings
 class Property(models.Model):
     PROPERTY_TYPES = (
         ('APARTMENT', 'Apartment'),
-        ('HOUSE', 'House'),
-        ('VILLA', 'Villa'),
-        ('COMMERCIAL', 'Commercial'),
-        ('PLOT', 'Plot'),
+        ('PG', 'Paying Guest'),
     )
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='properties')
@@ -28,6 +25,19 @@ class Property(models.Model):
     is_verified = models.BooleanField(default=False)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
+
+    # PG / Capacity tracking
+    total_capacity = models.IntegerField(default=1, help_text="Total number of tenants this property can handle")
+    current_occupancy = models.IntegerField(default=0, help_text="Number of current tenants")
+
+    @property
+    def available_spaces(self):
+        return max(0, self.total_capacity - self.current_occupancy)
+
+    @property
+    def is_vacant(self):
+        return self.available_spaces > 0
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
