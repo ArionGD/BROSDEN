@@ -9,11 +9,27 @@ from datetime import timedelta
 def dashboard(request):
     from onboarding.models import OnboardingProcess
     from feedback.models import FeedbackRequest
+    from analytics.models import SearchActivity
+    
     onboarding_processes = OnboardingProcess.objects.filter(booking__tenant=request.user).order_by('-created_at')
     pending_feedbacks = FeedbackRequest.objects.filter(contract__booking__tenant=request.user, status='PENDING')
+    
+    my_bookings = BookingRequest.objects.filter(tenant=request.user)
+    total_sent = my_bookings.count()
+    approved = my_bookings.filter(status='APPROVED').count()
+    rejected = my_bookings.filter(status='REJECTED').count()
+    
+    success_rate = (approved / total_sent * 100) if total_sent > 0 else 0
+    recent_searches = SearchActivity.objects.filter(user=request.user).order_by('-searched_at')[:5]
+
     return render(request, 'tenant/dashboard.html', {
         'onboarding_processes': onboarding_processes,
-        'pending_feedbacks': pending_feedbacks
+        'pending_feedbacks': pending_feedbacks,
+        'total_sent': total_sent,
+        'approved': approved,
+        'rejected': rejected,
+        'success_rate': round(success_rate, 1),
+        'recent_searches': recent_searches,
     })
 
 

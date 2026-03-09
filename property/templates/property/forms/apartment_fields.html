@@ -1,0 +1,40 @@
+<!-- Apartment Fields -->
+<div id="apartment-fields" class="grid grid-cols-1 md:grid-cols-2 gap-8 hidden">
+    <div class="space-y-2">
+        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">BHK Type</label>
+        {{ form.bhk_type }}
+    </div>
+    <div class="space-y-2">
+        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Furnishing Status</label>
+        {{ form.furnishing_status }}
+    </div>
+    <div class="space-y-2">
+        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Floor Number</label>
+        {{ form.floor_number }}
+    </div>
+    <div class="space-y-2">
+        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Total Floors</label>
+        {{ form.total_floors }}
+    </div>
+    <div class="space-y-2">
+        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Bathrooms</label>
+        {{ form.bathrooms }}
+    </div>
+    <div class="space-y-2">
+        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Balconies</label>
+        {{ form.balconies }}
+    </div>
+    <div class="space-y-2">
+        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Parking Type</label>
+        {{ form.parking_type }}
+    </div>
+    <div class="space-y-2">
+        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Monthly Maintenance (₹)</label>
+        {{ form.maintenance_charges }}
+    </div>
+    <div class="md:col-span-2 space-y-2">
+        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Amenities</label>
+        {{ form.amenities }}
+        <p class="text-[10px] text-slate-400 font-bold px-1 italic">E.g., Lift, Gym, Swimming Pool, Security, etc.</p>
+    </div>
+</div>

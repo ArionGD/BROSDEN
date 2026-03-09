@@ -35,7 +35,7 @@ def notification_list(request):
         'unread_count':  unread_count,
         'filter_type':   f_type,
         'read_filter':   read_f,
-        'type_choices':  Notification.TYPE_CHOICES,
+        'type_choices':  [c for c in Notification.TYPE_CHOICES if c[0] != 'SUPPORT'],
         'read_choices':  _READ_CHOICES,
         'portal_base':   request.user.portal_base
     })

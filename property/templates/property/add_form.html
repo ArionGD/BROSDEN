@@ -1,7 +1,7 @@
 {% extends "owner/portal_base.html" %}
 
 {% block portal_content %}
-<div class="max-w-4xl mx-auto">
+<div class="max-w-4xl mx-auto pb-20">
     <div class="mb-10">
         <h2 class="text-3xl font-black text-slate-800 tracking-tight">{% if is_edit %}Edit Property{% else %}List a
             Property{% endif %}</h2>
@@ -9,175 +9,348 @@
             the details below to reach potential tenants.{% endif %}</p>
     </div>
 
-    <form method="POST" class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
+    <form method="POST" enctype="multipart/form-data" class="space-y-12">
         {% csrf_token %}
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Basic Info -->
-            <div class="md:col-span-2 space-y-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Property Title</label>
-                {{ form.title }}
+        <!-- Section 1: Basic Information -->
+        <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
+            <div class="flex items-center gap-4 mb-2">
+                <div
+                    class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-black">
+                    1</div>
+                <h3 class="text-xl font-black text-slate-800">Core Information</h3>
             </div>
 
-            <div class="md:col-span-2 space-y-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Description</label>
-                {{ form.description }}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="md:col-span-2 space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Property
+                        Title</label>
+                    {{ form.title }}
+                </div>
+
+                <div class="md:col-span-2 space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Description</label>
+                    {{ form.description }}
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Property
+                        Type</label>
+                    {{ form.property_type }}
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Area (sqft)</label>
+                    {{ form.sqft }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Specific Details (Dynamic) -->
+        <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
+            <div class="flex items-center gap-4 mb-2">
+                <div
+                    class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-black">
+                    2</div>
+                <h3 class="text-xl font-black text-slate-800">Property Specifics</h3>
             </div>
 
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Monthly Rent (₹)</label>
-                {{ form.price }}
+            <!-- Apartment Fields -->
+            {% include "property/forms/apartment_fields.html" %}
+
+            <!-- PG Fields -->
+            {% include "property/forms/pg_fields.html" %}
+        </div>
+
+        <!-- Section 3: Pricing & Logistics -->
+        <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
+            <div class="flex items-center gap-4 mb-2">
+                <div
+                    class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-black">
+                    3</div>
+                <h3 class="text-xl font-black text-slate-800">Pricing & Logistics</h3>
             </div>
 
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Property Type</label>
-                {{ form.property_type }}
-            </div>
-
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Total Capacity
-                    (Tenants)</label>
-                {{ form.total_capacity }}
-            </div>
-
-            <!-- Location -->
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">City</label>
-                {{ form.city }}
-            </div>
-
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Full Address /
-                    Locality</label>
-                {{ form.address }}
-            </div>
-
-            <!-- Features -->
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Bedrooms (BHK)</label>
-                {{ form.bedrooms }}
-            </div>
-
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Bathrooms</label>
-                {{ form.bathrooms }}
-            </div>
-
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Area (sqft)</label>
-                {{ form.sqft }}
-            </div>
-
-            <!-- Financial Settings -->
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Security Deposit
-                    (Months)</label>
-                {{ form.security_deposit_months }}
-            </div>
-
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Contract Fee (%)</label>
-                {{ form.contract_fee_percentage }}
-            </div>
-
-            <!-- Geolocation Section -->
-            <div class="md:col-span-2 pt-6">
-                <div class="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden group">
-                    <div
-                        class="absolute -top-10 -right-10 w-40 h-40 bg-arion-blue/20 rounded-full blur-3xl transition-all group-hover:bg-arion-blue/30">
-                    </div>
-                    <div class="relative flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div class="flex-1">
-                            <h4 class="text-xl font-black mb-2 flex items-center gap-2">
-                                <i class="fas fa-location-crosshairs text-arion-orange"></i> Precise Map Location
-                            </h4>
-                            <p class="text-slate-400 text-sm font-medium">For better visibility, pin your property's
-                                exact location on our map.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Monthly Rent
+                        (₹)</label>
+                    {{ form.price }}
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Security Deposit
+                        (₹)</label>
+                    {{ form.security_deposit }}
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Available
+                        From</label>
+                    {{ form.availability_date }}
+                </div>
+                <div class="md:col-span-2 space-y-4">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Upload Property
+                        Photos</label>
+                    <div class="relative group">
+                        <span id="images-meta" data-existing-count="{{ property.images.count|default:0 }}" class="hidden"></span>
+                        <!-- Existing Images -->
+                        {% if is_edit and property.images.all %}
+                        <div class="mb-6 grid grid-cols-4 md:grid-cols-6 gap-4" id="existing-images">
+                            {% for img in property.images.all %}
+                            <div class="relative group/img aspect-square rounded-2xl overflow-hidden border-2 border-slate-100 shadow-sm transition-all hover:border-red-400" id="img-container-{{ img.pk }}">
+                                <img src="{{ img.image.url }}" class="w-full h-full object-cover">
+                                <button type="button" data-id="{{ img.pk }}" 
+                                    class="delete-existing-btn absolute inset-0 bg-red-500/80 text-white flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-all font-black text-xs uppercase tracking-widest">
+                                    <i class="fas fa-trash mr-2"></i> Delete
+                                </button>
+                            </div>
+                            {% endfor %}
                         </div>
-                        <button type="button" onclick="getLocation()"
-                            class="bg-white text-slate-900 px-8 py-4 rounded-2xl font-black shadow-xl hover:bg-arion-orange hover:text-white transition-all transform active:scale-95 whitespace-nowrap">
-                            Pin My Location <i class="fas fa-bullseye ml-2"></i>
-                        </button>
-                    </div>
+                        {% endif %}
 
-                    <div class="grid grid-cols-2 gap-6 mt-8">
-                        <div class="space-y-2">
-                            <label
-                                class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Latitude</label>
-                            {{ form.latitude }}
+                        <label for="id_images" id="upload-label"
+                            class="flex flex-col items-center justify-center w-full h-40 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-all group">
+                            <div class="flex flex-col items-center justify-center py-6">
+                                <i
+                                    class="fas fa-cloud-upload-alt text-4xl text-slate-300 group-hover:text-blue-500 transition-all mb-2"></i>
+                                <span class="text-sm font-bold text-slate-500 group-hover:text-blue-600" id="upload-hint">Click to upload multiple images</span>
+                                <span class="text-[10px] text-slate-400 uppercase font-black tracking-widest mt-1">PNG,
+                                    JPG up to 10MB (Limit: 10 Total)</span>
+                            </div>
+                            <input type="file" name="images" id="id_images" multiple accept="image/*" class="hidden">
+                        </label>
+                        <div id="image-preview" class="grid grid-cols-4 md:grid-cols-8 gap-4 mt-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Contact & Location -->
+        <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
+            <div class="flex items-center gap-4 mb-2">
+                <div
+                    class="w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center font-black">
+                    4</div>
+                <h3 class="text-xl font-black text-slate-800">Contact & Location</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Contact Name</label>
+                    {{ form.contact_name }}
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Contact
+                        Phone</label>
+                    {{ form.contact_phone }}
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">City</label>
+                    {{ form.city }}
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Full Address /
+                        Locality</label>
+                    {{ form.address }}
+                </div>
+
+                <!-- Geolocation -->
+                <div class="md:col-span-2 pt-6">
+                    <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden group shadow-2xl">
+                        <div
+                            class="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl transition-all group-hover:bg-blue-500/20">
                         </div>
-                        <div class="space-y-2">
-                            <label
-                                class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Longitude</label>
-                            {{ form.longitude }}
+                        <div class="relative flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div class="flex-1">
+                                <h4 class="text-xl font-black mb-2 flex items-center gap-2">
+                                    <i class="fas fa-location-crosshairs text-blue-400"></i> Map Location
+                                </h4>
+                                <p class="text-slate-400 text-sm font-medium">Pin your property's exact location for
+                                    tenants.</p>
+                            </div>
+                            <button type="button" onclick="getLocation(event)"
+                                class="bg-white text-slate-900 px-8 py-4 rounded-2xl font-black shadow-xl hover:bg-blue-600 hover:text-white transition-all transform active:scale-95 whitespace-nowrap">
+                                Get Coordinates <i class="fas fa-bullseye ml-2"></i>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6 mt-8">
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Latitude</label>
+                                {{ form.latitude }}
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Longitude</label>
+                                {{ form.longitude }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <script>
-            function getLocation() {
-                const btn = event.currentTarget;
-                const originalText = btn.innerHTML;
-                btn.innerHTML = 'Fetching... <i class="fas fa-spinner fa-spin ml-2"></i>';
-                btn.disabled = true;
-
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            document.getElementById('id_latitude').value = position.coords.latitude.toFixed(6);
-                            document.getElementById('id_longitude').value = position.coords.longitude.toFixed(6);
-                            btn.innerHTML = 'Location Saved! <i class="fas fa-check-circle ml-2"></i>';
-                            btn.classList.add('bg-emerald-500', 'text-white');
-                            setTimeout(() => {
-                                btn.innerHTML = originalText;
-                                btn.classList.remove('bg-emerald-500', 'text-white');
-                                btn.disabled = false;
-                            }, 3000);
-                        },
-                        (error) => {
-                            let msg = "Check permissions or use a secure connection.";
-                            if (error.code == 1) msg = "Permission denied.";
-                            alert("Geolocation error: " + msg);
-                            btn.innerHTML = originalText;
-                            btn.disabled = false;
-                        }
-                    );
-                } else {
-                    alert("Geolocation is not supported by this browser.");
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }
-            }
-
-            // Style the lat/lng inputs inside the dark box
-            document.addEventListener('DOMContentLoaded', () => {
-                ['id_latitude', 'id_longitude', 'id_total_capacity'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) {
-                        if (id === 'id_total_capacity') {
-                            // Ensure it has a reasonable default or is visible
-                        } else {
-                            el.classList.remove('bg-slate-50', 'border-slate-200');
-                            el.classList.add('bg-white/10', 'border-white/10', 'text-white', 'placeholder-white/20');
-                        }
-                    }
-                });
-            });
-        </script>
-
-        <div class="pt-8 border-t border-slate-100 flex gap-4">
+        <!-- Form Actions -->
+        <div class="pt-10 flex gap-6 items-center">
             <button type="submit"
-                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl shadow-lg shadow-blue-100 transition-all transform hover:-translate-y-1 active:scale-95 text-lg">
-                {% if is_edit %}Update Listing{% else %}Submit Listing{% endif %} <i
-                    class="fas {% if is_edit %}fa-save{% else %}fa-rocket{% endif %} ml-2 text-sm"></i>
+                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-2xl shadow-blue-200 transition-all transform hover:-translate-y-1 active:scale-95 text-lg">
+                {% if is_edit %}Save Changes{% else %}Launch Property Listing{% endif %}
+                <i class="fas {% if is_edit %}fa-save{% else %}fa-rocket{% endif %} ml-2 text-sm"></i>
             </button>
             <a href="{% url 'property:owner_list' %}"
-                class="px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold transition-all flex items-center">
+                class="px-10 py-5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl font-bold transition-all text-lg">
                 Cancel
             </a>
         </div>
     </form>
 </div>
+
+<script>
+    function getLocation(event) {
+        const btn = event.currentTarget;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = 'Fetching... <i class="fas fa-spinner fa-spin ml-2"></i>';
+        btn.disabled = true;
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    document.getElementById('id_latitude').value = position.coords.latitude.toFixed(6);
+                    document.getElementById('id_longitude').value = position.coords.longitude.toFixed(6);
+                    btn.innerHTML = 'Captured! <i class="fas fa-check-circle ml-2"></i>';
+                    btn.classList.add('bg-emerald-500', 'text-white');
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.classList.remove('bg-emerald-500', 'text-white');
+                        btn.disabled = false;
+                    }, 3000);
+                },
+                (error) => {
+                    alert("Geolocation error: Check permissions.");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by this browser.");
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // Dynamic field toggling
+    const typeSelect = document.getElementById('id_property_type');
+    const aptFields = document.getElementById('apartment-fields');
+    const pgFields = document.getElementById('pg-fields');
+
+    function toggleFields() {
+        const val = typeSelect.value;
+        if (val === 'APARTMENT') {
+            aptFields.classList.remove('hidden');
+            pgFields.classList.add('hidden');
+        } else if (val === 'PG') {
+            aptFields.classList.add('hidden');
+            pgFields.classList.remove('hidden');
+        } else {
+            aptFields.classList.add('hidden');
+            pgFields.classList.add('hidden');
+        }
+    }
+
+    typeSelect.addEventListener('change', toggleFields);    // Image Selection Accumulation logic
+    let selectedFiles = [];
+    const imageInput = document.getElementById('id_images');
+    const imagePreview = document.getElementById('image-preview');
+    const uploadHint = document.getElementById('upload-hint');
+    const metaBox = document.getElementById('images-meta');
+    const existingCount = parseInt(metaBox.dataset.existingCount || '0');
+
+    function updateInputAndHint() {
+        const dt = new DataTransfer();
+        selectedFiles.forEach(file => dt.items.add(file));
+        imageInput.files = dt.files;
+        
+        if (selectedFiles.length > 0) {
+            uploadHint.textContent = `${selectedFiles.length} images selected`;
+            uploadHint.classList.add('text-blue-600');
+        } else {
+            uploadHint.textContent = 'Click to upload multiple images';
+            uploadHint.classList.remove('text-blue-600');
+        }
+    }
+
+    window.removeNewImage = function(btn) {
+        const div = btn.closest('.preview-item');
+        const idx = Array.from(imagePreview.children).indexOf(div);
+        if (idx > -1) {
+            selectedFiles.splice(idx, 1);
+            div.remove();
+            updateInputAndHint();
+        }
+    };
+
+    imageInput.addEventListener('change', function () {
+        const newFiles = Array.from(this.files);
+        const limit = 10 - existingCount - selectedFiles.length;
+        
+        if (newFiles.length > limit) {
+            alert(`You can only select ${limit} more image(s). (Max 10 total)`);
+            this.value = '';
+            return;
+        }
+
+        newFiles.forEach(file => {
+            selectedFiles.push(file);
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const div = document.createElement('div');
+                div.className = 'preview-item relative aspect-square rounded-xl overflow-hidden border border-slate-200 shadow-sm group/prev';
+                div.innerHTML = `
+                    <img src="${e.target.result}" class="w-full h-full object-cover">
+                    <button type="button" onclick="removeNewImage(this)" 
+                        class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover/prev:opacity-100 transition-all shadow-lg hover:scale-110">
+                        <i class="fas fa-times text-[10px]"></i>
+                    </button>
+                `;
+                imagePreview.appendChild(div);
+            }
+            reader.readAsDataURL(file);
+        });
+
+        updateInputAndHint();
+    });
+
+    function deleteExistingImage(pk) {
+        if (!confirm('Are you sure you want to delete this image?')) return;
+        
+        fetch(`/property/image/delete/${pk}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(r => r.json()).then(data => {
+            if (data.status === 'ok') {
+                document.getElementById('img-container-' + pk).remove();
+                location.reload(); 
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        toggleFields();
+
+        document.querySelectorAll('.delete-existing-btn').forEach(btn => {
+            btn.addEventListener('click', () => deleteExistingImage(btn.dataset.id));
+        });
+
+        // Style special fields
+        ['id_latitude', 'id_longitude'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.remove('bg-slate-50', 'border-slate-200');
+                el.classList.add('bg-white/10', 'border-white/10', 'text-white', 'placeholder-white/20');
+            }
+        });
+    });
+</script>
 {% endblock %}

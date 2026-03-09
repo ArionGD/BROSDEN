@@ -47,8 +47,8 @@
                         <p class="text-sm font-bold text-slate-900">{{ contract.created_at|date:"d M Y" }}</p>
                         <div class="mt-4">
                             <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Contract ID</p>
-                            <p class="text-sm font-mono font-bold text-arion-orange">CON-{{
-                                contract.id|stringformat:"05d" }}</p>
+                            <p class="text-sm font-mono font-bold text-arion-orange">
+                                CON-{{ contract.id|stringformat:"05d" }}</p>
                         </div>
                     </div>
                 </div>
@@ -75,8 +75,8 @@
                             </div>
                             <div class="flex justify-between border-b border-slate-800 pb-3">
                                 <span class="text-slate-400 text-xs">Total Amount Paid</span>
-                                <span class="text-sm font-black text-arion-orange">₹{{
-                                    contract.booking.paymentreceipt_set.first.amount }}</span>
+                                <span class="text-sm font-black text-arion-orange">
+                                    ₹{{ contract.booking.paymentreceipt_set.first.amount }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-slate-400 text-xs">Validation Status</span>
@@ -94,8 +94,8 @@
                         <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
                             <p class="text-[9px] font-black uppercase text-slate-400 mb-2">Digital Signature 02</p>
                             <p class="text-xs font-serif italic text-slate-600">Merchant Hash Verified</p>
-                            <p class="text-sm font-bold text-slate-900 mt-2">{{ contract.booking.property.owner.username
-                                }}</p>
+                            <p class="text-sm font-bold text-slate-900 mt-2">
+                                {{ contract.booking.property.owner.username }}</p>
                         </div>
                     </div>
                 </div>

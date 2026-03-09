@@ -143,6 +143,10 @@ STORAGES = {
     },
 }
 
+# Media files (Uploaded by users)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Email Configuration — Gmail SMTP

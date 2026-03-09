@@ -29,8 +29,9 @@
             </div>
 
             <div class="prose prose-sm italic text-slate-600">
-                <p>"{{ booking.message|default:"I am interested in this property and would like to schedule a visit."
-                    }}"</p>
+                <p>"
+                    {{ booking.message|default:"I am interested in this property and would like to schedule a visit." }}
+                "</p>
             </div>
         </div>
 
@@ -68,8 +69,8 @@
             </div>
             {% endif %}
 
-            <p class="text-center text-[9px] font-black uppercase text-slate-300 mt-4 tracking-tighter">Received on {{
-                booking.created_at|date:"F d, Y" }}</p>
+            <p class="text-center text-[9px] font-black uppercase text-slate-300 mt-4 tracking-tighter">Received on 
+                {{ booking.created_at|date:"F d, Y" }}</p>
         </div>
     </div>
     {% empty %}

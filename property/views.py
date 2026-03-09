@@ -4,8 +4,9 @@ from .models import Property
 from .forms import PropertyForm
 from analytics.models import PropertyView, SearchActivity
 from accounts.decorators import tenant_required, owner_required
-
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
 
 def browse_properties(request):
     """View for Tenants to browse all properties."""
@@ -38,7 +39,6 @@ def owner_property_list(request):
 @owner_required
 def add_property(request):
     """View for Owners to add a new property."""
-    # Enforce KYC
     if not request.user.is_kyc_verified:
         messages.warning(request, "Please complete your KYC verification before listing a property.")
         return redirect('payment:owner_kyc')
@@ -49,6 +49,13 @@ def add_property(request):
             prop = form.save(commit=False)
             prop.owner = request.user
             prop.save()
+            
+            # Handle Multiple Images (Limit to 10)
+            images = request.FILES.getlist('images')[:10]
+            from .models import PropertyImage
+            for img in images:
+                PropertyImage.objects.create(property=prop, image=img)
+                
             messages.success(request, "Property listed successfully!")
             return redirect('property:owner_list')
     else:
@@ -64,6 +71,19 @@ def edit_property(request, pk):
         form = PropertyForm(request.POST, instance=prop)
         if form.is_valid():
             form.save()
+            
+            # Handle New Images (Total limit 10)
+            existing_count = prop.images.count()
+            allowed_new = max(0, 10 - existing_count)
+            images = request.FILES.getlist('images')[:allowed_new]
+            
+            from .models import PropertyImage
+            for img in images:
+                PropertyImage.objects.create(property=prop, image=img)
+                
+            if len(request.FILES.getlist('images')) > allowed_new:
+                messages.warning(request, f"Some images were not uploaded because the limit of 10 photos has been reached.")
+            
             messages.success(request, "Property updated successfully!")
             return redirect('property:owner_list')
     else:
@@ -122,4 +142,13 @@ def property_detail(request, pk):
         'booking_options': booking_options,
         'monthly_feedbacks': monthly_feedbacks
     })
+
+@owner_required
+@require_POST
+def delete_property_image(request, pk):
+    """AJAX view to delete a specific property image."""
+    from .models import PropertyImage
+    img = get_object_or_404(PropertyImage, pk=pk, property__owner=request.user)
+    img.delete()
+    return JsonResponse({'status': 'ok'})
 

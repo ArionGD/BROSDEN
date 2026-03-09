@@ -41,8 +41,12 @@
         {% owner_badge prop.owner as badge %}
         <div
             class="group bg-white rounded-[2rem] overflow-hidden border border-slate-200 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-            <div class="relative h-56 bg-slate-100 flex items-center justify-center text-slate-300">
+            <div class="relative h-56 bg-slate-100 flex items-center justify-center text-slate-300 overflow-hidden">
+                {% if prop.images.first %}
+                <img src="{{ prop.images.first.image.url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                {% else %}
                 <i class="fas fa-image text-3xl group-hover:scale-125 transition-transform"></i>
+                {% endif %}
                 <div class="absolute top-4 left-4 flex flex-col gap-2 items-start">
                     {% if prop.is_verified %}
                     <span

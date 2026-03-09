@@ -28,6 +28,14 @@ class PropertyModelTest(TestCase):
         self.property.save()
         self.assertFalse(self.property.is_vacant)
 
+    def test_financial_breakdown_fixed_fee(self):
+        """Test that contract fee is always 2000."""
+        breakdown = self.property.get_financial_breakdown()
+        self.assertEqual(breakdown['contract_fee'], 2000)
+        # Verify total calculation
+        expected_total = (self.property.price * self.property.security_deposit_months) + 2000
+        self.assertEqual(breakdown['total'], expected_total)
+
     def test_pg_type_exists(self):
         """Test that PG is a valid property type."""
         choices = dict(Property.PROPERTY_TYPES)

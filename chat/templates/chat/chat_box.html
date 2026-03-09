@@ -35,8 +35,8 @@
                 <p class="text-sm font-medium leading-relaxed">{{ message.content }}</p>
                 <div class="mt-2 flex items-center gap-2 {% if message.sender == user %}justify-end{% endif %}">
                     <span
-                        class="text-[9px] {% if message.sender == user %}text-blue-100{% else %}text-slate-300{% endif %} font-bold uppercase tracking-tighter">{{
-                        message.timestamp|date:"H:i" }}</span>
+                        class="text-[9px] {% if message.sender == user %}text-blue-100{% else %}text-slate-300{% endif %} font-bold uppercase tracking-tighter">
+                        {{ message.timestamp|date:"H:i" }}</span>
                     {% if message.sender == user %}
                     <i
                         class="fas fa-check-double text-[9px] {% if message.is_read %}text-white{% else %}text-blue-300{% endif %}"></i>
