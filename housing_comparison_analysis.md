@@ -8,20 +8,32 @@
 
 | Feature | Housing.com (Market Leader) | NIRVANA (Your Project) | Status |
 |---|---|---|---|
-| **Property Search** | AI-driven "Smart Search" with intent prediction | Robust filtering & custom property roles | ✅ Strong |
-| **Locality Insights** | "Livability Index" (Safety, Connectivity, Proximity) | **🧠 Vibe Check (Overpass POI analysis)** | 🌟 Unique Edge |
-| **Images/Media** | "Iris" Verified (Pro photography), VR tours | Multiple uploads with automated slideshow | ✅ Matching |
-| **Transaction Flow** | "Housing Edge" (Agreements, Rent via Credit Card) | Built-in Contract Generation & Payment tracking | ✅ Strong |
-| **Trust Layer** | Verified badges, relationship managers | Owner reputation badges, KYC gate | 🟡 Needs Work |
-| **Property Mgmt** | End-to-end (Inspections, Bills, Maintenance) | Helpdesk tickets, Onboarding tracker | 🟡 Missing Automation |
+| **Property Search** | AI-driven "Smart Search" (Intent) | **Smart Match (Weighted Re-ranking)** | 🌟 NIRVANA Wins |
+| **Locality Selection**| Geographic localities/City centers | **📍 Custom Map Picker (Interactive Pin)**| 🌟 NIRVANA Wins |
+| **Locality Insights** | "Livability Index" (Safety/Connectivity) | **🧠 Vibe Check (POI Analysis)** | ✅ Unique Edge |
+| **Images/Media** | "Iris" Verified, VR tours | Automated 16:9 Slideshows | ✅ Matching |
+| **Transaction Flow** | "Housing Edge" (Agreements/Rent) | **Onboarding Progress Tracker** | ✅ NIRVANA Wins |
+| **Trust Layer** | Verified badges, managers | Reputation Badges & KYC Gate | 🟡 Needs Work |
 
 ---
 
-## 🚀 NIRVANA's Secret Weapon: The "Vibe" Advantage
-While Housing.com uses static "Nearby Schools/Hospitals" data, your **Vibe Check** (via Overpass API) is more dynamic.
-- **Housing.com**: Tells you there is a school 2km away.
-- **NIRVANA**: Analyzes the *vibe* (Party, Study, Residential) based on the specific density of POIs.
-- **Presentation Tip**: Highlight this as "Algorithmic Neighborhood Sentiment Analysis" to your professors.
+---
+
+## 🚀 NIRVANA's Secret Weapon: Personalization 2.0
+While Housing.com uses static "Nearby Schools/Hospitals" data, NIRVANA allows the user to be the architect of their search.
+
+### 1. Weighted Decision Making (Smart Match)
+- **Housing.com**: You filter "Under 20k" AND "Near College." If nothing fits, you get 0 results.
+- **NIRVANA**: You say "Price is 30% important, but Distance is 70% important." Our **Normalizing Recommender Engine** re-ranks every property, showing you a "92% Match" even if it's slightly over budget but next door to your college.
+- **Presentation Tip**: Frame this as *Multi-Criteria Decision Analysis (MCDA)*.
+
+### 2. Map-First Discovery
+- **Housing.com**: Limited to predefined locality boundaries.
+- **NIRVANA**: With the **Interactive Map Picker**, you pin your exact office building. Our system then calculates the Haversine distance for every micro-location.
+
+### 3. Algorithmic Vibe Analysis
+- **NIRVANA**: Analyzes POI density (Gyms vs. Cafes vs. Libraries) to predict if a neighborhood is "Party," "Study," or "Residential."
+
 
 ---
 

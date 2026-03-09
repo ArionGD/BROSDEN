@@ -72,22 +72,18 @@
                         <h3 class="font-bold text-white text-lg flex items-center gap-2">
                             <i class="fas fa-box-open text-indigo-400"></i> Room Inventory
                         </h3>
-                        <p class="text-gray-400 text-sm mt-2">Confirm receipt of furnished items (Bed, Table, Mattress).
-                        </p>
+                        <p class="text-gray-400 text-sm mt-2">Confirm receipt of furnished items (Bed, Table, Mattress).</p>
                         <div class="mt-4">
                             {% for item in process.inventory_items.all %}
-                            <div
-                                class="flex items-center justify-between py-2 border-b border-gray-700/50 last:border-0">
+                            <div class="flex items-center justify-between py-2 border-b border-gray-700/50 last:border-0">
                                 <span class="text-sm text-gray-300">{{ item.item_name }}</span>
                                 {% if item.is_confirmed_by_tenant %}
                                 <span class="text-green-400 text-xs"><i class="fas fa-check"></i> Confirmed</span>
                                 {% else %}
                                 {% if not is_owner %}
-                                <form action="{% url 'onboarding:confirm_inventory' item.id %}" method="post"
-                                    class="inline">
+                                <form action="{% url 'onboarding:confirm_inventory' item.id %}" method="post" class="inline">
                                     {% csrf_token %}
-                                    <button type="submit"
-                                        class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded">Verify</button>
+                                    <button type="submit" class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded">Verify</button>
                                 </form>
                                 {% else %}
                                 <span class="text-yellow-400 text-xs">Waiting for Tenant</span>
@@ -97,6 +93,92 @@
                             {% empty %}
                             <p class="text-xs text-gray-500 italic">No inventory items listed.</p>
                             {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Digital Contract -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div
+                        class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-white bg-{% if process.booking.contract.signed_at %}indigo-500{% else %}gray-800{% endif %} text-white font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-lg relative z-10 transition-colors duration-300">
+                        {% if process.booking.contract.signed_at %}<i class="fas fa-check"></i>{% else %}3{% endif %}
+                    </div>
+                    <div
+                        class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-gray-900/50 border border-gray-700 p-5 rounded-2xl shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/50">
+                        <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                            <i class="fas fa-file-signature text-indigo-400"></i> Digital Contract
+                        </h3>
+                        <p class="text-gray-400 text-sm mt-2">Legal execution of the lease by both parties.</p>
+                        <div class="mt-4">
+                            {% if process.booking.contract %}
+                                <a href="{% url 'contract:view' process.booking.contract.id %}" class="inline-flex items-center px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium rounded-xl">
+                                    View & Sign
+                                </a>
+                                <div class="mt-2 space-y-1">
+                                    <p class="text-[10px] {% if process.booking.contract.is_signed_by_owner %}text-green-400{% else %}text-gray-500{% endif %} uppercase font-black">
+                                        Owner Signature: {% if process.booking.contract.is_signed_by_owner %}DONE{% else %}PENDING{% endif %}
+                                    </p>
+                                    <p class="text-[10px] {% if process.booking.contract.is_signed_by_tenant %}text-green-400{% else %}text-gray-500{% endif %} uppercase font-black">
+                                        Tenant Signature: {% if process.booking.contract.is_signed_by_tenant %}DONE{% else %}PENDING{% endif %}
+                                    </p>
+                                </div>
+                            {% else %}
+                                <span class="text-xs text-red-400 italic">No contract generated yet.</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Security Deposit -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div
+                        class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-white bg-{% if process.booking.payment_receipts.exists %}indigo-500{% else %}gray-800{% endif %} text-white font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-lg relative z-10 transition-colors duration-300">
+                        {% if process.booking.payment_receipts.exists %}<i class="fas fa-check"></i>{% else %}4{% endif %}
+                    </div>
+                    <div
+                        class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-gray-900/50 border border-gray-700 p-5 rounded-2xl shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/50">
+                        <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                            <i class="fas fa-vault text-indigo-400"></i> Security Deposit
+                        </h3>
+                        <p class="text-gray-400 text-sm mt-2">Hold amount verification and receipt generation.</p>
+                        <div class="mt-4">
+                            {% if process.booking.payment_receipts.exists %}
+                                <span class="text-green-400 text-xs font-black uppercase tracking-widest"><i class="fas fa-check-double"></i> Deposit Paid</span>
+                            {% else %}
+                                <span class="text-yellow-400 text-xs font-black uppercase tracking-widest">Waiting for Transaction</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Final Handover -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div
+                        class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-white bg-{% if process.keys_handed_over %}green-500{% else %}gray-800{% endif %} text-white font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-lg relative z-10 transition-colors duration-300">
+                        {% if process.keys_handed_over %}<i class="fas fa-key"></i>{% else %}5{% endif %}
+                    </div>
+                    <div
+                        class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-gray-900/50 border border-gray-700 p-5 rounded-2xl shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/50">
+                        <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                            <i class="fas fa-door-open text-indigo-400"></i> Key Handover
+                        </h3>
+                        <p class="text-gray-400 text-sm mt-2">Physical keys/access cards exchange and move-in.</p>
+                        <div class="mt-4">
+                            {% if is_owner and not process.keys_handed_over %}
+                                <form action="{% url 'onboarding:finalize' process.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-black rounded-xl shadow-lg shadow-green-900/20 transition-all hover:scale-105 active:scale-95">
+                                        Release Keys & Finalize
+                                    </button>
+                                </form>
+                            {% elif process.keys_handed_over %}
+                                <div class="bg-green-500/10 border border-green-500/50 p-4 rounded-xl">
+                                     <p class="text-green-400 font-black text-xs uppercase tracking-widest">Move-in Successful!</p>
+                                     <a href="{% url 'contract:rent_dashboard' %}" class="text-white text-[10px] underline mt-1 block">View Rent Schedule</a>
+                                </div>
+                            {% else %}
+                                <span class="text-gray-500 text-xs font-bold italic">Waiting for owner to release keys...</span>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

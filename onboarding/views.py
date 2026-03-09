@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import OnboardingProcess, ConditionReport, RoomInventory, UtilityOrService, OrientationGuide
+from core.notifications import send_simulated_whatsapp
 
 @login_required
 def onboarding_dashboard(request, process_id):
@@ -64,3 +65,22 @@ def confirm_inventory(request, item_id):
             messages.success(request, f"{item.item_name} marked as received/confirmed.")
             
     return redirect('onboarding:dashboard', process_id=item.onboarding.id)
+
+@login_required
+def mark_handover_complete(request, process_id):
+    """Owner marks keys handed over and move-in finalized."""
+    process = get_object_or_404(OnboardingProcess, id=process_id)
+    if request.user != process.booking.property.owner:
+        return render(request, '403.html', status=403)
+        
+    if request.method == 'POST':
+        process.keys_handed_over = True
+        process.status = 'COMPLETED'
+        process.save()
+        
+        # Simulated WhatsApp notification (Timeline Week 6)
+        send_simulated_whatsapp(request, "Registered Phone", 
+            f"Keys have been handed over for {process.booking.property.title}! Welcome to your new home.")
+        messages.success(request, "Move-in finalized! Property has been handed over.")
+        
+    return redirect('onboarding:dashboard', process_id=process.id)

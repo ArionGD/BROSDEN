@@ -5,6 +5,7 @@ from django.contrib import messages
 from property.models import Property
 from .models import BookingRequest
 from accounts.decorators import tenant_required, owner_required
+from core.notifications import notify_application_received
 
 
 @tenant_required
@@ -49,6 +50,9 @@ def create_booking(request, property_id):
             send_notification(prop.owner, "New Booking Request", f"You have a new booking request for {prop.title} from {request.user.username}.", 'BOOKING')
         except Exception:
             pass
+
+        # Simulated WhatsApp notification (Timeline Day 0)
+        notify_application_received(request, booking)
 
         messages.success(request, "Booking request sent successfully!")
         return redirect('booking:tenant_bookings')

@@ -1,0 +1,102 @@
+{% extends portal_base|default:"core/base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="mb-10">
+        <h1 class="text-3xl font-black text-slate-900 tracking-tight">Rent Management</h1>
+        <p class="text-slate-500 font-bold mt-1 text-sm uppercase tracking-widest opacity-60">Digital Ledger</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Summary Stats -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-indigo-600 rounded-[2.5rem] p-8 text-white shadow-xl shadow-indigo-100 flex flex-col justify-between h-48">
+                <div>
+                     <p class="text-indigo-100 text-xs font-black uppercase tracking-widest">Next Due</p>
+                     <h2 class="text-3xl font-black mt-2">
+                         {% with next_unpaid=schedules|dictsort:"due_date"|first %}
+                            {% if next_unpaid %}₹{{ next_unpaid.amount }}{% else %}-{% endif %}
+                         {% endwith %}
+                     </h2>
+                </div>
+                <div class="flex items-center gap-2 text-sm font-bold bg-white/10 w-fit px-4 py-2 rounded-full">
+                    <i class="fas fa-calendar-day"></i> 
+                    {% with next_unpaid=schedules|dictsort:"due_date"|first %}{{ next_unpaid.due_date|date:"F d, Y" }}{% endwith %}
+                </div>
+            </div>
+
+            <div class="bg-white border-2 border-slate-100 rounded-[2.5rem] p-8 shadow-sm">
+                <h3 class="text-lg font-black text-slate-900 mb-6">Payment History</h3>
+                <div class="space-y-4">
+                    {% for item in schedules %}
+                        {% if item.status == 'PAID' %}
+                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div>
+                                <p class="text-slate-900 font-bold">₹{{ item.amount }}</p>
+                                <p class="text-[10px] text-slate-400 font-black uppercase">{{ item.due_date|date:"M Y" }}</p>
+                            </div>
+                            <span class="text-green-500 font-black text-xs uppercase"><i class="fas fa-check-circle"></i> Paid</span>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Rent Schedule Table -->
+        <div class="lg:col-span-2">
+            <div class="bg-white border-2 border-slate-100 rounded-[2.5rem] shadow-sm overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 border-b border-slate-100">
+                        <tr>
+                            <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-widest">Month</th>
+                            <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-widest">Amount</th>
+                            <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-widest">Status</th>
+                            <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-widest">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        {% for item in schedules %}
+                        <tr class="group hover:bg-slate-50/50 transition-colors">
+                            <td class="px-8 py-6">
+                                <p class="text-slate-900 font-black text-lg">{{ item.due_date|date:"F Y" }}</p>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase">Due: {{ item.due_date|date:"d M" }}</p>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="text-slate-900 font-black">₹{{ item.amount }}</span>
+                            </td>
+                            <td class="px-8 py-6">
+                                {% if item.status == 'PAID' %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-600 text-[10px] font-black uppercase tracking-tighter">
+                                        <i class="fas fa-check-circle mr-1"></i> Paid
+                                    </span>
+                                {% elif item.status == 'OVERDUE' %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-600 text-[10px] font-black uppercase tracking-tighter">
+                                        <i class="fas fa-exclamation-circle mr-1"></i> Overdue
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-amber-100 text-amber-600 text-[10px] font-black uppercase tracking-tighter">
+                                        <i class="fas fa-clock mr-1"></i> Unpaid
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-8 py-6 text-right">
+                                {% if item.status != 'PAID' %}
+                                <button class="px-6 py-2 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-black transition-all shadow-lg hover:scale-105 active:scale-95">
+                                    Pay Now
+                                </button>
+                                {% else %}
+                                <button class="p-2 text-slate-400 hover:text-indigo-600 transition-colors">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
