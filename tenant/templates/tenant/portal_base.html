@@ -32,7 +32,7 @@
         const sb = get('sidebar'), btn = get('sidebarToggle'), ic = get('toggleIcon');
 
         btn?.addEventListener('click', () => {
-            const c = sb.classList.toggle('w-20');
+            const c = sb.classList.toggle('w-16');
             sb.classList.toggle('w-72', !c);
             ic?.classList.toggle('fa-chevron-right', c);
             ic?.classList.toggle('fa-chevron-left', !c);

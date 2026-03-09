@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'wishlist',
     'reviews',
     'pro',
-    'badge',
     'map',
     'vibe',
     'onboarding',
@@ -160,3 +159,7 @@ EMAIL_HOST_USER     = 'aditya.raj322005@gmail.com'
 EMAIL_HOST_PASSWORD = None  # TODO: Set your Gmail App Password here
 DEFAULT_FROM_EMAIL  = 'BrosDen-AV <aditya.raj322005@gmail.com>'
 
+# ─────────────────────────────────────────────────────────────────────────────
+# OCR Configuration — Tesseract
+# ─────────────────────────────────────────────────────────────────────────────
+TESSERACT_CMD = r'C:\Program Files\Tesseract-OCR\tesseract.exe'

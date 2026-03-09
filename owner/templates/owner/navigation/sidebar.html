@@ -1,97 +1,95 @@
 <aside id="sidebar"
-    class="w-72 h-full bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 transition-all duration-300 relative">
-    <div class="p-8 overflow-y-auto overflow-x-hidden flex-1 no-scrollbar">
+    class="w-72 h-full bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 transition-all duration-300 relative overflow-hidden group/sidebar">
+    <div class="py-8 overflow-y-auto overflow-x-hidden flex-1 no-scrollbar flex flex-col">
         <!-- Sidebar Content Starts Directly -->
         <div class="mb-10 px-4"></div>
 
         <h2 id="sidebarTitle"
-            class="text-xs font-black uppercase tracking-widest text-slate-400 mb-8 px-4 transition-opacity duration-200">
+            class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6 px-5 transition-all duration-200 whitespace-nowrap overflow-hidden">
             Owner Suite</h2>
-        <nav class="space-y-2">
+        <nav class="space-y-3 flex-1">
             <a href="{% url 'analytics:owner_dashboard' %}"
-                class="flex items-center px-4 py-3 bg-blue-50 text-arion-blue rounded-xl font-bold transition-all shadow-sm">
-                <i class="fas fa-chart-pie w-6 mr-3"></i> <span
-                    class="sidebar-text transition-opacity duration-200">Dashboard</span>
+                class="flex items-center px-5 py-3 bg-blue-50 text-arion-blue rounded-2xl font-bold transition-all shadow-sm border-l-4 border-arion-blue">
+                <i class="fas fa-chart-pie w-6 text-center text-lg"></i> 
+                <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Dashboard</span>
             </a>
             <a href="{% url 'property:owner_list' %}"
-                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                <i class="fas fa-city w-6 mr-3"></i> <span class="sidebar-text transition-opacity duration-200">My
-                    Properties</span>
+                class="flex items-center px-5 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300">
+                <i class="fas fa-city w-6 text-center text-lg text-blue-500"></i> 
+                <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">My Properties</span>
             </a>
             <a href="{% url 'map:explore' %}"
-                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                <i class="fas fa-map-location-dot w-6 mr-3 text-blue-500"></i> <span
-                    class="sidebar-text transition-opacity duration-200">Map Explore</span>
+                class="flex items-center px-5 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300">
+                <i class="fas fa-map-location-dot w-6 text-center text-lg text-blue-500"></i> 
+                <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Map Explore</span>
             </a>
             <a href="{% url 'pro:landing' %}"
-                class="flex items-center px-4 py-3 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-xl font-bold transition-all shadow-lg hover:scale-105 active:scale-95 group">
-                <i class="fas fa-bolt w-6 mr-3 text-arion-orange group-hover:rotate-12 transition-transform"></i>
-                <span class="sidebar-text transition-opacity duration-200">Upgrade to Pro</span>
+                class="flex items-center px-5 py-3 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl font-bold transition-all shadow-lg hover:scale-[1.02] active:scale-95 group border-l-4 border-slate-700">
+                <i class="fas fa-bolt w-6 text-center text-lg text-arion-orange group-hover:rotate-12 transition-transform"></i>
+                <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Upgrade to Pro</span>
             </a>
             <a href="{% url 'booking:owner_bookings' %}"
-                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                <i class="fas fa-bell w-6 mr-3"></i> <span
-                    class="sidebar-text transition-opacity duration-200">Requests</span>
+                class="flex items-center px-5 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300">
+                <i class="fas fa-bell w-6 text-center text-lg text-amber-500"></i> 
+                <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Requests</span>
             </a>
             <a href="{% url 'contract:rent_dashboard' %}"
-                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                <i class="fas fa-hand-holding-dollar w-6 mr-3 text-indigo-500"></i> <span
-                    class="sidebar-text transition-opacity duration-200">Rent Ledger</span>
+                class="flex items-center px-5 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300">
+                <i class="fas fa-hand-holding-dollar w-6 text-center text-lg text-indigo-500"></i> 
+                <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Rent Ledger</span>
             </a>
             <a href="{% url 'reviews:owner_list' %}"
-                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                <i class="fas fa-star w-6 mr-3 text-amber-500"></i> <span
-                    class="sidebar-text transition-opacity duration-200">Reviews</span>
+                class="flex items-center px-5 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300">
+                <i class="fas fa-star w-6 text-center text-lg text-amber-500"></i> 
+                <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Reviews</span>
             </a>
             <a href="{% url 'chat:chat_list' %}"
-                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                <i class="fas fa-comments w-6 mr-3 text-arion-blue"></i> <span
-                    class="sidebar-text transition-opacity duration-200">Messages</span>
+                class="flex items-center px-5 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300">
+                <i class="fas fa-comments w-6 text-center text-lg text-arion-blue"></i> 
+                <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Messages</span>
             </a>
             <a href="{% url 'notifications:list' %}"
-                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                <i class="fas fa-bell w-6 mr-3 text-amber-500"></i>
-                <span
-                    class="sidebar-text transition-opacity duration-200 flex items-center justify-between w-full pr-4">
+                class="flex items-center px-5 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300">
+                <i class="fas fa-bell w-6 text-center text-lg text-amber-500"></i>
+                <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden flex items-center justify-between w-full">
                     <span>Notifications</span>
-                    <span id="notif-badge"
-                        class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full hidden">0</span>
+                    <span id="notif-badge" class="bg-red-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full hidden">0</span>
                 </span>
             </a>
             <a href="{% url 'payment:history' %}"
-                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                <i class="fas fa-file-invoice-dollar w-6 mr-3 text-green-500"></i> <span
-                    class="sidebar-text transition-opacity duration-200">Payments</span>
+                class="flex items-center px-5 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300">
+                <i class="fas fa-file-invoice-dollar w-6 text-center text-lg text-green-500"></i> 
+                <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Payments</span>
             </a>
             <a href="{% url 'helpdesk:home' %}"
-                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                <i class="fas fa-headset w-6 mr-3 text-arion-orange"></i> <span
-                    class="sidebar-text transition-opacity duration-200">Support</span>
+                class="flex items-center px-5 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300">
+                <i class="fas fa-headset w-6 text-center text-lg text-arion-orange"></i> 
+                <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Support</span>
             </a>
-            <a href="{% url 'payment:owner_kyc' %}"
-                class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all">
-                <i class="fas fa-shield-halved w-6 mr-3"></i> <span
-                    class="sidebar-text transition-opacity duration-200">KYC Status</span>
+            <a href="{% url 'accounts:owner_kyc' %}"
+                class="flex items-center px-5 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300">
+                <i class="fas fa-shield-halved w-6 text-center text-lg"></i> 
+                <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">KYC Status</span>
             </a>
         </nav>
     </div>
 
-    <div class="mt-auto p-8 border-t border-slate-100 overflow-hidden">
-        <a href="#"
-            class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold transition-all mb-2">
-            <i class="fas fa-gear w-6 mr-3"></i> <span
-                class="sidebar-text transition-opacity duration-200">Settings</span>
+    <div class="mt-auto px-2 py-4 border-t border-slate-100 overflow-hidden flex flex-col gap-4">
+        <a href="{% url 'accounts:account_settings' %}"
+            class="flex items-center px-5 py-3 text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300">
+            <i class="fas fa-gear w-6 text-center text-lg"></i> 
+            <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Settings</span>
         </a>
         <a href="{% url 'accounts:logout' %}"
-            class="flex items-center px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl font-semibold transition-all mb-6">
-            <i class="fas fa-right-from-bracket w-6 mr-3"></i> <span
-                class="sidebar-text transition-opacity duration-200">Logout</span>
+            class="flex items-center px-5 py-3 text-red-500 hover:bg-red-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-red-500">
+            <i class="fas fa-right-from-bracket w-6 text-center text-lg"></i> 
+            <span class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Logout</span>
         </a>
 
         <!-- Toggle Button -->
         <button id="sidebarToggle"
-            class="w-full h-12 bg-arion-orange hover:bg-arion-blue text-white rounded-xl flex items-center justify-center shadow-lg shadow-orange-100 transition-all active:scale-95 group">
-            <i id="toggleIcon" class="fas fa-chevron-left text-sm"></i>
+            class="w-full h-12 bg-arion-orange hover:bg-arion-blue text-white rounded-2xl flex items-center justify-center shadow-lg shadow-orange-100 transition-all active:scale-95 group overflow-hidden">
+            <i id="toggleIcon" class="fas fa-chevron-left text-xs"></i>
         </button>
     </div>
 </aside>

@@ -1,0 +1,182 @@
+{% extends user.portal_base %}
+
+{% block portal_content %}
+<div class="max-w-2xl mx-auto space-y-8">
+    <div class="flex items-center justify-between pb-6 border-b border-slate-200">
+        <div>
+            <h2 class="text-4xl font-black text-slate-800 tracking-tighter">Account Settings</h2>
+            <p class="text-emerald-500 font-bold mt-1 text-xs uppercase tracking-widest">Security & Preferences</p>
+        </div>
+        <div class="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-3xl flex items-center justify-center text-3xl shadow-inner border border-emerald-100">
+            <i class="fas fa-cog"></i>
+        </div>
+    </div>
+
+    <!-- Preferences Section -->
+    <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm space-y-6">
+        <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                <i class="fas fa-sliders-h text-sm"></i>
+            </div>
+            <h3 class="font-black text-slate-800 uppercase tracking-widest text-sm">Preferences</h3>
+        </div>
+        
+        <div class="space-y-4">
+            <!-- 2FA Toggle -->
+            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:border-blue-100 transition-colors">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-blue-500 shadow-sm">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div>
+                        <p class="font-black text-slate-800 text-sm">Two-Factor Auth (2FA)</p>
+                        <p class="text-[10px] text-slate-400 font-bold tracking-wide uppercase">Add an extra layer of security</p>
+                    </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer">
+                    <div class="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-6 after:transition-all peer-checked:bg-blue-500 shadow-inner"></div>
+                </label>
+            </div>
+
+            <!-- Email Notifications Toggle -->
+            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:border-emerald-100 transition-colors">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-emerald-500 shadow-sm">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div>
+                        <p class="font-black text-slate-800 text-sm">Email Notifications</p>
+                        <p class="text-[10px] text-slate-400 font-bold tracking-wide uppercase">Receive updates on rent and support</p>
+                    </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" checked class="sr-only peer">
+                    <div class="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-6 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Section -->
+    <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm space-y-6">
+        <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                <i class="fas fa-lock text-sm"></i>
+            </div>
+            <h3 class="font-black text-slate-800 uppercase tracking-widest text-sm">Security</h3>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 border-l-4 border-l-emerald-500">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-emerald-500 shadow-sm">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div>
+                        <p class="font-black text-slate-800 text-sm">Change Password</p>
+                        <p class="text-[10px] text-slate-400 font-bold tracking-wide uppercase">Toggle to show password reset fields</p>
+                    </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="pwToggle" class="sr-only peer">
+                    <div class="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-6 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                </label>
+            </div>
+
+            <!-- Animated Password Form Fields -->
+            <div id="pwSection" class="hidden overflow-hidden transition-all duration-300 transform scale-y-0 origin-top opacity-0">
+                <form method="post" class="space-y-6 p-6 bg-slate-50 rounded-2xl border-2 border-emerald-500/20">
+                    {% csrf_token %}
+                    <div class="space-y-5">
+                        {% for field in form %}
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2 px-1">
+                                <i class="fas fa-lock text-emerald-400/50"></i> {{ field.label }}
+                            </label>
+                            {{ field }}
+                            {% if field.errors %}<p class="text-red-500 text-[10px] mt-1 font-black uppercase tracking-wide px-1">{{ field.errors.0 }}</p>{% endif %}
+                            {% if field.help_text %}<p class="text-slate-400 text-[10px] font-medium px-1 leading-tight">{{ field.help_text }}</p>{% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 px-8 rounded-2xl shadow-xl shadow-emerald-200/50 transition-all transform hover:-translate-y-1 active:scale-95 text-sm uppercase tracking-widest">
+                        Save New Password
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="bg-red-50 rounded-3xl p-8 border border-red-100 shadow-sm space-y-6">
+        <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center text-red-500">
+                <i class="fas fa-exclamation-triangle text-sm"></i>
+            </div>
+            <h3 class="font-black text-red-600 uppercase tracking-widest text-sm">Danger Zone</h3>
+        </div>
+        
+        <div class="p-6 bg-white/60 rounded-2xl border border-red-100 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-center md:text-left">
+                <p class="font-black text-slate-800 text-lg">Delete Account</p>
+                <p class="text-xs text-slate-500 font-bold uppercase tracking-wide mt-1">Permanently remove all your data and access.</p>
+                <p class="text-[10px] text-red-400 font-black mt-2 uppercase tracking-tighter">This action cannot be undone.</p>
+            </div>
+            
+            <button onclick="toggleConfirmDelete()" class="w-full md:w-auto px-10 py-4 bg-red-500 hover:bg-red-600 text-white font-black rounded-2xl shadow-lg shadow-red-200 transition-all transform hover:-translate-y-1 active:scale-95 text-sm uppercase tracking-widest">
+                Delete My Account
+            </button>
+        </div>
+
+        <!-- Confirmation Overlay for Deletion -->
+        <div id="deleteConfirm" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+            <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl space-y-8 animate-in zoom-in duration-300">
+                <div class="text-center space-y-4">
+                    <div class="w-20 h-20 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                    <h4 class="text-2xl font-black text-slate-900 tracking-tight">Are you absolutely sure?</h4>
+                    <p class="text-slate-500 font-bold tracking-tight">Logging out and deleting your account is irreversible. Your profile and associations will be permanently erased.</p>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button onclick="toggleConfirmDelete()" class="flex-1 py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-black rounded-2xl transition-all uppercase text-xs tracking-widest">
+                        Cancel
+                    </button>
+                    <form action="{% url 'accounts:delete_account' %}" method="post" class="flex-1">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full py-4 bg-red-500 hover:bg-red-600 text-white font-black rounded-2xl transition-all shadow-lg shadow-red-200 uppercase text-xs tracking-widest">
+                            Yes, I'm sure
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const toggle = document.getElementById('pwToggle');
+    const section = document.getElementById('pwSection');
+    const deleteBox = document.getElementById('deleteConfirm');
+
+    toggle.addEventListener('change', () => {
+        if(toggle.checked) {
+            section.classList.remove('hidden');
+            setTimeout(() => {
+                section.classList.add('scale-y-100', 'opacity-100');
+            }, 10);
+        } else {
+            section.classList.remove('scale-y-100', 'opacity-100');
+            setTimeout(() => {
+                section.classList.add('hidden');
+            }, 300);
+        }
+    });
+
+    function toggleConfirmDelete() {
+        deleteBox.classList.toggle('hidden');
+    }
+</script>
+{% endblock %}

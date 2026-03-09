@@ -1,5 +1,5 @@
 from django import template
-from badge.utils import get_owner_badge
+from accounts.badge_utils import get_owner_badge
 
 register = template.Library()
 

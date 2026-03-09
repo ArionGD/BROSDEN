@@ -1,0 +1,203 @@
+{% extends "accounts/kyc_form.html" %}
+
+{% block title %}Owner Identity Verification | BrosDen-AV{% endblock %}
+
+{% block step2_label %}Property{% endblock %}
+
+{% block role_steps %}
+<!-- ═══ STEP 2: OWNER INFO ═══════════════════════════════ -->
+<div id="step-2" class="step-container hidden">
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        <div class="bg-gradient-to-r from-violet-500 to-purple-600 px-8 py-5">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-building text-white"></i>
+                </div>
+                <div>
+                    <h2 class="text-white font-black text-lg">Property & Banking Details</h2>
+                    <p class="text-violet-100 text-xs font-medium">Required to list property</p>
+                </div>
+            </div>
+        </div>
+        <div class="p-8 space-y-6">
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-5">
+                <h3 class="font-black text-slate-700 flex items-center gap-2"><i class="fas fa-map-marker-alt text-violet-500"></i> Property Information</h3>
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400">Property Address</label>
+                    {{ form.property_address }}
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">Type</label>
+                        {{ form.property_type }}
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">Size</label>
+                        {{ form.property_size }}
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400">Amenities</label>
+                    {{ form.amenities_list }}
+                </div>
+            </div>
+
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-5">
+                <h3 class="font-black text-slate-700 flex items-center gap-2"><i class="fas fa-university text-violet-500"></i> Bank Account for Rent</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">Account Name</label>
+                        {{ form.bank_account_name }}
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">Account Number</label>
+                        {{ form.bank_account_number }}
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">IFSC Code</label>
+                        {{ form.bank_ifsc }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-5">
+                <h3 class="font-black text-slate-700 flex items-center gap-2"><i class="fas fa-users text-violet-500"></i> Co-Owner (if applicable)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">Name</label>
+                        {{ form.co_owner_name }}
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">Contact</label>
+                        {{ form.co_owner_contact }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-8 flex justify-between">
+        <button type="button" onclick="goToStep(1)" class="bg-white border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800 font-bold py-3 px-8 rounded-xl shadow-sm transition-all"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+        <button type="button" onclick="goToStep(3)" class="bg-arion-blue hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all">Next Step <i class="fas fa-arrow-right ml-2"></i></button>
+    </div>
+</div>
+
+<!-- ═══ STEP 3: DOCUMENTS ═════════════════════════════════════════ -->
+<div id="step-3" class="step-container hidden">
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden mb-8">
+        <div class="bg-gradient-to-r from-amber-500 to-orange-500 px-8 py-5">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-file-contract text-white"></i>
+                </div>
+                <div>
+                    <h2 class="text-white font-black text-lg">Document Uploads</h2>
+                    <p class="text-orange-100 text-xs font-medium">Your identity will be auto-verified using OCR</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-8 space-y-6">
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-5">
+                <h3 class="font-black text-slate-700 flex items-center gap-2"><i class="fas fa-camera text-arion-blue"></i> Identity Documents</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">Passport Photo</label>
+                        <div class="relative group h-36 bg-white border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all hover:border-blue-400 hover:bg-blue-50/20 overflow-hidden">
+                            <input type="file" name="passport_photo" id="passport_photo" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewDoc(this,'passport_prev','passport_ph')">
+                            <img id="passport_prev" class="absolute inset-0 w-full h-full object-cover rounded-2xl {% if kyc and kyc.passport_photo.name %}block{% else %}hidden{% endif %}" {% if kyc and kyc.passport_photo.name %}src="{{ kyc.passport_photo.url }}"{% endif %}>
+                            <div id="passport_ph" class="text-center p-4 {% if kyc and kyc.passport_photo.name %}hidden{% endif %}">
+                                <div class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-2 mx-auto group-hover:bg-blue-500 group-hover:text-white transition-all shadow-inner border border-blue-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Passport Size</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">Aadhaar Card <span class="text-blue-400 text-[9px]">OCR Scan</span></label>
+                        <div class="relative group h-36 bg-white border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all hover:border-blue-400 hover:bg-blue-50/20 overflow-hidden">
+                            <input type="file" name="aadhaar_image" id="aadhaar_image" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewDoc(this,'aadhaar_prev','aadhaar_ph')">
+                            <img id="aadhaar_prev" class="absolute inset-0 w-full h-full object-cover rounded-2xl {% if kyc and kyc.aadhaar_image.name %}block{% else %}hidden{% endif %}" {% if kyc and kyc.aadhaar_image.name %}src="{{ kyc.aadhaar_image.url }}"{% endif %}>
+                            <div id="aadhaar_ph" class="text-center p-4 {% if kyc and kyc.aadhaar_image.name %}hidden{% endif %}">
+                                <div class="w-16 h-12 bg-emerald-50 text-emerald-500 rounded-xl flex items-center justify-center mb-2 mx-auto group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-inner border border-emerald-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                                    </svg>
+                                </div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Front Side</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">PAN Card <span class="text-blue-400 text-[9px]">OCR Scan</span></label>
+                        <div class="relative group h-36 bg-white border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all hover:border-blue-400 hover:bg-blue-50/20 overflow-hidden">
+                            <input type="file" name="pan_image" id="pan_image" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewDoc(this,'pan_prev','pan_ph')">
+                            <img id="pan_prev" class="absolute inset-0 w-full h-full object-cover rounded-2xl {% if kyc and kyc.pan_image.name %}block{% else %}hidden{% endif %}" {% if kyc and kyc.pan_image.name %}src="{{ kyc.pan_image.url }}"{% endif %}>
+                            <div id="pan_ph" class="text-center p-4 {% if kyc and kyc.pan_image.name %}hidden{% endif %}">
+                                <div class="w-16 h-12 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center mb-2 mx-auto group-hover:bg-amber-500 group-hover:text-white transition-all shadow-inner border border-amber-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                    </svg>
+                                </div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">PAN Front</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-5 mt-6">
+                <h3 class="font-black text-slate-700 flex items-center gap-2"><i class="fas fa-file-pdf text-violet-500"></i> Property Ownership Documents</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">Title Deed / Sale Deed</label>
+                        <div class="relative group h-28 bg-white border-2 border-dashed border-violet-200 rounded-xl flex flex-col items-center justify-center hover:border-violet-400 hover:bg-violet-50/20 transition-all overflow-hidden cursor-pointer">
+                            <input type="file" name="ownership_proof" class="absolute inset-0 opacity-0 cursor-pointer z-10">
+                            <i class="fas fa-file-pdf text-2xl {% if kyc.ownership_proof %}text-violet-500{% else %}text-slate-300{% endif %} group-hover:text-violet-400 transition-colors mb-1"></i>
+                            <p class="text-[10px] font-black {% if kyc.ownership_proof %}text-violet-600{% else %}text-slate-400{% endif %} uppercase tracking-widest">{% if kyc.ownership_proof %}Uploaded{% else %}Upload PDF/Image{% endif %}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">Property Tax Receipt</label>
+                        <div class="relative group h-28 bg-white border-2 border-dashed border-violet-200 rounded-xl flex flex-col items-center justify-center hover:border-violet-400 hover:bg-violet-50/20 transition-all overflow-hidden cursor-pointer">
+                            <input type="file" name="property_tax_receipt" class="absolute inset-0 opacity-0 cursor-pointer z-10">
+                            <i class="fas fa-receipt text-2xl {% if kyc.property_tax_receipt %}text-violet-500{% else %}text-slate-300{% endif %} group-hover:text-violet-400 transition-colors mb-1"></i>
+                            <p class="text-[10px] font-black {% if kyc.property_tax_receipt %}text-violet-600{% else %}text-slate-400{% endif %} uppercase tracking-widest">{% if kyc.property_tax_receipt %}Uploaded{% else %}Upload PDF/Image{% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if not is_verified %}
+    <div class="bg-blue-50 p-6 rounded-2xl flex gap-4 items-start border border-blue-100 mb-8">
+        <i class="fas fa-shield-halved text-arion-blue mt-0.5 text-lg"></i>
+        <p class="text-[11px] font-bold text-slate-600 leading-relaxed uppercase tracking-wide">
+            Your data is AES-256 encrypted. Used only for legal verification. OCR engines will auto-match your document numbers for instant approval.
+        </p>
+    </div>
+    
+    <div class="flex flex-col sm:flex-row gap-4">
+        <button type="button" onclick="goToStep(2)" class="bg-white border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800 font-bold py-4 px-8 rounded-2xl shadow-sm transition-all text-center"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+        <button type="submit" class="flex-1 bg-arion-blue hover:bg-blue-700 text-white font-black py-4 px-8 rounded-2xl shadow-lg shadow-blue-100 transition-all transform hover:-translate-y-1 active:scale-95 text-lg flex items-center justify-center gap-3">
+            <i class="fas fa-microchip"></i>
+            Submit for AI Verification
+        </button>
+    </div>
+    {% else %}
+    <div class="bg-emerald-50 p-6 rounded-2xl flex gap-4 items-center justify-center border border-emerald-100 mt-6">
+        <i class="fas fa-check-circle text-emerald-500 text-2xl"></i>
+        <div>
+            <h3 class="font-black text-emerald-800 text-lg">KYC Verified</h3>
+            <p class="text-xs font-bold text-emerald-600 uppercase tracking-wide">This profile is locked and in read-only mode.</p>
+        </div>
+    </div>
+    <div class="mt-8 flex justify-start">
+        <button type="button" onclick="goToStep(2)" class="bg-white border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800 font-bold py-3 px-8 rounded-xl shadow-sm transition-all"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

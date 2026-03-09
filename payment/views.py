@@ -2,44 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import KYCForm
-from .models import KYC, PaymentReceipt
+from .models import PaymentReceipt
 from booking.models import BookingRequest
 from contract.utils import generate_contract
 
-def _shared_kyc_logic(request, template_name):
-    """Shared core logic for KYC processing."""
-    if hasattr(request.user, 'kyc') and request.user.kyc.is_verified:
-        messages.info(request, "Your KYC is already verified.")
-        return redirect(request.user.get_dashboard_url())
 
-    kyc = getattr(request.user, 'kyc', None)
-
-    if request.method == 'POST':
-        form = KYCForm(request.POST, instance=kyc)
-        if form.is_valid():
-            kyc_obj = form.save(commit=False)
-            kyc_obj.user = request.user
-            kyc_obj.is_verified = True 
-            kyc_obj.save()
-            messages.success(request, "KYC verified successfully!")
-            return redirect(request.user.get_dashboard_url())
-    else:
-        form = KYCForm(instance=kyc)
-    
-    return render(request, template_name, {'form': form})
-
-@login_required
-def tenant_kyc_view(request):
-    if request.user.role != 'TENANT':
-        return redirect('index')
-    return _shared_kyc_logic(request, 'payment/tenant_kyc.html')
-
-@login_required
-def owner_kyc_view(request):
-    if request.user.role != 'OWNER':
-        return redirect('index')
-    return _shared_kyc_logic(request, 'payment/owner_kyc.html')
 
 @login_required
 def razorpay_checkout(request):

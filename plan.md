@@ -179,14 +179,8 @@ When a tenant moves in, they upload photos of every room. An AI model auto-detec
 ### 4. 🔮 Rent Forecast Engine
 Using historical rent data from the platform + locality trends, predict how rent in a specific area will change over the next 6-12 months. Show tenants whether they're getting a deal or overpaying, and show owners optimal pricing suggestions.
 
-### 5. 🎯 Smart Negotiation Bot
-A guided negotiation assistant where tenants can submit a counter-offer on rent. The bot uses market data to suggest a fair range, and facilitates back-and-forth between tenant and owner — all tracked in-app with acceptance/rejection history.
-
 ### 6. 🏃 Commute Time Simulator
 Let tenants input their office/college address and see real commute times (driving, metro, bus, walking) overlaid on the property listing. Integrate with OpenStreetMap routing to show "25 min to your office by metro" right on the property card.
-
-### 7. 🔐 Blockchain Rent Receipt Ledger
-Generate tamper-proof, verifiable rent receipts using a simple hash-chain (no crypto needed). Each receipt contains a hash of the previous one, creating an auditable payment trail that either party can independently verify — useful for tax claims and disputes.
 
 ### 8. 📊 Owner Revenue Dashboard with "What-If" Scenarios
 Go beyond basic analytics. Let owners simulate scenarios: "What if I furnish the property?" → estimated rent increase. "What if I allow pets?" → larger tenant pool. Use platform data to power these projections.

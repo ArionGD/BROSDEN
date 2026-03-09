@@ -66,9 +66,9 @@ def smart_recommend_api(request):
             
             # 3. Rating Score (0 to 1, higher is better)
             # Using owner's badges/reputation if available, fallback to 0.5
-            from badge.models import OwnerBadge
-            badge = OwnerBadge.objects.filter(owner=p.owner).first()
-            s_rating = (badge.avg_rating / 5.0) if badge else 0.5
+            from accounts.badge_utils import get_owner_badge
+            badge = get_owner_badge(p.owner)
+            s_rating = (badge['avg'] / 5.0) if badge['avg'] > 0 else 0.5
             
             # Weighted Final Score
             final_score = (
