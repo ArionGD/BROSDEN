@@ -76,6 +76,7 @@
             zoom: zoom,
             pitch: 0, // Flat 2D View
             bearing: 0,
+            dragPitch: false, // Prevent user from manually tilting the map
             antialias: true
         });
 
@@ -144,7 +145,6 @@
                     map.flyTo({
                         center: dest,
                         zoom: 15,
-                        pitch: 45,
                         essential: true
                     });
 
