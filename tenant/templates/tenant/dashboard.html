@@ -25,8 +25,7 @@
                             <span>{{ process.progress_percentage|floatformat:0 }}%</span>
                         </div>
                         <div class="w-full bg-gray-800 rounded-full h-2.5">
-                            <div class="bg-indigo-500 h-2.5 rounded-full" {% if process
-                                %}style="width: {{ process.progress_percentage }}%;" {% endif %}></div>
+                            <div class="bg-indigo-500 h-2.5 rounded-full" {% if process %}style="width: {{ process.progress_percentage }}%;" {% endif %}></div>
                         </div>
                     </div>
 
