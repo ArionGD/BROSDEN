@@ -15,25 +15,170 @@
         </a>
     </div>
 
-    <!-- Filters Placeholder -->
-    <div class="bg-white border border-slate-200 rounded-2xl p-6 mb-10 flex flex-wrap gap-4 items-center shadow-sm">
-        <div class="flex-1 min-w-[200px] relative">
-            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
-            <input type="text" placeholder="Quick search..."
-                class="w-full pl-12 pr-4 py-3 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:ring-4 focus:ring-blue-100 transition-all">
+    <!-- Filters & Smart Match -->
+    <div class="bg-white border border-slate-200 rounded-3xl p-6 mb-10 shadow-sm flex flex-col gap-6">
+        <div class="flex flex-wrap gap-4 items-center">
+            <div class="flex-1 min-w-[200px] relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                <input type="text" id="property-search" placeholder="Quick search..."
+                    class="w-full pl-12 pr-4 py-3 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:ring-4 focus:ring-blue-100 transition-all">
+            </div>
+            
+            <button onclick="toggleSmartMatch()" 
+                class="px-6 py-3 bg-gradient-to-r from-arion-blue to-blue-600 text-white rounded-xl font-black shadow-lg shadow-blue-100 flex items-center gap-3 hover:scale-105 active:scale-95 transition-all">
+                <i class="fas fa-wand-magic-sparkles"></i> Smart Match
+            </button>
+
+            <select class="px-6 py-3 bg-slate-50 rounded-xl border border-slate-100 font-bold text-slate-600 outline-none">
+                <option>All Cities</option>
+                <option>Hyderabad</option>
+                <option>Mumbai</option>
+                <option>Gurgaon</option>
+            </select>
         </div>
-        <select class="px-6 py-3 bg-slate-50 rounded-xl border border-slate-100 font-bold text-slate-600 outline-none">
-            <option>All Cities</option>
-            <option>Hyderabad</option>
-            <option>Mumbai</option>
-            <option>Gurgaon</option>
-        </select>
-        <select class="px-6 py-3 bg-slate-50 rounded-xl border border-slate-100 font-bold text-slate-600 outline-none">
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-            <option>Newest First</option>
-        </select>
+
+        <!-- Smart Match Panel (Hidden by default) -->
+        <div id="smart-match-panel" class="hidden animate-in fade-in slide-in-from-top-4 duration-300 border-t border-slate-100 pt-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="space-y-3 col-span-1 md:col-span-1 lg:col-span-1">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                        <i class="fas fa-building-user text-arion-blue"></i> Target Location
+                    </label>
+                    <select id="target-dest" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 font-bold text-slate-600 outline-none">
+                        <option value="17.4483,78.3915">Hitech City, Hyderabad</option>
+                        <option value="17.4065,78.4691">Lower Tank Bund (College Hub)</option>
+                        <option value="19.0760,72.8777">BKC, Mumbai</option>
+                        <option value="28.4595,77.0266">DLF Cyber City, Gurgaon</option>
+                    </select>
+                </div>
+
+                <div class="space-y-4 lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Distance Weight</label>
+                            <span id="w-dist-val" class="text-xs font-bold text-arion-blue">33%</span>
+                        </div>
+                        <input type="range" id="w-dist" min="0" max="100" value="33" 
+                            class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-arion-blue"
+                            oninput="updateWeightLabels()">
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Cost Weight</label>
+                            <span id="w-cost-val" class="text-xs font-bold text-arion-blue">33%</span>
+                        </div>
+                        <input type="range" id="w-cost" min="0" max="100" value="33"
+                            class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-arion-blue"
+                            oninput="updateWeightLabels()">
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Reputation Weight</label>
+                            <span id="w-rating-val" class="text-xs font-bold text-arion-blue">34%</span>
+                        </div>
+                        <input type="range" id="w-rating" min="0" max="100" value="34"
+                            class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-arion-blue"
+                            oninput="updateWeightLabels()">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 flex justify-end gap-3">
+                <button onclick="toggleSmartMatch()" class="px-6 py-2 text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors">Cancel</button>
+                <button onclick="runSmartMatch()" id="run-match-btn" 
+                    class="px-8 py-3 bg-slate-900 text-white rounded-xl font-black shadow-xl hover:bg-black transition-all flex items-center gap-3">
+                    Calculate Best Matches
+                </button>
+            </div>
+        </div>
     </div>
+
+    <script>
+        function toggleSmartMatch() {
+            const panel = document.getElementById('smart-match-panel');
+            panel.classList.toggle('hidden');
+        }
+
+        function updateWeightLabels() {
+            document.getElementById('w-dist-val').innerText = document.getElementById('w-dist').value + '%';
+            document.getElementById('w-cost-val').innerText = document.getElementById('w-cost').value + '%';
+            document.getElementById('w-rating-val').innerText = document.getElementById('w-rating').value + '%';
+        }
+
+        async function runSmartMatch() {
+            const btn = document.getElementById('run-match-btn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Analyzing...';
+
+            const [lat, lng] = document.getElementById('target-dest').value.split(',');
+            const w_dist = document.getElementById('w_dist').value;
+            const w_price = document.getElementById('w_cost').value;
+            const w_rating = document.getElementById('w_rating').value;
+
+            try {
+                const response = await fetch(`/map/smart-api/?lat=${lat}&lng=${lng}&w_dist=${w_dist}&w_price=${w_price}&w_rating=${w_rating}`);
+                const data = await response.json();
+                
+                if (data.results) {
+                    reorderProperties(data.results);
+                }
+            } catch (error) {
+                console.error('Smart Match failed:', error);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        function reorderProperties(results) {
+            const grid = document.querySelector('.grid.grid-cols-1');
+            const cards = Array.from(grid.children);
+            
+            // Create a map for quick lookup
+            const scoreMap = {};
+            results.forEach(r => scoreMap[r.id] = r);
+
+            // Reorder the DOM nodes
+            cards.sort((a, b) => {
+                // Find ID from the link usually
+                const aId = a.querySelector('a[href*="/property/"]').getAttribute('href').split('/').filter(Boolean).pop();
+                const bId = b.querySelector('a[href*="/property/"]').getAttribute('href').split('/').filter(Boolean).pop();
+                
+                const aData = scoreMap[aId];
+                const bData = scoreMap[bId];
+
+                if (!aData) return 1;
+                if (!bData) return -1;
+                return bData.score - aData.score;
+            });
+
+            // Update UI with scores and append back to grid
+            grid.innerHTML = '';
+            cards.forEach(card => {
+                const id = card.querySelector('a[href*="/property/"]').getAttribute('href').split('/').filter(Boolean).pop();
+                const data = scoreMap[id];
+                
+                // Add/Update score badge
+                let scoreBadge = card.querySelector('.smart-score-badge');
+                if (!scoreBadge) {
+                    const container = card.querySelector('.relative.h-56');
+                    scoreBadge = document.createElement('div');
+                    scoreBadge.className = 'smart-score-badge absolute top-4 left-1/2 -translate-x-1/2 bg-arion-blue text-white px-3 py-1 rounded-full text-[10px] font-black shadow-xl border-2 border-white animate-bounce';
+                    container.appendChild(scoreBadge);
+                }
+                
+                if (data) {
+                    scoreBadge.innerHTML = `<i class="fas fa-star mr-1"></i> ${data.score}% Match`;
+                    scoreBadge.classList.remove('hidden');
+                } else {
+                    scoreBadge.classList.add('hidden');
+                }
+
+                grid.appendChild(card);
+            });
+        }
+    </script>
 
     {% load badge_tags %}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
