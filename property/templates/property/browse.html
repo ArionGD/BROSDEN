@@ -2,6 +2,11 @@
 
 {% block title %}Marketplace | BrosDen-AV{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="container mx-auto px-4 py-12">
     <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -41,14 +46,18 @@
         <div id="smart-match-panel" class="hidden animate-in fade-in slide-in-from-top-4 duration-300 border-t border-slate-100 pt-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div class="space-y-3 col-span-1 md:col-span-1 lg:col-span-1">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                        <i class="fas fa-building-user text-arion-blue"></i> Target Location
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i class="fas fa-building-user text-arion-blue"></i> Target Location</span>
+                        <button onclick="openMapPicker()" class="text-arion-blue hover:text-blue-700 transition-colors bg-blue-50 px-2 py-1 rounded"><i class="fas fa-map-marked-alt"></i> Pick on Map</button>
                     </label>
-                    <select id="target-dest" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 font-bold text-slate-600 outline-none">
+                    <select id="target-dest" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 font-bold text-slate-600 outline-none" onchange="handleTargetChange()">
+                        <option value="23.0371,72.5445">Gujarat University, Ahmedabad</option>
+                        <option value="23.0238,72.5273">Lokmanya College Shivranjani, Ahmedabad</option>
                         <option value="17.4483,78.3915">Hitech City, Hyderabad</option>
                         <option value="17.4065,78.4691">Lower Tank Bund (College Hub)</option>
                         <option value="19.0760,72.8777">BKC, Mumbai</option>
                         <option value="28.4595,77.0266">DLF Cyber City, Gurgaon</option>
+                        <option value="custom" id="custom-option" class="hidden">📍 Custom Map Location</option>
                     </select>
                 </div>
 
@@ -94,6 +103,83 @@
     </div>
 
     <script>
+        // Map Picker Logic
+        let pickerMap = null;
+        let pickerMarker = null;
+        let selectedLatLng = null;
+
+        function openMapPicker() {
+            const modal = document.getElementById('map-picker-modal');
+            const content = document.getElementById('map-modal-content');
+            modal.classList.remove('hidden');
+            
+            // Animation
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            if (!pickerMap) {
+                // Initialize map (default to center of India if no geolocation)
+                pickerMap = L.map('picker-map').setView([20.5937, 78.9629], 5);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; OpenStreetMap contributors & CARTO'
+                }).addTo(pickerMap);
+
+                // Try to get user's current location
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(pos => {
+                        pickerMap.setView([pos.coords.latitude, pos.coords.longitude], 13);
+                    });
+                }
+
+                pickerMap.on('click', function(e) {
+                    if (pickerMarker) pickerMap.removeLayer(pickerMarker);
+                    pickerMarker = L.marker(e.latlng).addTo(pickerMap);
+                    selectedLatLng = e.latlng;
+                });
+            } else {
+                pickerMap.invalidateSize();
+            }
+        }
+
+        function closeMapPicker() {
+            const modal = document.getElementById('map-picker-modal');
+            const content = document.getElementById('map-modal-content');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function confirmMapLocation() {
+            if (!selectedLatLng) {
+                alert("Please click on the map to select a location first.");
+                return;
+            }
+            
+            const select = document.getElementById('target-dest');
+            const customOption = document.getElementById('custom-option');
+            
+            customOption.value = `${selectedLatLng.lat},${selectedLatLng.lng}`;
+            customOption.classList.remove('hidden');
+            select.value = customOption.value;
+            
+            closeMapPicker();
+            
+            // Auto run match if possible
+            runSmartMatch();
+        }
+
+        function handleTargetChange() {
+            // Re-run match if destination changed
+            const select = document.getElementById('target-dest');
+            if(select.value !== 'custom') {
+                runSmartMatch();
+            }
+        }
+
         function toggleSmartMatch() {
             const panel = document.getElementById('smart-match-panel');
             panel.classList.toggle('hidden');
@@ -109,12 +195,20 @@
             const btn = document.getElementById('run-match-btn');
             const originalText = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Analyzing...';
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin relative"></i> Analyzing...';
 
-            const [lat, lng] = document.getElementById('target-dest').value.split(',');
-            const w_dist = document.getElementById('w_dist').value;
-            const w_price = document.getElementById('w_cost').value;
-            const w_rating = document.getElementById('w_rating').value;
+            let targetVal = document.getElementById('target-dest').value;
+            if (targetVal === 'custom') {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                openMapPicker();
+                return;
+            }
+
+            const [lat, lng] = targetVal.split(',');
+            const w_dist = document.getElementById('w-dist').value;
+            const w_price = document.getElementById('w-cost').value;
+            const w_rating = document.getElementById('w-rating').value;
 
             try {
                 const response = await fetch(`/map/smart-api/?lat=${lat}&lng=${lng}&w_dist=${w_dist}&w_price=${w_price}&w_rating=${w_rating}`);
@@ -142,8 +236,13 @@
             // Reorder the DOM nodes
             cards.sort((a, b) => {
                 // Find ID from the link usually
-                const aId = a.querySelector('a[href*="/property/"]').getAttribute('href').split('/').filter(Boolean).pop();
-                const bId = b.querySelector('a[href*="/property/"]').getAttribute('href').split('/').filter(Boolean).pop();
+                const aLink = a.querySelector('a[href*="/property/"]');
+                const bLink = b.querySelector('a[href*="/property/"]');
+                // If it's a fallback box (no properties), ignore
+                if (!aLink || !bLink) return 0;
+
+                const aId = aLink.getAttribute('href').split('/').filter(Boolean).pop();
+                const bId = bLink.getAttribute('href').split('/').filter(Boolean).pop();
                 
                 const aData = scoreMap[aId];
                 const bData = scoreMap[bId];
@@ -156,7 +255,10 @@
             // Update UI with scores and append back to grid
             grid.innerHTML = '';
             cards.forEach(card => {
-                const id = card.querySelector('a[href*="/property/"]').getAttribute('href').split('/').filter(Boolean).pop();
+                const link = card.querySelector('a[href*="/property/"]');
+                if(!link) { grid.appendChild(card); return; }
+
+                const id = link.getAttribute('href').split('/').filter(Boolean).pop();
                 const data = scoreMap[id];
                 
                 // Add/Update score badge
@@ -164,12 +266,12 @@
                 if (!scoreBadge) {
                     const container = card.querySelector('.relative.h-56');
                     scoreBadge = document.createElement('div');
-                    scoreBadge.className = 'smart-score-badge absolute top-4 left-1/2 -translate-x-1/2 bg-arion-blue text-white px-3 py-1 rounded-full text-[10px] font-black shadow-xl border-2 border-white animate-bounce';
+                    scoreBadge.className = 'smart-score-badge absolute top-4 left-1/2 -translate-x-1/2 bg-blue-600/90 text-white px-3 py-1.5 rounded-full text-xs font-black shadow-xl border-2 border-white/20 backdrop-blur-md animate-toast-in z-20 flex items-center gap-1.5';
                     container.appendChild(scoreBadge);
                 }
                 
                 if (data) {
-                    scoreBadge.innerHTML = `<i class="fas fa-star mr-1"></i> ${data.score}% Match`;
+                    scoreBadge.innerHTML = `<i class="fas fa-star text-yellow-300"></i> ${data.score}% Match <span class="bg-black/20 px-1.5 py-0.5 rounded text-[9px] ml-1">${data.dist_km}km</span>`;
                     scoreBadge.classList.remove('hidden');
                 } else {
                     scoreBadge.classList.add('hidden');
@@ -179,6 +281,29 @@
             });
         }
     </script>
+
+    <!-- Map Picker Modal -->
+    <div id="map-picker-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] hidden flex justify-center items-center p-4">
+        <div class="bg-white rounded-[2rem] w-full max-w-3xl overflow-hidden shadow-2xl scale-95 opacity-0 transition-all duration-300 border border-slate-100" id="map-modal-content">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <h3 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-location-dot text-arion-blue"></i> Pin Target Location
+                </h3>
+                <button onclick="closeMapPicker()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white text-slate-400 hover:text-slate-800 hover:shadow-md transition-all"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div id="picker-map" style="height: 400px; width: 100%; z-index: 0;"></div>
+            <div class="p-6 bg-white border-t border-slate-100 flex justify-between items-center">
+                <p class="text-xs text-slate-500 font-medium"><i class="fas fa-info-circle mr-1"></i> Click anywhere on the map to set a pin.</p>
+                <div class="flex gap-3">
+                    <button onclick="closeMapPicker()" class="px-6 py-3 font-bold text-slate-500 hover:text-slate-800 transition-colors rounded-xl">Cancel</button>
+                    <button onclick="confirmMapLocation()" class="px-8 py-3 bg-slate-900 text-white rounded-xl font-black shadow-lg hover:bg-black transition-all flex items-center gap-2">
+                        <i class="fas fa-check"></i> Confirm Position
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     {% load badge_tags %}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
