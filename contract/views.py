@@ -76,7 +76,7 @@ def sign_contract(request, contract_id):
 @login_required
 def rent_dashboard(request):
     """View for tenants/owners to manage rent payments."""
-    if request.user.user_type == 'TENANT':
+    if request.user.role == 'TENANT':
         # Get all rent schedules for this tenant's contracts
         schedules = RentSchedule.objects.filter(contract__booking__tenant=request.user)
         template = 'contract/rent_tenant.html'

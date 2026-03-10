@@ -1,73 +1,143 @@
-<footer class="bg-slate-900 text-slate-400 py-20 mt-20">
-    <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-            <!-- Branding -->
-            <div class="space-y-6">
-                <a href="{% url 'index' %}" class="flex items-center no-underline gap-2">
-                    <div
-                        class="flex items-center justify-center w-10 h-10 bg-arion-blue-light rounded-xl text-white shadow-lg">
-                        <i class="fas fa-home"></i>
+<footer class="w-full bg-slate-900 border-t border-slate-800 relative z-10 overflow-hidden flex-none">
+    <!-- Dynamic Glass Blur Decorations -->
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-arion-blue/10 blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-0 right-1/4 w-64 h-64 bg-arion-orange/5 blur-[100px] pointer-events-none"></div>
+
+    <div class="container mx-auto px-6 md:px-10 py-12 md:py-20 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-16">
+
+            <!-- Branding & Ethos -->
+            <div class="space-y-6 md:space-y-8">
+                <div>
+                    <h2 class="font-display font-black text-white text-3xl tracking-tighter">
+                        den<span class="text-arion-orange">.</span>
+                    </h2>
+                    <div class="flex items-center gap-3 mt-4">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                        </span>
+                        <span class="text-[10px] uppercase tracking-[0.2em] font-black text-slate-500 font-display">System Operational</span>
                     </div>
-                    <div class="flex items-baseline">
-                        <span class="text-2xl font-black tracking-tighter text-white">den</span>
-                        <span class="w-2 h-2 bg-arion-orange rounded-full ml-1"></span>
-                    </div>
-                </a>
-                <p class="text-slate-400 leading-relaxed">
-                    Setting new benchmarks in the real estate discovery experience. Fast, secure, and beautiful.
+                </div>
+                <p class="text-sm leading-relaxed text-slate-400 font-medium max-w-sm">
+                    High-security property management and efficient-optimized system. Streamlined for corporate real estate and residential tracking.
                 </p>
-                <div class="flex space-x-4">
-                    <a href="#"
-                        class="bg-slate-800 p-3 rounded-full hover:bg-arion-blue hover:text-white transition-all"><i
-                            class="fab fa-facebook-f w-4 h-4 text-center"></i></a>
-                    <a href="#"
-                        class="bg-slate-800 p-3 rounded-full hover:bg-arion-blue hover:text-white transition-all"><i
-                            class="fab fa-twitter w-4 h-4 text-center"></i></a>
-                    <a href="#"
-                        class="bg-slate-800 p-3 rounded-full hover:bg-arion-blue hover:text-white transition-all"><i
-                            class="fab fa-instagram w-4 h-4 text-center"></i></a>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-[#1877F2] hover:text-white hover:border-[#1877F2] transition-all duration-300">
+                        <i class="fa-brands fa-facebook-f text-sm"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-[#0A66C2] hover:text-white hover:border-[#0A66C2] transition-all duration-300">
+                        <i class="fa-brands fa-linkedin-in text-sm"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-slate-800 hover:text-white transition-all duration-300">
+                        <i class="fa-brands fa-x-twitter text-sm"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-[#E1306C] hover:text-white transition-all duration-300">
+                        <i class="fa-brands fa-instagram text-sm"></i>
+                    </a>
                 </div>
             </div>
 
-            <!-- Links -->
-            <div class="space-y-6">
-                <h4 class="text-white font-bold text-lg">Platform</h4>
-                <ul class="space-y-4 font-medium">
-                    <li><a href="#" class="hover:text-arion-blue transition-colors">Search Houses</a></li>
-                    <li><a href="#" class="hover:text-arion-blue transition-colors">Post a Property</a></li>
-                    <li><a href="#" class="hover:text-arion-blue transition-colors">Verified Listings</a></li>
+            <!-- Navigation Links -->
+            <div>
+                <h4 class="text-white font-black uppercase text-[10px] tracking-[0.2em] mb-6 md:mb-10 flex items-center gap-2">
+                    <span class="w-4 h-[1px] bg-arion-blue"></span> Discover Den
+                </h4>
+                <ul class="space-y-4">
+                    <li><a href="{% url 'property:browse' %}" class="text-slate-400 hover:text-arion-blue text-sm font-bold transition-all flex items-center gap-3 group">
+                        <span class="w-1.5 h-1.5 rounded-full bg-slate-800 group-hover:bg-arion-blue transition-all"></span>
+                        Browse Listings
+                    </a></li>
+                    <li><a href="#" class="text-slate-400 hover:text-arion-blue text-sm font-bold transition-all flex items-center gap-3 group">
+                        <span class="w-1.5 h-1.5 rounded-full bg-slate-800 group-hover:bg-arion-blue transition-all"></span>
+                        Luxury Collection
+                    </a></li>
+                    <li><a href="{% url 'owner:dashboard' %}" class="text-slate-400 hover:text-arion-blue text-sm font-bold transition-all flex items-center gap-3 group">
+                        <span class="w-1.5 h-1.5 rounded-full bg-slate-800 group-hover:bg-arion-blue transition-all"></span>
+                        List Your Property
+                    </a></li>
+                    <li><a href="#" class="text-slate-400 hover:text-arion-blue text-sm font-bold transition-all flex items-center gap-3 group">
+                        <span class="w-1.5 h-1.5 rounded-full bg-slate-800 group-hover:bg-arion-blue transition-all"></span>
+                        Verified Partners
+                    </a></li>
                 </ul>
             </div>
 
-            <!-- Portal Links -->
-            <div class="space-y-6">
-                <h4 class="text-white font-bold text-lg">Portals</h4>
-                <ul class="space-y-4 font-medium">
-                    <li><a href="{% url 'tenant:dashboard' %}" class="hover:text-arion-blue transition-colors"><i
-                                class="fas fa-user-tie mr-2 text-xs"></i> Tenant Command Center</a></li>
-                    <li><a href="{% url 'owner:dashboard' %}" class="hover:text-arion-blue transition-colors"><i
-                                class="fas fa-key mr-2 text-xs"></i> Owner Management Suite</a></li>
+            <!-- Governance -->
+            <div class="flex flex-col h-full">
+                <h4 class="text-white font-black uppercase text-[10px] tracking-[0.2em] mb-6 md:mb-10 flex items-center gap-2">
+                    <span class="w-4 h-[1px] bg-arion-orange"></span> Resident Hub
+                </h4>
+                <ul class="space-y-4">
+                    <li><a href="#" class="text-slate-400 hover:text-white text-sm font-bold transition-all flex items-center gap-2 group">
+                        <i class="fa-solid fa-chevron-right text-[8px] opacity-20 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                        Lease Center
+                    </a></li>
+                    <li><a href="{% url 'tenant:dashboard' %}" class="text-slate-400 hover:text-white text-sm font-bold transition-all flex items-center gap-2 group">
+                        <i class="fa-solid fa-chevron-right text-[8px] opacity-20 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                        Tenant Dashboard
+                    </a></li>
+                    <li><a href="#" class="text-slate-400 hover:text-white text-sm font-bold transition-all flex items-center gap-2 group">
+                        <i class="fa-solid fa-chevron-right text-[8px] opacity-20 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                        Move-in Guide
+                    </a></li>
+                    <li><a href="#" class="text-slate-400 hover:text-white text-sm font-bold transition-all flex items-center gap-2 group">
+                        <i class="fa-solid fa-chevron-right text-[8px] opacity-20 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                        Security Protocols
+                    </a></li>
                 </ul>
             </div>
 
-            <!-- Contact -->
-            <div class="space-y-6">
-                <h4 class="text-white font-bold text-lg">Get in Touch</h4>
-                <ul class="space-y-4 font-medium">
-                    <li class="flex items-center space-x-3 text-slate-300">
-                        <i class="fas fa-envelope text-arion-blue"></i>
-                        <span>support@brosden-av.com</span>
-                    </li>
-                    <li class="flex items-center space-x-3 text-slate-300">
-                        <i class="fas fa-phone text-arion-blue"></i>
-                        <span>+91 12345 67890</span>
-                    </li>
-                </ul>
+            <!-- Connectivity -->
+            <div class="md:col-span-1 lg:col-span-1">
+                <h4 class="text-white font-black uppercase text-[10px] tracking-[0.2em] mb-6 md:mb-10 flex items-center gap-2">
+                    <span class="w-4 h-[1px] bg-green-500"></span> Contact Us
+                </h4>
+                <div class="space-y-4 md:space-y-5">
+                    <div class="flex items-start gap-4 group">
+                        <div class="w-10 h-10 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-arion-blue/10 transition-colors">
+                            <i class="fa-solid fa-location-dot text-arion-blue text-sm"></i>
+                        </div>
+                        <p class="flex-1 text-xs text-slate-400 leading-relaxed font-medium">Headquarters, Corporate Block, Digital Valley, Gujarat, India</p>
+                    </div>
+                    <div class="flex items-center gap-4 group">
+                        <div class="w-10 h-10 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-arion-blue/10 transition-colors">
+                            <i class="fa-solid fa-phone text-arion-blue text-sm"></i>
+                        </div>
+                        <p class="text-xs text-white font-black tracking-widest font-mono">+91 79 71222300</p>
+                    </div>
+                    <div class="flex items-center gap-4 group">
+                        <div class="w-10 h-10 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-green-500/10 transition-colors">
+                            <i class="fa-solid fa-paper-plane text-green-500 text-sm"></i>
+                        </div>
+                        <p class="text-xs text-white font-black tracking-widest font-mono">support@den-nirvana.com</p>
+                    </div>
+                    <div class="flex items-center gap-4 group">
+                        <div class="w-10 h-10 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-arion-orange/10 transition-colors">
+                            <i class="fa-solid fa-globe text-arion-orange text-sm"></i>
+                        </div>
+                        <a href="#" class="text-xs text-white font-black tracking-widest font-mono hover:text-arion-orange transition-colors">www.den-nirvana.com</a>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="pt-8 border-t border-slate-800 text-center text-sm font-medium">
-            &copy; 2026 BrosDen-AV. Built for Excellence.
+        <!-- System Credits -->
+        <div class="mt-12 md:mt-24 pt-8 md:pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
+            <div class="text-[10px] font-bold text-slate-600 uppercase tracking-[0.4em] font-display">
+                &copy; 2026 <span class="text-slate-400">DEN NIRVANA ENGINE</span>. All Rights Reserved.
+            </div>
+            <div class="flex flex-wrap justify-center items-center gap-4 md:gap-8">
+                <div class="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-xl border border-white/5">
+                    <i class="fa-solid fa-cloud-check text-arion-blue text-[10px]"></i>
+                    <span class="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">v2.1.0 Stable Cloud</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-green-500 text-xs opacity-50"></i>
+                    <span class="text-[9px] font-black text-slate-700 uppercase tracking-[0.2em]">AES-256 Encrypted</span>
+                </div>
+            </div>
         </div>
     </div>
 </footer>

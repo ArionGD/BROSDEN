@@ -16,12 +16,23 @@
             <p class="text-slate-500 font-bold mt-1 text-[10px] uppercase tracking-widest opacity-60">Business Suite</p>
         </div>
     </div>
-    <div class="flex items-center gap-6">
-        <a href="{% url 'property:add_property' %}"
-            class="hidden lg:flex items-center bg-arion-blue hover:opacity-90 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-blue-200 text-xs">
-            <i class="fas fa-plus mr-2"></i> Add New Property
+    <div class="flex items-center gap-4">
+        <!-- Support Icon -->
+        <a href="{% url 'helpdesk:home' %}" 
+            class="w-11 h-11 bg-slate-50 text-slate-400 hover:bg-arion-orange/10 hover:text-arion-orange rounded-xl flex items-center justify-center transition-all group/icon"
+            title="Support">
+            <i class="fas fa-headset text-lg group-hover/icon:scale-110 transition-transform"></i>
         </a>
-        <div class="h-10 w-px bg-slate-200"></div>
+
+        <!-- Notifications Icon -->
+        <a href="{% url 'notifications:list' %}" 
+            class="w-11 h-11 bg-slate-50 text-slate-400 hover:bg-blue-50 hover:text-arion-blue rounded-xl flex items-center justify-center transition-all relative group/icon"
+            title="Notifications">
+            <i class="fas fa-bell text-lg group-hover/icon:rotate-12 transition-transform"></i>
+            <span id="notif-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full border-2 border-white hidden">0</span>
+        </a>
+
+        <div class="h-10 w-px bg-slate-200 mx-2"></div>
 
         {% load account_tags %}
         {% owner_badge user as badge %}

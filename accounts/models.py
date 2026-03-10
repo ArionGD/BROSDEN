@@ -42,6 +42,14 @@ class User(AbstractUser):
             return 'owner:dashboard'
         return 'index'
 
+    @property
+    def account_type(self):
+        """Returns the membership tier of the user."""
+        membership = getattr(self, 'pro_membership', None)
+        if membership and membership.is_active:
+            return membership.tier
+        return 'NORMAL'
+
 
 
 class KYC(models.Model):
@@ -91,7 +99,7 @@ class KYC(models.Model):
 
     # ── Section 3: Owner-Specific Fields ──────────────────────────────────
     ownership_proof = models.FileField(upload_to='kyc/ownership/', null=True, blank=True,
-                                       help_text="Title Deed / Sale Deed")
+                                       help_text="Electricity Bill (Latest)")
     property_tax_receipt = models.FileField(upload_to='kyc/tax/', null=True, blank=True,
                                              help_text="Latest receipt")
     property_address = models.TextField(blank=True)
@@ -119,3 +127,24 @@ class KYC(models.Model):
                   self.mobile_number, self.id_number, self.pan_number]
         filled = sum(1 for f in fields if f)
         return int((filled / len(fields)) * 100)
+
+class ProMembership(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='pro_membership')
+    tier = models.CharField(max_length=50, choices=[('PRO', 'BrosDen Pro'), ('GOLD', 'BrosDen Gold')], default='PRO')
+    is_active = models.BooleanField(default=False)
+    starts_at = models.DateTimeField(null=True, blank=True)
+    expires_at = models.DateTimeField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.tier} ({'Active' if self.is_active else 'Inactive'})"
+
+class ProFeature(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    is_premium = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name

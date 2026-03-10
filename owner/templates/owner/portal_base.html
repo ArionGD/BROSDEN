@@ -34,9 +34,9 @@
         btn?.addEventListener('click', () => {
             const c = sb.classList.toggle('w-16');
             sb.classList.toggle('w-72', !c);
+            sb.classList.toggle('sidebar-collapsed', c);
             ic?.classList.toggle('fa-chevron-right', c);
             ic?.classList.toggle('fa-chevron-left', !c);
-            get('sidebarTitle')?.classList.toggle('opacity-0', c);
             sb.querySelectorAll('.sidebar-text').forEach(t => t.classList.toggle('hidden', c));
         });
 

@@ -32,7 +32,6 @@ urlpatterns = [
     path('notifications/', include('notifications.urls')),
     path('wishlist/', include('wishlist.urls')),
     path('reviews/', include('reviews.urls')),
-    path('pro/', include('pro.urls')),
     path('map/', include('map.urls')),
     path('vibe/', include('vibe.urls')),
     path('onboarding/', include('onboarding.urls')),

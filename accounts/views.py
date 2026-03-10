@@ -4,8 +4,9 @@ from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm, KYCForm
-from .models import KYC
+from .models import KYC, ProMembership
 from .ocr_utils import verify_id_document
+from .decorators import owner_required
 
 def _handle_post_registration(request, user, password):
     """Helper to send welcome emails and notifications after registration."""
@@ -94,7 +95,7 @@ def _shared_kyc_logic(request, template_name):
                     else:
                         messages.warning(request, f"⚠️ OCR extracted '{extracted_no}' but you entered '{kyc_obj.id_number}'. Pending manual review.")
                 else:
-                    messages.warning(request, "⚠️ OCR could not read your ID clearly. Submitted for manual review.")
+                    messages.warning(request, "⚠️ OCR could not read your ID clearly. Submitted for KYC review (Wrong Docs).")
             else:
                 kyc_obj.is_verified = False
 
@@ -173,3 +174,24 @@ def delete_account_view(request):
         messages.success(request, 'Your account has been permanently deleted.')
         return redirect('index')
     return redirect('accounts:account_settings')
+
+@owner_required
+def pro_landing_view(request):
+    """View to show pro membership options to owners."""
+    membership = ProMembership.objects.filter(user=request.user).first()
+    
+    return render(request, 'accounts/premium.html', {
+        'membership': membership,
+        'portal_base': 'owner/portal_base.html'
+    })
+
+@owner_required
+def upgrade_tier_view(request, tier):
+    """Placeholder view to handle upgrade requests."""
+    if tier not in ['PRO', 'GOLD']:
+        messages.error(request, "Invalid membership tier.")
+        return redirect('accounts:premium_landing')
+        
+    # In a real app, this would redirect to payment
+    messages.success(request, f"Redirecting to payment for {tier} Pro Membership...")
+    return redirect('accounts:premium_landing')

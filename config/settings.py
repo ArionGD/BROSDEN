@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'mailer',
     'wishlist',
     'reviews',
-    'pro',
     'map',
     'vibe',
     'onboarding',
