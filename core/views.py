@@ -47,8 +47,6 @@ def index(request):
     }
     return render(request, 'home.html', context)
 
-def about(request):
-    return render(request, 'about.html')
-
-def contact(request):
-    return render(request, 'contact.html')
+def support(request):
+    """Hybrid Support & About Page."""
+    return render(request, 'support.html')
