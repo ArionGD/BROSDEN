@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}{{ map_title }} - BrosDen-AV{% endblock %}
+
+{# No overflow locks — the page should scroll naturally #}
+{% block body_class %}bg-slate-100{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-6xl mx-auto px-4 py-8 space-y-6">
+
+    <!-- ── BLOCK 1: FILTER SUITE ──────────────────────────── -->
+    <div class="flex justify-center">
+        <div class="bg-white/95 backdrop-blur-md rounded-[2.5rem] border border-slate-200 shadow-lg p-5 w-full xl:w-fit">
+            {% include "map/snippets/map_filters.html" %}
+        </div>
+    </div>
+
+    <!-- ── BLOCK 2: MAP FRAME (hidden until toggled) ─────── -->
+    <div id="spatial-map-block" class="hidden">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <!-- Map header -->
+            <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <i class="fas fa-earth-asia text-sm"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-black text-slate-900">Spatial Discovery Engine</p>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Live property heatmap · MapLibre GL</p>
+                    </div>
+                </div>
+                <span class="flex items-center gap-2 text-[10px] font-black text-emerald-500 uppercase tracking-widest">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Live
+                </span>
+            </div>
+            <!-- Map canvas -->
+            <div id="fullScreenMap" class="w-full" style="height: 520px;" data-focus="{{ focus_id|default:'' }}"></div>
+        </div>
+    </div>
+
+    <!-- ── BLOCK 3: PROPERTY CARDS ───────────────────────── -->
+    <div>
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <h2 class="text-2xl font-black text-slate-900 tracking-tight">Suite Explorer</h2>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
+                    <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-600 text-white rounded-full text-[9px] font-black mr-1">{{ properties|length }}</span>
+                    properties matching your search
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5" id="hybrid-card-list">
+            {% for prop in properties %}
+            <div class="hybrid-card group bg-white border border-slate-200 rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl hover:shadow-blue-900/8 transition-all duration-400"
+                 id="hybrid-card-{{ prop.id }}"
+                 data-id="{{ prop.id }}"
+                 data-lat="{{ prop.latitude|default:0 }}"
+                 data-lng="{{ prop.longitude|default:0 }}">
+
+                <!-- Image -->
+                <div class="relative h-48 overflow-hidden bg-slate-100">
+                    {% if prop.images.first %}
+                    <img src="{{ prop.images.first.image.url }}"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-600">
+                    {% else %}
+                    <div class="w-full h-full flex flex-col items-center justify-center text-slate-300">
+                        <i class="fas fa-building text-3xl mb-2"></i>
+                        <span class="text-[10px] font-black uppercase tracking-widest">No Photo</span>
+                    </div>
+                    {% endif %}
+
+                    <!-- Price badge -->
+                    <div class="absolute top-3 left-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow border border-slate-100">
+                        <span class="text-xs font-black text-slate-900">₹{{ prop.price|default:"N/A" }}</span>
+                        <span class="text-[8px] font-semibold text-slate-400 block leading-none -mt-0.5">/month</span>
+                    </div>
+
+                    {% if prop.is_verified %}
+                    <div class="absolute top-3 right-3 w-8 h-8 bg-emerald-500 rounded-xl flex items-center justify-center shadow border-2 border-white">
+                        <i class="fas fa-check text-white text-xs"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Card body -->
+                <div class="p-4">
+                    <h4 class="text-sm font-black text-slate-900 line-clamp-1 group-hover:text-blue-600 transition-colors">{{ prop.title }}</h4>
+                    <p class="text-[10px] font-semibold text-slate-400 mt-0.5 flex items-center gap-1.5">
+                        <i class="fas fa-location-dot text-blue-400 text-[9px]"></i>
+                        {{ prop.city }}
+                    </p>
+
+                    <!-- Stats row -->
+                    <div class="mt-3 flex items-center gap-3">
+                        <div class="flex-1 bg-slate-50 rounded-lg p-2.5 border border-slate-100">
+                            <p class="text-[8px] font-black uppercase text-slate-400 mb-0.5">Config</p>
+                            <div class="flex items-center gap-1.5">
+                                <i class="fas fa-bed text-blue-500 text-[9px]"></i>
+                                <span class="text-[11px] font-black text-slate-700">{{ prop.bedrooms|default:"1" }} BHK</span>
+                            </div>
+                        </div>
+                        <div class="flex-1 bg-slate-50 rounded-lg p-2.5 border border-slate-100">
+                            <p class="text-[8px] font-black uppercase text-slate-400 mb-0.5">For</p>
+                            <div class="flex items-center gap-1.5">
+                                <i class="fas fa-users text-indigo-500 text-[9px]"></i>
+                                <span class="text-[11px] font-black text-slate-700 uppercase">{{ prop.gender_preference|default:"All" }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-tight">By Owner</span>
+                        <a href="{% url 'property:detail' prop.pk %}"
+                           onclick="event.stopPropagation()"
+                           class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-blue-600 text-white flex items-center justify-center transition-all text-xs">
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full py-24 flex flex-col items-center justify-center bg-white rounded-2xl border border-dashed border-slate-200">
+                <i class="fas fa-magnifying-glass text-4xl text-slate-200 mb-4"></i>
+                <h3 class="text-lg font-black text-slate-900">No Properties Found</h3>
+                <p class="text-sm text-slate-400 mt-1 text-center max-w-xs">Try adjusting your filters or search terms.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<!-- Location Picker Modal -->
+<div id="map-picker-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl" id="map-modal-content">
+        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="text-base font-black text-slate-900 flex items-center gap-2">
+                <i class="fas fa-location-dot text-blue-600"></i> Pin Custom Location
+            </h3>
+            <button onclick="closeMapPicker()" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-all">
+                <i class="fas fa-xmark text-sm"></i>
+            </button>
+        </div>
+        <div id="picker-map" style="height:380px;width:100%;"></div>
+        <div class="p-4 border-t border-slate-100 flex justify-between items-center">
+            <p class="text-xs text-slate-400 font-semibold"><i class="fas fa-hand-pointer mr-1 text-blue-400"></i>Click map to drop pin</p>
+            <div class="flex gap-2">
+                <button onclick="closeMapPicker()" class="px-4 py-2 text-xs font-black text-slate-400 hover:text-slate-800 transition-colors uppercase">Cancel</button>
+                <button onclick="confirmMapLocation()" class="px-6 py-2 bg-slate-900 text-white rounded-lg text-xs font-black uppercase hover:bg-black transition-all">
+                    Set Location
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hybrid-card { transition: all 0.3s ease; }
+    .hybrid-card:hover { transform: translateY(-3px); }
+    .active-hybrid-card {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.15) !important;
+        background-color: #f8faff !important;
+    }
+    .maplibregl-popup-content {
+        border-radius: 14px !important;
+        padding: 0 !important;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.18) !important;
+        overflow: hidden;
+    }
+    .maplibregl-ctrl-logo, .maplibregl-ctrl-attrib { display: none !important; }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+    {% include "map/snippets/map_js.html" %}
+{% endblock %}

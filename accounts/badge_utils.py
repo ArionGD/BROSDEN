@@ -2,6 +2,9 @@ from django.db.models import Avg
 from reviews.models import Review
 
 def get_owner_badge(owner):
+    if not owner or not hasattr(owner, 'is_authenticated') or not owner.is_authenticated:
+        return {'color': 'white', 'name': 'No Reviews', 'avg': 0.0, 'icon': 'fa-solid fa-circle'}
+
     """
     Returns the badge color and average rating for a given owner based on reviews.
     - Avg > 4.5 -> Diamond

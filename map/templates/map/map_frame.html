@@ -90,13 +90,29 @@
 
                 const map = new maplibregl.Map({
                     container: 'propertyMap',
-                    style: 'https://tiles.openfreemap.org/styles/liberty', // High-POI visibility style
+                    style: 'https://tiles.openfreemap.org/styles/bright', // Cleaner, more neutral base
                     center: center,
                     zoom: 17,
                     pitch: 0, // Flat 2D View
                     bearing: 0,
                     dragPitch: false, // Lock view to 90 degrees top down
                     antialias: true
+                });
+
+                // Dynamic Google Maps Aesthetic Override (White Roads)
+                map.on('style.load', () => {
+                    const layers = map.getStyle().layers;
+                    layers.forEach(layer => {
+                        if (layer['source-layer'] === 'transportation' || (layer.id && layer.id.includes('road'))) {
+                            if (layer.type === 'line') {
+                                if (layer.id.includes('casing') || layer.id.includes('outline')) {
+                                    map.setPaintProperty(layer.id, 'line-color', '#e2e8f0');
+                                } else {
+                                    map.setPaintProperty(layer.id, 'line-color', '#ffffff');
+                                }
+                            }
+                        }
+                    });
                 });
 
                 map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'top-right');

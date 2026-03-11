@@ -1,0 +1,175 @@
+{% comment %}Block 1: Filter strip — sticks to top of #portal-main scroll area{% endcomment %}
+<div class="w-full">
+
+    <!-- ════════════════════════════════════════════════════════
+         BLOCK 1 — FILTER SUITE (Floating Island)
+    ════════════════════════════════════════════════════════ -->
+    <div class="sticky top-0 z-40 w-full pt-8 px-4 flex justify-center pointer-events-none">
+        <div class="bg-white/95 backdrop-blur-xl border border-slate-200 shadow-xl rounded-[2.5rem] p-5 pointer-events-auto w-full xl:w-fit transition-all hover:shadow-2xl">
+            {% include "map/snippets/map_filters.html" %}
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         BLOCK 2 — SPATIAL MAP (toggled hidden by default)
+    ════════════════════════════════════════════════════════ -->
+    <div id="spatial-map-block" class="hidden w-full px-8 pt-8">
+        <div class="relative bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-xl">
+            <!-- Map sub-header -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <i class="fas fa-earth-asia"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-black text-slate-900">Spatial Discovery Engine</p>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Live property heatmap</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">MapLibre GL</span>
+                </div>
+            </div>
+            <!-- Map canvas -->
+            <div id="fullScreenMap" class="w-full h-[560px]" data-focus="{{ focus_id|default:'' }}"></div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         BLOCK 3 — PROPERTY DISCOVERY GRID
+    ════════════════════════════════════════════════════════ -->
+    <div class="w-full px-8 py-10">
+        <!-- Section header -->
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+            <div>
+                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Suite Explorer</h2>
+                <p class="mt-2 text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">
+                    <span class="inline-block px-3 py-1 bg-blue-600 text-white rounded-full mr-2">{{ properties|length }}</span>
+                    properties match your search
+                </p>
+            </div>
+        </div>
+
+        <!-- Cards grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="hybrid-card-list">
+            {% for prop in properties %}
+            <div class="hybrid-card group bg-white border border-slate-200 rounded-3xl overflow-hidden cursor-pointer hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500"
+                 id="hybrid-card-{{ prop.id }}"
+                 data-id="{{ prop.id }}"
+                 data-lat="{{ prop.latitude|default:0 }}"
+                 data-lng="{{ prop.longitude|default:0 }}">
+
+                <!-- Image -->
+                <div class="relative h-52 overflow-hidden">
+                    {% if prop.images.first %}
+                    <img src="{{ prop.images.first.image.url }}"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    {% else %}
+                    <div class="w-full h-full bg-slate-100 flex flex-col items-center justify-center text-slate-300">
+                        <i class="fas fa-building text-4xl mb-2"></i>
+                        <span class="text-[10px] font-black uppercase tracking-widest">No Photo</span>
+                    </div>
+                    {% endif %}
+
+                    <!-- Price badge -->
+                    <div class="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl shadow-lg border border-slate-100">
+                        <span class="text-xs font-black text-slate-900">₹{{ prop.price|default:"N/A" }}</span>
+                        <span class="text-[8px] font-bold text-slate-400 block leading-none">/ month</span>
+                    </div>
+
+                    {% if prop.is_verified %}
+                    <div class="absolute top-4 right-4 w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200 border-2 border-white">
+                        <i class="fas fa-check text-white text-xs"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Card body -->
+                <div class="p-6">
+                    <h4 class="text-sm font-black text-slate-900 line-clamp-1 group-hover:text-blue-600 transition-colors">{{ prop.title }}</h4>
+                    <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fas fa-location-dot text-blue-400 text-[9px]"></i>
+                        {{ prop.city }}
+                    </p>
+
+                    <div class="mt-5 flex items-center gap-4">
+                        <div class="flex-1 bg-slate-50 rounded-xl p-3 border border-slate-100 group-hover:border-blue-100 transition-colors">
+                            <p class="text-[8px] font-black uppercase text-slate-400 mb-1">Config</p>
+                            <div class="flex items-center gap-1.5">
+                                <i class="fas fa-bed text-blue-500 text-[10px]"></i>
+                                <span class="text-[11px] font-black text-slate-700">{{ prop.bedrooms|default:"1" }} BHK</span>
+                            </div>
+                        </div>
+                        <div class="flex-1 bg-slate-50 rounded-xl p-3 border border-slate-100 group-hover:border-indigo-100 transition-colors">
+                            <p class="text-[8px] font-black uppercase text-slate-400 mb-1">For</p>
+                            <div class="flex items-center gap-1.5">
+                                <i class="fas fa-users text-indigo-500 text-[10px]"></i>
+                                <span class="text-[11px] font-black text-slate-700 uppercase">{{ prop.gender_preference|default:"All" }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 pt-5 border-t border-slate-100 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center">
+                                {% if prop.owner.user_profile.profile_picture %}
+                                <img src="{{ prop.owner.user_profile.profile_picture.url }}" class="w-full h-full object-cover">
+                                {% else %}
+                                <i class="fas fa-user text-slate-300 text-xs"></i>
+                                {% endif %}
+                            </div>
+                            <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter">Owner</span>
+                        </div>
+                        <a href="{% url 'property:detail' prop.pk %}"
+                           onclick="event.stopPropagation()"
+                           class="w-9 h-9 rounded-xl bg-slate-900 hover:bg-blue-600 text-white flex items-center justify-center transition-all shadow-lg group-hover:translate-x-0.5">
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full py-32 flex flex-col items-center justify-center bg-white rounded-3xl border border-dashed border-slate-200">
+                <i class="fas fa-search-location text-5xl text-slate-200 mb-6"></i>
+                <h3 class="text-xl font-black text-slate-900">No Properties Found</h3>
+                <p class="text-sm font-bold text-slate-400 mt-2 text-center max-w-xs">Try adjusting your filters or clearing the search.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Location Picker Modal -->
+<div id="map-picker-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] hidden items-center justify-center p-4" style="display:none">
+    <div class="bg-white rounded-3xl w-full max-w-3xl overflow-hidden shadow-2xl" id="map-modal-content">
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="text-lg font-black text-slate-900 flex items-center gap-3">
+                <i class="fas fa-location-dot text-blue-600"></i> Pin Custom Location
+            </h3>
+            <button onclick="closeMapPicker()" class="w-9 h-9 rounded-xl bg-slate-100 text-slate-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-all">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+        <div id="picker-map" style="height:420px;width:100%;"></div>
+        <div class="p-5 border-t border-slate-100 flex justify-between items-center">
+            <p class="text-xs text-slate-400 font-bold"><i class="fas fa-hand-pointer mr-2 text-blue-400"></i>Click to drop a pin</p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeMapPicker()" class="px-5 py-3 text-xs font-black text-slate-400 hover:text-slate-800 uppercase tracking-widest transition-colors">Cancel</button>
+                <button type="button" onclick="confirmMapLocation()" class="px-8 py-3 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all">
+                    Set Location <i class="fas fa-chevron-right text-[9px] ml-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hybrid-card { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+    .hybrid-card:hover { transform: translateY(-3px); }
+    .active-hybrid-card {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 4px rgba(59,130,246,0.12) !important;
+        background-color: #f8faff !important;
+    }
+</style>

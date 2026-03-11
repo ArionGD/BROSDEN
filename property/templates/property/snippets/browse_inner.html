@@ -1,3 +1,5 @@
+{% load account_tags %}
+
 <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div>
         <h2 class="text-4xl font-black text-slate-900 tracking-tight">Marketplace</h2>
@@ -30,8 +32,8 @@
 
         <!-- Advanced Toggle -->
         <button type="button" onclick="toggleAdvancedFilters()" 
-            class="px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-black flex items-center gap-3 hover:bg-slate-200 transition-all border border-slate-200">
-            <i class="fas fa-sliders-h" id="adv-filter-icon"></i> Filtering Suite
+            class="px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-black flex items-center gap-3 hover:bg-slate-200 transition-all border border-slate-200 group">
+            <i class="fas fa-sliders-h transition-transform duration-300" id="adv-filter-icon"></i> Filtering Suite
         </button>
 
         <!-- Apply Button -->
@@ -53,7 +55,7 @@
                 <div class="space-y-2">
                     <label class="text-[10px] font-black uppercase text-slate-500">Monthly Budget (₹)</label>
                     <div class="flex gap-2">
-                        <input type="number" name="min_price" value="{{ request_params.min_price|default:'' }}" placeholder="Min (ex: 2000)" class="w-full px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-sm">
+                        <input type="number" name="min_price" value="{{ request_params.min_price|default:'' }}" placeholder="Min" class="w-full px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-sm">
                         <input type="number" name="max_price" value="{{ request_params.max_price|default:'' }}" placeholder="Max" class="w-full px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-sm">
                     </div>
                 </div>
@@ -179,7 +181,7 @@
         <!-- SECTION 4: Advanced Life-Context -->
         <div class="space-y-4 pt-6 border-t border-slate-100">
             <div class="flex items-center justify-between">
-                <h4 class="text-xs font-black text-orange-500 uppercase tracking-[0.2em]">4. The BrosDen Edge (Advanced)</h4>
+                <h4 class="text-xs font-black text-orange-500 uppercase tracking-[0.2em]">4. The BrosDen Edge</h4>
                 <div class="flex items-center gap-2 text-[10px] font-black text-orange-400 uppercase bg-orange-50 px-3 py-1 rounded-full">
                     <i class="fas fa-microchip"></i> AI Assisted
                 </div>
@@ -218,110 +220,124 @@
                 </div>
             </div>
         </div>
-    </div>    <!-- Smart Match Panel (Hidden by default) -->
-    <div id="smart-match-panel" class="hidden animate-in fade-in slide-in-from-top-4 duration-300 border-t border-slate-100 pt-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div class="space-y-3 col-span-1 md:col-span-1 lg:col-span-1">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center justify-between">
-                    <span class="flex items-center gap-2"><i class="fas fa-building-user text-arion-blue"></i> Target Location</span>
-                    <button type="button" onclick="openMapPicker()" class="text-arion-blue hover:text-blue-700 transition-colors bg-blue-50 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-map-marked-alt"></i> Pick on Map</button>
-                </label>
-                <select id="target-dest" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 font-bold text-slate-600 outline-none" onchange="handleTargetChange()">
-                    <option value="23.0371,72.5445">Gujarat University, Ahmedabad</option>
-                    <option value="23.0238,72.5273">Lokmanya College Shivranjani, Ahmedabad</option>
-                    <option value="custom" id="custom-option" class="hidden">📍 Custom Map Location</option>
-                </select>
-            </div>
 
-            <div class="space-y-4 lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Distance Weight</label>
-                        <span id="w-dist-val" class="text-xs font-bold text-arion-blue">33%</span>
+                <div id="smart-match-panel" class="hidden animate-in fade-in slide-in-from-top-4 duration-300 border-t border-slate-100 pt-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="space-y-4">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center justify-between">
+                                <span class="flex items-center gap-2"><i class="fas fa-building-user text-arion-blue"></i> Favored Locations</span>
+                                <span class="bg-blue-100 text-blue-600 px-2 py-0.5 rounded text-[10px] font-black" id="location-count">0 Added</span>
+                            </label>
+                            
+                            <div class="flex gap-2">
+                                <select id="target-preset" class="flex-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 font-bold text-slate-600 outline-none text-xs">
+                                    <option value="">-- Add Preset --</option>
+                                    <option value="23.0371,72.5445" data-label="Gujarat University">Gujarat University</option>
+                                    <option value="23.0238,72.5273" data-label="Shivranjani">Shivranjani</option>
+                                </select>
+                                <button type="button" onclick="addLocationFromPreset()" class="p-3 bg-slate-900 text-white rounded-xl hover:bg-black transition-all">
+                                    <i class="fas fa-plus text-xs"></i>
+                                </button>
+                                <button type="button" onclick="openMapPicker()" class="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all">
+                                    <i class="fas fa-map-pin text-xs"></i>
+                                </button>
+                            </div>
+
+                            <div id="target-locations-list" class="flex flex-col gap-2 max-h-[150px] overflow-y-auto portal-scroll">
+                                <div class="text-[10px] font-bold text-slate-400 text-center py-4 bg-slate-50 rounded-xl border border-dashed border-slate-200" id="no-locations-hint">
+                                    No locations added yet
+                                </div>
+                            </div>
+                        </div>
+
+                <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Distance Weight</label>
+                            <span id="w-dist-val" class="text-xs font-bold text-arion-blue">33%</span>
+                        </div>
+                        <input type="range" id="w-dist" min="0" max="100" value="33" 
+                            class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-arion-blue"
+                            oninput="updateWeightLabels()">
                     </div>
-                    <input type="range" id="w-dist" min="0" max="100" value="33" 
-                        class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-arion-blue"
-                        oninput="updateWeightLabels()">
-                </div>
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Cost Weight</label>
-                        <span id="w-cost-val" class="text-xs font-bold text-arion-blue">33%</span>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Cost Weight</label>
+                            <span id="w-cost-val" class="text-xs font-bold text-arion-blue">33%</span>
+                        </div>
+                        <input type="range" id="w-cost" min="0" max="100" value="33"
+                            class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-arion-blue"
+                            oninput="updateWeightLabels()">
                     </div>
-                    <input type="range" id="w-cost" min="0" max="100" value="33"
-                        class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-arion-blue"
-                        oninput="updateWeightLabels()">
-                </div>
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Reputation Weight</label>
-                        <span id="w-rating-val" class="text-xs font-bold text-arion-blue">34%</span>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Reputation Weight</label>
+                            <span id="w-rating-val" class="text-xs font-bold text-arion-blue">34%</span>
+                        </div>
+                        <input type="range" id="w-rating" min="0" max="100" value="34"
+                            class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-arion-blue"
+                            oninput="updateWeightLabels()">
                     </div>
-                    <input type="range" id="w-rating" min="0" max="100" value="34"
-                        class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-arion-blue"
-                        oninput="updateWeightLabels()">
                 </div>
             </div>
-        </div>
-        
-        <div class="mt-8 flex justify-end gap-3">
-            <button type="button" onclick="toggleSmartMatch()" class="px-6 py-2 text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors">Cancel</button>
-            <button type="button" onclick="runSmartMatch()" id="run-match-btn" 
-                class="px-8 py-3 bg-slate-900 text-white rounded-xl font-black shadow-xl hover:bg-black transition-all flex items-center gap-3">
-                Calculate Best Matches
-            </button>
+            
+            <div class="mt-8 flex justify-end gap-3">
+                <button type="button" onclick="toggleSmartMatch()" class="px-6 py-2 text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors">Cancel</button>
+                <button type="button" onclick="runSmartMatch()" id="run-match-btn" 
+                    class="px-8 py-3 bg-slate-900 text-white rounded-xl font-black shadow-xl hover:bg-black transition-all flex items-center gap-3">
+                    Calculate Best Matches
+                </button>
+            </div>
         </div>
     </div>
 </form>
 
-{% load account_tags %}
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 main-property-grid">
     {% for prop in properties %}
     {% owner_badge prop.owner as badge %}
-    <div
-        class="group bg-white rounded-[2rem] overflow-hidden border border-slate-200 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-        <div class="relative h-56 bg-slate-50 flex items-center justify-center text-slate-300 overflow-hidden image-container">
+    <div class="group bg-white rounded-[2rem] overflow-hidden border border-slate-200 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+        <!-- Card Image Header -->
+        <div class="relative h-56 bg-white flex items-center justify-center text-slate-300 overflow-hidden image-container">
             {% if prop.images.first %}
             <img src="{{ prop.images.first.image.url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/f1f5f9/64748b?text=Property+Photo'">
             {% else %}
-            <div class="flex flex-col items-center gap-2 opacity-40">
+            <div class="flex flex-col items-center gap-2 opacity-30">
                 <i class="fas fa-house-chimney text-4xl"></i>
                 <span class="text-[10px] font-black uppercase tracking-widest">No Image</span>
             </div>
             {% endif %}
-            <div class="absolute top-4 left-4 flex flex-col gap-2 items-start">
+
+            <!-- Top Overlay Badges -->
+            <div class="absolute top-4 left-4 flex flex-col gap-2 items-start z-10">
                 {% if prop.is_verified %}
-                <span
-                    class="bg-emerald-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-sm">Verified</span>
+                <span class="bg-emerald-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-lg">Verified</span>
                 {% endif %}
 
-                <span
-                    class="text-[10px] font-black uppercase px-2 py-1 rounded flex items-center gap-1 shadow-sm opacity-90 group-hover:opacity-100 transition-opacity {% if badge.color == 'cyan' %}bg-cyan-500 text-white{% elif badge.color == 'amber' %}bg-amber-500 text-white{% elif badge.color == 'slate' %}bg-slate-500 text-white{% elif badge.color == 'orange' %}bg-orange-500 text-white{% elif badge.color == 'red' %}bg-red-500 text-white{% else %}bg-white text-slate-400{% endif %}"
-                    title="{{ badge.name }} Seller">
-                    <i class="{{ badge.icon }}"></i> {% if badge.avg > 0 %}{{ badge.avg|floatformat:1 }}
-                    {% else %}NEW{% endif %}
+                <span class="text-[10px] font-black uppercase px-2 py-1 rounded flex items-center gap-1 shadow-lg backdrop-blur-md {% if badge.color == 'cyan' %}bg-cyan-500 text-white{% elif badge.color == 'amber' %}bg-amber-500 text-white{% elif badge.color == 'slate' %}bg-slate-500 text-white{% elif badge.color == 'orange' %}bg-orange-500 text-white{% elif badge.color == 'red' %}bg-red-500 text-white{% else %}bg-white/90 text-slate-400{% endif %}">
+                    <i class="{{ badge.icon }}"></i> {% if badge.avg > 0 %}{{ badge.avg|floatformat:1 }}{% else %}NEW{% endif %}
                 </span>
             </div>
-            <div
-                class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-arion-blue font-black shadow-lg">
+
+            <!-- Price Tag -->
+            <div class="absolute bottom-4 right-4 bg-white/95 backdrop-blur-md px-4 py-2 rounded-xl text-arion-blue font-black shadow-xl z-10 border border-slate-100">
                 ₹ {{ prop.price }}
             </div>
 
             {% if user.is_authenticated and user.role == "TENANT" %}
-            <div class="absolute top-4 right-4">
+            <div class="absolute top-4 right-4 z-10">
                 <form action="{% url 'wishlist:toggle' prop.id %}" method="POST">
                     {% csrf_token %}
-                    <button type="submit"
-                        class="w-10 h-10 bg-white/90 backdrop-blur-md rounded-xl flex items-center justify-center shadow-lg transition-all hover:scale-110 active:scale-95 group/heart">
-                        <i
-                            class="fas fa-heart text-lg transition-colors {% if prop.id in wishlist_ids %}text-arion-orange{% else %}text-slate-300 group-hover/heart:text-arion-orange{% endif %}"></i>
+                    <button type="submit" class="w-10 h-10 bg-white/95 backdrop-blur-md rounded-xl flex items-center justify-center shadow-xl transition-all hover:scale-110 active:scale-95 group/heart border border-slate-100">
+                        <i class="fas fa-heart text-lg transition-colors {% if prop.id in wishlist_ids %}text-arion-orange{% else %}text-slate-300 group-hover/heart:text-arion-orange{% endif %}"></i>
                     </button>
                 </form>
             </div>
             {% endif %}
         </div>
+
+        <!-- Card Body -->
         <div class="p-8">
-            <h3 class="text-xl font-bold text-slate-900 group-hover:text-arion-blue transition-colors">
+            <h3 class="text-xl font-bold text-slate-900 group-hover:text-arion-blue transition-colors line-clamp-1">
                 {{ prop.title }}
             </h3>
             <p class="text-slate-500 mt-2 text-sm flex items-center">
@@ -353,19 +369,21 @@
             </div>
 
             <a href="{% url 'property:detail' prop.pk %}"
-                class="block w-full mt-8 bg-blue-50 text-arion-blue font-black py-4 rounded-xl text-center hover:bg-arion-blue hover:text-white transition-all shadow-blue-100">
+                class="block w-full mt-8 bg-blue-50 text-arion-blue font-black py-4 rounded-xl text-center hover:bg-arion-blue hover:text-white transition-all shadow-sm">
                 View Details
             </a>
         </div>
     </div>
     {% empty %}
-    <div class="col-span-full text-center py-20 bg-slate-50 rounded-[2rem]">
-        <h2 class="text-2xl font-black text-slate-900">No properties available yet</h2>
-        <p class="text-slate-500 mt-2 font-medium">Check back later for new listings.</p>
+    <div class="col-span-full text-center py-24 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
+        <div class="w-20 h-20 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-house-crack text-3xl text-slate-300"></i>
+        </div>
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight">No properties available yet</h2>
+        <p class="text-slate-500 mt-2 font-medium max-w-xs mx-auto text-sm leading-relaxed">We're expanding rapidly. Check back soon for hand-picked listings in your area.</p>
     </div>
     {% endfor %}
 </div>
-
 
 <!-- Map Picker Modal -->
 <div id="map-picker-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] hidden flex justify-center items-center p-4">
@@ -380,8 +398,8 @@
         <div class="p-6 bg-white border-t border-slate-100 flex justify-between items-center">
             <p class="text-xs text-slate-500 font-medium"><i class="fas fa-info-circle mr-1"></i> Click anywhere on the map to set a pin.</p>
             <div class="flex gap-3">
-                <button onclick="closeMapPicker()" class="px-6 py-3 font-bold text-slate-500 hover:text-slate-800 transition-colors rounded-xl">Cancel</button>
-                <button onclick="confirmMapLocation()" class="px-8 py-3 bg-slate-900 text-white rounded-xl font-black shadow-lg hover:bg-black transition-all flex items-center gap-2">
+                <button type="button" onclick="closeMapPicker()" class="px-6 py-3 font-bold text-slate-500 hover:text-slate-800 transition-colors rounded-xl">Cancel</button>
+                <button type="button" onclick="confirmMapLocation()" class="px-8 py-3 bg-slate-900 text-white rounded-xl font-black shadow-lg hover:bg-black transition-all flex items-center gap-2">
                     <i class="fas fa-check"></i> Confirm Position
                 </button>
             </div>

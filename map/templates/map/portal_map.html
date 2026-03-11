@@ -1,0 +1,20 @@
+{% extends user.portal_base|default:"owner/portal_base.html" %}
+
+{% block title %}{{ map_title }} - BrosDen-AV{% endblock %}
+
+{# Override portal padding and max-width for full-width map layout #}
+{% block portal_content %}
+    {% include "map/snippets/map_ui.html" %}
+{% endblock %}
+
+{% block extra_js %}
+    {% include "map/snippets/map_js.html" %}
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Strip portal padding/max-width for this full-width map page */
+    #portal-main { padding: 0 !important; }
+    #portal-main > div { max-width: none !important; }
+</style>
+{% endblock %}

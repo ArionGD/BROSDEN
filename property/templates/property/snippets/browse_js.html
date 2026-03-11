@@ -1,9 +1,63 @@
 <script>
-    // Map Picker Logic
+    let favoredLocations = [];
     let pickerMap = null;
     let pickerMarker = null;
     let selectedLatLng = null;
 
+    function renderLocations() {
+        const list = document.getElementById('target-locations-list');
+        const hint = document.getElementById('no-locations-hint');
+        const count = document.getElementById('location-count');
+        if (!list) return;
+
+        list.innerHTML = '';
+        if (favoredLocations.length === 0) {
+            if(hint) hint.classList.remove('hidden');
+            if(hint) list.appendChild(hint);
+            if(count) count.innerText = "0 Added";
+        } else {
+            if(hint) hint.classList.add('hidden');
+            if(count) count.innerText = `${favoredLocations.length} Added`;
+            favoredLocations.forEach((loc, index) => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between bg-white px-4 py-3 rounded-xl border border-slate-100 shadow-sm animate-in slide-in-from-right-2 duration-300';
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                        <span class="text-[10px] font-black text-slate-800 uppercase tracking-tight">${loc.label}</span>
+                    </div>
+                    <button type="button" onclick="removeLocation(${index})" class="text-slate-300 hover:text-red-500 transition-colors">
+                        <i class="fas fa-trash-alt text-[10px]"></i>
+                    </button>
+                `;
+                list.appendChild(item);
+            });
+        }
+    }
+
+    function addLocation(lat, lng, label) {
+        favoredLocations.push({ lat, lng, label });
+        renderLocations();
+    }
+
+    function removeLocation(index) {
+        favoredLocations.splice(index, 1);
+        renderLocations();
+    }
+
+    function addLocationFromPreset() {
+        const select = document.getElementById('target-preset');
+        if (!select || !select.value) return;
+        
+        const option = select.options[select.selectedIndex];
+        const label = option.getAttribute('data-label');
+        const [lat, lng] = select.value.split(',').map(Number);
+        
+        addLocation(lat, lng, label);
+        select.value = ''; // Reset select
+    }
+
+    // Map Picker Logic
     function openMapPicker() {
         const modal = document.getElementById('map-picker-modal');
         const content = document.getElementById('map-modal-content');
@@ -19,17 +73,10 @@
 
         if (!pickerMap) {
             // Initialize map (default to center of India if no geolocation)
-            pickerMap = L.map('picker-map').setView([20.5937, 78.9629], 5);
+            pickerMap = L.map('picker-map').setView([23.0225, 72.5714], 12);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; OpenStreetMap contributors & CARTO'
             }).addTo(pickerMap);
-
-            // Try to get user's current location
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(pos => {
-                    pickerMap.setView([pos.coords.latitude, pos.coords.longitude], 13);
-                });
-            }
 
             pickerMap.on('click', function(e) {
                 if (pickerMarker) pickerMap.removeLayer(pickerMarker);
@@ -54,28 +101,11 @@
     }
 
     function confirmMapLocation() {
-        if (!selectedLatLng) {
-            alert("Please click on the map to select a location first.");
-            return;
-        }
-        
-        const select = document.getElementById('target-dest');
-        const customOption = document.getElementById('custom-option');
-        
-        if(customOption && select) {
-            customOption.value = `${selectedLatLng.lat},${selectedLatLng.lng}`;
-            customOption.classList.remove('hidden');
-            select.value = customOption.value;
-        }
-        
-        closeMapPicker();
-        runSmartMatch();
-    }
-
-    function handleTargetChange() {
-        const select = document.getElementById('target-dest');
-        if(select && select.value !== 'custom') {
-            runSmartMatch();
+        if (!selectedLatLng) return alert("Please select a location first.");
+        const label = prompt("Enter a label (e.g., Office, College):", "Custom Point");
+        if(label) {
+            addLocation(selectedLatLng.lat, selectedLatLng.lng, label);
+            closeMapPicker();
         }
     }
 
@@ -96,39 +126,30 @@
     function updateWeightLabels() {
         const dist = document.getElementById('w-dist');
         const cost = document.getElementById('w-cost');
-        const rating = document.getElementById('w-rating');
-        
         if(dist) document.getElementById('w-dist-val').innerText = dist.value + '%';
         if(cost) document.getElementById('w-cost-val').innerText = cost.value + '%';
-        if(rating) document.getElementById('w-rating-val').innerText = rating.value + '%';
     }
 
     async function runSmartMatch() {
+        if (favoredLocations.length === 0) return alert("Please add at least one favored location!");
+
         const btn = document.getElementById('run-match-btn');
         if(!btn) return;
 
         const originalText = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin relative"></i> Analyzing...';
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin relative"></i> ANALYZING CENTER...';
 
-        const targetSelect = document.getElementById('target-dest');
-        if(!targetSelect) return;
+        // Calculate Centroid
+        const avgLat = favoredLocations.reduce((sum, loc) => sum + loc.lat, 0) / favoredLocations.length;
+        const avgLng = favoredLocations.reduce((sum, loc) => sum + loc.lng, 0) / favoredLocations.length;
 
-        let targetVal = targetSelect.value;
-        if (targetVal === 'custom') {
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-            openMapPicker();
-            return;
-        }
-
-        const [lat, lng] = targetVal.split(',');
         const w_dist = document.getElementById('w-dist')?.value || 33;
         const w_price = document.getElementById('w-cost')?.value || 33;
-        const w_rating = document.getElementById('w-rating')?.value || 34;
+        const w_rating = 100 - (parseInt(w_dist) + parseInt(w_price));
 
         try {
-            const response = await fetch(`/map/smart-api/?lat=${lat}&lng=${lng}&w_dist=${w_dist}&w_price=${w_price}&w_rating=${w_rating}`);
+            const response = await fetch(`/map/smart-api/?lat=${avgLat}&lng=${avgLng}&w_dist=${w_dist}&w_price=${w_price}&w_rating=${w_rating}`);
             const data = await response.json();
             
             if (data.results) {

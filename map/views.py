@@ -4,25 +4,70 @@ from django.http import JsonResponse
 from property.models import Property
 from django.db.models import Avg
 
+from django.db import models
+
 def fullscreen_map(request):
-    """View for full screen map showing all/selected properties."""
-    focus_id = request.GET.get('focus')
+    """View for hybrid map explorer featuring card list and spatial view."""
     properties = Property.objects.exclude(latitude__isnull=True).exclude(longitude__isnull=True)
     
     # If the user is an owner, show ONLY their properties in the map explorer
     if hasattr(request.user, 'role') and request.user.role == 'OWNER':
         properties = properties.filter(owner=request.user)
+
+    # --- APPLY ADVANCED FILTERS (Sync with Browse Page) ---
+    query = request.GET.get('q')
+    if query:
+        properties = properties.filter(models.Q(title__icontains=query) | models.Q(city__icontains=query))
+
+    city = request.GET.get('city')
+    if city and city != 'All Cities':
+        properties = properties.filter(city__iexact=city)
+
+    p_type = request.GET.get('type')
+    if p_type:
+        properties = properties.filter(property_type=p_type)
+
+    gender_pref = request.GET.get('gender')
+    if gender_pref:
+        properties = properties.filter(gender_preference=gender_pref)
+
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    if min_price:
+        properties = properties.filter(price__gte=min_price)
+    if max_price:
+        properties = properties.filter(price__lte=max_price)
+
+    available_date = request.GET.get('available_from')
+    if available_date:
+        properties = properties.filter(available_from__lte=available_date)
+
+    # Specifics
+    if request.GET.get('verified') == 'on':
+        properties = properties.filter(is_verified=True)
+    if request.GET.get('pets') == 'on':
+        properties = properties.filter(pets_allowed=True)
+
+    properties = properties.order_by('-created_at')
+
+    # Metadata
+    cities = Property.objects.values_list('city', flat=True).distinct()
+    focus_id = request.GET.get('focus')
     
-    # Determine base template based on role
-    base_template = 'tenant/portal_base.html' if hasattr(request.user, 'role') and request.user.role == 'TENANT' else 'owner/portal_base.html'
+    # Select Template based on context
+    if request.user.is_authenticated and request.user.role == 'OWNER':
+        template_name = 'map/portal_map.html'
+        map_title = "My Property Portfolio"
+    else:
+        template_name = 'map/public_map.html'
+        map_title = "Global Explorer"
     
-    map_title = "My Property Portfolio" if hasattr(request.user, 'role') and request.user.role == 'OWNER' else "Global Explorer"
-    
-    return render(request, 'map/fullscreen_map.html', {
+    return render(request, template_name, {
         'properties': properties,
         'focus_id': focus_id,
-        'base_template': base_template,
-        'map_title': map_title
+        'map_title': map_title,
+        'cities': cities,
+        'request_params': request.GET
     })
 
 def smart_recommend_api(request):
