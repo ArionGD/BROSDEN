@@ -2,12 +2,337 @@
 
 {% block title %}BrosDen-AV | Find Your Perfect Den{% endblock %}
 
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hero Slider Logic
+        const slider = document.getElementById('hero-slider');
+        let currentSlide = 0;
+        const totalSlides = 5;
+
+        function slideNext() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            const offset = currentSlide * (100 / totalSlides);
+            slider.style.transform = `translateX(-${offset}%)`;
+        }
+
+        // Run every 5 seconds
+        setInterval(slideNext, 5000);
+    });
+</script>
+{% endblock %}
+
 {% block content %}
-{% include "blocks/hero.html" %}
-{% include "blocks/stats_ticker.html" %}
-{% include "blocks/categories.html" %}
-{% include "blocks/featured_listings.html" %}
-{% include "blocks/advantage.html" %}
-{% include "blocks/dual_cta.html" %}
-{% include "blocks/testimonials.html" %}
+{# --- BLOCK 1 — HERO --- #}
+<section class="relative min-h-[700px] flex items-center overflow-hidden bg-white border-b-[5px] border-slate-50 shadow-xl">
+    <!-- Sliding Background System -->
+    <div class="absolute inset-0 z-0 overflow-hidden">
+        <div id="hero-slider" class="flex h-full w-[500%] transition-transform duration-[1500ms] ease-in-out">
+            <!-- Slide 1 (Blue Accent) -->
+            <div class="w-full h-full bg-white flex items-center justify-end">
+                <div class="w-[40%] flex justify-center">
+                    <i class="fas fa-image text-arion-blue/10 text-[25rem]"></i>
+                </div>
+            </div>
+            <!-- Slide 2 (Orange Accent) -->
+            <div class="w-full h-full bg-slate-50 flex items-center justify-end">
+                <div class="w-[40%] flex justify-center">
+                    <i class="fas fa-city text-arion-orange/10 text-[25rem]"></i>
+                </div>
+            </div>
+            <!-- Slide 3 (Red Accent) -->
+            <div class="w-full h-full bg-white flex items-center justify-end">
+                <div class="w-[40%] flex justify-center">
+                    <i class="fas fa-building text-red-500/10 text-[25rem]"></i>
+                </div>
+            </div>
+            <!-- Slide 4 (Blue Accent) -->
+            <div class="w-full h-full bg-slate-50 flex items-center justify-end">
+                <div class="w-[40%] flex justify-center">
+                    <i class="fas fa-house-chimney text-arion-blue/10 text-[25rem]"></i>
+                </div>
+            </div>
+            <!-- Slide 5 (Orange Accent) -->
+            <div class="w-full h-full bg-white flex items-center justify-end">
+                <div class="w-[40%] flex justify-center">
+                    <i class="fas fa-landmark text-arion-orange/10 text-[25rem]"></i>
+                </div>
+            </div>
+        </div>
+        <!-- Subtle Light Gradient for Depth -->
+        <div class="absolute inset-0 bg-gradient-to-r from-white via-white/20 to-transparent z-10"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10 py-24">
+        <div class="max-w-2xl">
+            <span
+                class="inline-flex items-center gap-2 px-4 py-1.5 mb-8 text-xs font-black uppercase tracking-[0.2em] text-white bg-arion-orange rounded-full shadow-lg shadow-orange-100">
+                <i class="fas fa-star text-yellow-300 text-[10px]"></i> THE BROS-DEN STANDARD
+            </span>
+            <h1 class="text-6xl md:text-7xl font-black text-slate-900 leading-[1.05] tracking-tighter mb-6">
+                Elevate Your<br><span class="text-arion-blue">Living Space.</span>
+            </h1>
+            <p class="text-slate-600 text-xl font-medium mb-10 leading-relaxed max-w-lg">
+                Premium, verified properties with <span class="text-red-500 font-bold">Zero Brokerage</span>. Transparent listings for the modern generation.
+            </p>
+
+            <!-- Search -->
+            <div class="bg-white rounded-[2rem] border border-slate-200 p-2 shadow-2xl shadow-slate-200">
+                <form action="{% url 'property:browse' %}" method="GET" class="flex flex-col md:flex-row gap-2">
+                    <div class="flex-1 bg-slate-50 rounded-[1.5rem] flex items-center px-5 py-3.5 gap-3 border border-slate-100">
+                        <i class="fas fa-location-dot text-arion-blue text-lg"></i>
+                        <input type="text" name="q" placeholder="Search Locality or College..."
+                            class="w-full outline-none font-semibold text-slate-700 placeholder:text-slate-400 text-base bg-transparent">
+                    </div>
+                    <div class="md:w-44 bg-slate-50 rounded-[1.5rem] flex items-center px-5 py-3.5 gap-3 border border-slate-100">
+                        <i class="fas fa-filter text-arion-orange"></i>
+                        <select name="type"
+                            class="w-full outline-none font-semibold text-slate-700 appearance-none bg-transparent text-base">
+                            <option value="">Any Type</option>
+                            <option>Apartment</option>
+                            <option>PG/Hostel</option>
+                        </select>
+                    </div>
+                    <button type="submit"
+                        class="bg-arion-blue hover:bg-blue-700 text-white px-10 py-3.5 rounded-[1.5rem] font-black tracking-wide transition-all active:scale-95 shadow-lg shadow-blue-500/30 whitespace-nowrap">
+                        FIND MY DEN
+                    </button>
+                </form>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="mt-10 flex flex-wrap gap-8 text-sm font-bold text-slate-500">
+                <span class="flex items-center gap-2"><i class="fas fa-shield-halved text-arion-blue"></i> Verified Den</span>
+                <span class="flex items-center gap-2"><i class="fas fa-bolt text-arion-orange"></i> Smart Matching</span>
+                <span class="flex items-center gap-2"><i class="fas fa-headset text-red-500"></i> 24/7 Support</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# --- BLOCK 2 — STATS TICKER --- #}
+<section class="bg-white py-12 border-b-[5px] border-slate-50 shadow-sm relative z-20">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+            {% for stat in home_stats %}
+            <div class="group flex flex-col items-center">
+                <div class="flex items-baseline gap-2">
+                    <p class="text-3xl md:text-4xl font-black text-arion-blue group-hover:scale-110 transition-transform duration-300">
+                        {{ stat.value }}
+                    </p>
+                    {% if stat.icon %}
+                    <i class="fas {{ stat.icon }} text-lg md:text-xl text-arion-orange opacity-80"></i>
+                    {% endif %}
+                </div>
+                <p class="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mt-2">{{ stat.label }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# --- BLOCK 2.5 — SPATIAL MAP --- #}
+{% include "map/snippets/home_map_block.html" %}
+
+{# --- BLOCK 3 — CATEGORIES --- #}
+<section class="py-24 bg-slate-50 border-b-[5px] border-slate-50">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <span class="text-arion-orange font-black uppercase tracking-widest text-xs mb-3 block">Explore</span>
+            <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Browse by <span
+                    class="text-arion-blue">Category</span></h2>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for cat in categories %}
+            <a href="{% url 'property:browse' %}"
+                class="group relative aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 bg-white">
+                <!-- Icon Placeholder Background -->
+                <div class="absolute inset-0 bg-slate-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
+                    <i class="fas {{ cat.icon }} text-arion-blue/5 text-[10rem]"></i>
+                </div>
+                
+                <div class="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent"></div>
+                
+                <div class="absolute bottom-0 inset-x-0 p-8">
+                    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:bg-arion-blue group-hover:text-white transition-all duration-300">
+                        <i class="fas {{ cat.icon }} text-xl opacity-80"></i>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-900 mb-1">{{ cat.name }}</h3>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] group-hover:text-arion-orange transition-colors">
+                        Explore <i class="fas fa-arrow-right ml-1"></i>
+                    </span>
+                </div>
+                <div class="absolute bottom-0 inset-x-0 h-1.5 bg-arion-orange scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# --- BLOCK 4 — FEATURED LISTINGS --- #}
+<section class="py-24 bg-white border-b-[5px] border-slate-50">
+    <div class="container mx-auto px-6">
+        <div class="flex items-end justify-between mb-16">
+            <div>
+                <span class="text-arion-blue font-black uppercase tracking-widest text-xs mb-3 block">Exclusives</span>
+                <h2 class="text-4xl font-black text-slate-900 tracking-tight">Featured <span
+                        class="text-arion-orange">Collections</span></h2>
+            </div>
+            <a href="{% url 'property:browse' %}"
+                class="flex items-center gap-2 border-2 border-slate-200 hover:border-arion-blue text-slate-600 hover:text-arion-blue px-6 py-2.5 rounded-2xl font-bold transition-all text-sm">
+                View All <i class="fas fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for p in featured_properties %}
+            <div
+                class="group bg-white border border-slate-100 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-400">
+                <div class="relative h-56 overflow-hidden bg-slate-50 flex items-center justify-center group">
+                    <!-- Architectural Icon Placeholder -->
+                    <i class="fas {{ p.icon|default:'fa-building' }} text-arion-blue/10 text-[8rem] group-hover:scale-110 transition-transform duration-700"></i>
+                    
+                    <div class="absolute top-4 left-4">
+                        <span class="bg-emerald-600 text-white text-[10px] font-black uppercase px-4 py-1.5 rounded-lg shadow-lg">
+                            Verified Den
+                        </span>
+                    </div>
+                    <div class="absolute bottom-4 right-4 bg-white/95 backdrop-blur px-4 py-2 rounded-2xl font-black text-slate-900 text-lg shadow-lg">
+                        ₹ 00
+                    </div>
+                </div>
+                <div class="p-7">
+                    <h3 class="text-lg font-black text-slate-900 group-hover:text-arion-blue transition-colors mb-2">{{
+                        p.name }}</h3>
+                    <p class="text-slate-400 font-medium text-sm flex items-center gap-2 mb-5">
+                        <i class="fas fa-location-dot text-arion-orange"></i> {{ p.loc }}
+                    </p>
+                    <div class="flex items-center justify-between pt-5 border-t border-slate-50">
+                        <div class="flex gap-4 text-slate-400 font-bold text-sm">
+                            <span><i class="fas fa-bed mr-2 text-arion-blue"></i>{{ p.beds }}</span>
+                            <span><i class="fas fa-maximize mr-2 text-arion-blue"></i>{{ p.size }}</span>
+                        </div>
+                        <a href="{% url 'property:browse' %}"
+                            class="w-9 h-9 bg-slate-100 hover:bg-arion-blue text-slate-400 hover:text-white rounded-xl flex items-center justify-center transition-all">
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- Interactive Hover Progress -->
+                <div class="absolute bottom-0 inset-x-0 h-1.5 bg-arion-blue scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# --- BLOCK 5 — BROSDEN ADVANTAGE --- #}
+<section class="py-28 bg-slate-50 relative overflow-hidden border-b-[5px] border-slate-50">
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="text-center mb-20">
+            <span class="text-arion-orange font-black uppercase tracking-widest text-xs mb-4 block">Why Us?</span>
+            <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">The <span
+                    class="text-arion-blue">BrosDen</span> Advantage</h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            {% for feat in home_features %}
+            <div
+                class="group relative p-10 bg-white border border-slate-100 rounded-[3rem] hover:-translate-y-3 hover:shadow-2xl transition-all duration-500 overflow-hidden">
+                <div
+                    class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-arion-blue group-hover:text-white transition-all duration-300">
+                    <i class="fas {{ feat.icon }} text-2xl text-arion-blue group-hover:text-white transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-black text-slate-900 mb-4 group-hover:text-arion-blue transition-colors">{{ feat.title }}</h3>
+                <p class="text-slate-500 font-medium leading-relaxed">{{ feat.desc }}</p>
+                
+                <!-- Interactive Hover Progress -->
+                <div class="absolute bottom-0 inset-x-0 h-1.5 bg-arion-blue scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# --- BLOCK 6 — DUAL CTA --- #}
+<section class="py-24 bg-white border-b-[5px] border-slate-50">
+    <div class="container mx-auto px-6">
+        <!-- Section Heading -->
+        <div class="text-center mb-16">
+            <span class="text-arion-blue font-black uppercase tracking-widest text-xs mb-3 block">Join Us</span>
+            <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Ready to <span class="text-arion-orange">Begin?</span></h2>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Owner -->
+            <div class="relative rounded-[3rem] overflow-hidden bg-slate-50 p-14 group border border-slate-100 hover:shadow-2xl transition-all duration-500">
+                <div class="relative z-10">
+                    <span class="text-arion-orange font-black uppercase tracking-widest text-xs mb-5 block">For Owners</span>
+                    <h2 class="text-4xl font-black text-slate-900 mb-5 tracking-tight">Maximize Your <br>Returns.</h2>
+                    <p class="text-slate-500 font-medium mb-10 leading-relaxed max-w-sm">Access verified corporate tenants. Manage your portfolio, contracts, and payments — all in one dashboard.</p>
+                    <a href="{% url 'accounts:register' %}"
+                        class="inline-flex items-center gap-3 bg-arion-orange text-white font-black px-8 py-4 rounded-2xl shadow-xl shadow-orange-200 hover:scale-105 active:scale-95 transition-all">
+                        LIST YOUR PROPERTY <i class="fas fa-plus text-sm"></i>
+                    </a>
+                </div>
+                <!-- Interactive Hover Progress -->
+                <div class="absolute bottom-0 inset-x-0 h-1.5 bg-arion-orange scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                <i class="fas fa-house-chimney text-[220px] text-slate-200 absolute -right-8 -bottom-10 -rotate-12 group-hover:rotate-0 transition-transform duration-700 opacity-20"></i>
+            </div>
+            <!-- Tenant -->
+            <div class="relative rounded-[3rem] overflow-hidden bg-slate-50 p-14 group border border-slate-100 hover:shadow-2xl transition-all duration-500">
+                <div class="relative z-10">
+                    <span class="text-arion-blue font-black uppercase tracking-widest text-xs mb-5 block">For Tenants</span>
+                    <h2 class="text-4xl font-black text-slate-900 mb-5 tracking-tight">Find Your <br>Sanctuary.</h2>
+                    <p class="text-slate-500 font-medium mb-10 leading-relaxed max-w-sm">Zero brokerage, digital agreements, and automated rent payments. Moving made frictionless.</p>
+                    <a href="{% url 'property:browse' %}"
+                        class="inline-flex items-center gap-3 bg-arion-blue text-white font-black px-8 py-4 rounded-2xl shadow-xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all">
+                        START BROWSING <i class="fas fa-compass text-sm"></i>
+                    </a>
+                </div>
+                <!-- Interactive Hover Progress -->
+                <div class="absolute bottom-0 inset-x-0 h-1.5 bg-arion-blue scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                <i class="fas fa-key text-[220px] text-slate-200 absolute -right-8 -bottom-10 -rotate-12 group-hover:rotate-0 transition-transform duration-700 opacity-20"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# --- BLOCK 7 — TESTIMONIALS --- #}
+<section class="py-28 bg-slate-50 overflow-hidden border-b-[5px] border-slate-50">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-20">
+            <span class="text-arion-blue font-black uppercase tracking-widest text-xs mb-4 block">Social Proof</span>
+            <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
+                Trusted by the <span class="text-arion-orange">Community</span>
+            </h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+            {% for t in testimonials %}
+            <div
+                class="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
+                <div class="flex gap-1 text-arion-orange mb-6 text-sm">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                        class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p class="text-slate-600 font-semibold text-lg leading-relaxed italic mb-8">
+                    "{{ t.text }}"
+                </p>
+                <div class="flex items-center gap-4">
+                    <div
+                        class="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-white text-xl {% if t.color == 'arion-blue' %}bg-arion-blue{% else %}bg-arion-orange{% endif %}">
+                        {{ t.name|slice:":1" }}
+                    </div>
+                    <div>
+                        <p class="font-black text-slate-900">{{ t.name }}</p>
+                        <p class="text-sm font-semibold text-slate-400">{{ t.role }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 {% endblock %}
