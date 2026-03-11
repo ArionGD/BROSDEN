@@ -20,16 +20,15 @@
                 class="text-[15px] font-bold text-slate-900 hover:text-arion-blue transition-colors no-underline">Explore</a>
             <a href="{% url 'support' %}"
                 class="text-[15px] font-bold text-slate-900 hover:text-arion-blue transition-colors no-underline">Support</a>
+            <a href="{% if user.is_authenticated and user.role == 'OWNER' %}{% url 'analytics:owner_dashboard' %}{% else %}{% url 'accounts:login' %}{% endif %}"
+                class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold px-5 py-2.5 rounded-full shadow-lg transition-all active:scale-95 text-xs no-underline group uppercase tracking-widest">
+                <i class="fas fa-plus text-[8px] group-hover:rotate-90 transition-transform"></i>
+                List Property
+            </a>
         </nav>
 
         <!-- Right Side Actions -->
-            <!-- List Property Button -->
-            <a href="{% if user.is_authenticated and user.role == 'OWNER' %}{% url 'analytics:owner_dashboard' %}{% else %}{% url 'accounts:login' %}{% endif %}"
-                class="mr-4 flex items-center gap-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-full shadow-lg transition-all active:scale-95 text-sm no-underline group">
-                <i class="fas fa-plus text-[10px] group-hover:rotate-90 transition-transform"></i>
-                List
-            </a>
-
+        <div class="flex items-center">
             {% if user.is_authenticated %}
             <!-- User Profile Block with Dropdown -->
             <div class="relative" id="userDropdownContainer">
