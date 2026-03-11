@@ -84,7 +84,9 @@ def index_v2(request):
                 'text': 'Finding a high-quality apartment was so much easier with BrosDen. The digital documentation saved me so much time.',
                 'color': 'arion-orange'
             }
-        ]
+        ],
+        'map_properties': Property.objects.exclude(latitude__isnull=True).exclude(longitude__isnull=True)[:20],
+        'localities': ['Gota', 'Naranpura', 'Navrangpura', 'Satellite', 'Chandlodiya', 'Ghatlodiya', 'Naanpura', 'Bodhakdev']
     }
     return render(request, 'homev2.html', context)
 

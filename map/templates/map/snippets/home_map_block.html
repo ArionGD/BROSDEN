@@ -1,0 +1,267 @@
+<section class="py-12 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-12">
+            <span class="text-arion-blue font-black uppercase tracking-widest text-xs mb-3 block">Perspective</span>
+            <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Explore the <span class="text-arion-orange">City Spatially</span></h2>
+            <p class="text-slate-500 font-medium mt-2">Discover verified properties with our interactive spatial discovery engine.</p>
+        </div>
+
+        <!-- Map Canvas -->
+        <div class="max-w-6xl mx-auto">
+
+            <!-- Map Case -->
+            <div class="rounded-[2.5rem] overflow-hidden border-[6px] border-slate-50 shadow-2xl bg-white relative group">
+                <!-- Map Container -->
+                <div id="homeMap" class="h-[500px] w-full z-10 bg-slate-50"></div>
+
+                <!-- Locality Discovery Overlay (Top Right) -->
+                <div class="absolute top-6 right-6 z-30 w-[240px] md:w-[280px]">
+                    <div class="relative group">
+                        <div class="bg-white/95 backdrop-blur-md rounded-[2rem] border border-slate-200 shadow-xl p-2 flex items-center gap-3 focus-within:ring-4 focus-within:ring-arion-blue/10 transition-all pointer-events-auto">
+                            <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-arion-blue">
+                                <i class="fas fa-location-crosshairs text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1 ml-1">Search Area</p>
+                                <input type="text" id="locality-search" placeholder="Locality" 
+                                    class="w-full bg-transparent border-none outline-none font-black text-slate-800 placeholder:text-slate-300 text-xs py-0.5">
+                            </div>
+                            <button class="bg-arion-blue text-white w-9 h-9 rounded-lg flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all">
+                                <i class="fas fa-search text-[10px]"></i>
+                            </button>
+                        </div>
+
+                        <!-- Suggestion Dropdown -->
+                        <div id="locality-suggestions" class="absolute top-[calc(100%+12px)] left-0 right-0 bg-white rounded-3xl border border-slate-100 shadow-2xl z-50 overflow-hidden hidden transform origin-top transition-all scale-95 opacity-0 pointer-events-auto">
+                            <div class="p-3">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest p-3">Recommended Nearby</p>
+                                <div id="suggestions-list" class="max-h-60 overflow-y-auto custom-scrollbar">
+                                    {% for locality in localities %}
+                                    <div class="suggestion-item px-5 py-3.5 hover:bg-slate-50 cursor-pointer rounded-2xl transition-colors flex items-center gap-4 group/item" data-value="{{ locality }}">
+                                        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 group-hover/item:bg-arion-blue/10 group-hover/item:text-arion-blue transition-all">
+                                            <i class="fas fa-building text-[10px]"></i>
+                                        </div>
+                                        <span class="text-sm font-bold text-slate-700">{{ locality }}</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Floating Map Header -->
+                <div class="absolute top-6 left-6 z-20 pointer-events-none">
+                    <div class="bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl border border-white flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-arion-blue text-white flex items-center justify-center shadow-lg">
+                            <i class="fas fa-earth-asia"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Live Feed</p>
+                            <p class="text-sm font-black text-slate-900 leading-none">MapLibre Map Engine</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Open Full View Button (Bottom Center) -->
+                <div class="absolute bottom-6 inset-x-0 z-20 flex justify-center">
+                    <a href="{% url 'map:explore' %}" class="bg-slate-900/90 backdrop-blur-sm hover:bg-white hover:text-slate-900 text-white px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 transition-all shadow-2xl active:scale-95 border border-white/20">
+                        EXPLORE FULL SPATIAL MAP <i class="fas fa-expand-arrows-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Data Injection -->
+<script id="map-props-data" type="application/json">
+[
+    {% for p in map_properties %}
+    {
+        "id": {{ p.id }},
+        "title": "{{ p.title|escapejs }}",
+        "price": "{{ p.price }}",
+        "lat": {{ p.latitude }},
+        "lng": {{ p.longitude }},
+        "url": "{% url 'property:detail' p.id %}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+]
+</script>
+
+<!-- MapLibre JS & CSS -->
+<link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
+<script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mapEl = document.getElementById('homeMap');
+        if (!mapEl) return;
+
+        const dataEl = document.getElementById('map-props-data');
+        if (!dataEl) return;
+        const props = JSON.parse(dataEl.textContent);
+
+        // Locality Filter Logic
+        const searchInput = document.getElementById('locality-search');
+        const suggestionsMenu = document.getElementById('locality-suggestions');
+        const suggestionItems = document.querySelectorAll('.suggestion-item');
+
+        searchInput.addEventListener('focus', () => {
+            suggestionsMenu.classList.remove('hidden');
+            setTimeout(() => {
+                suggestionsMenu.classList.remove('scale-95', 'opacity-0');
+                suggestionsMenu.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#locality-search') && !e.target.closest('#locality-suggestions')) {
+                suggestionsMenu.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => suggestionsMenu.classList.add('hidden'), 200);
+            }
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            suggestionItems.forEach(item => {
+                const text = item.getAttribute('data-value').toLowerCase();
+                if (text.includes(val)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+
+        suggestionItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const val = item.getAttribute('data-value');
+                searchInput.value = val;
+                suggestionsMenu.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => suggestionsMenu.classList.add('hidden'), 200);
+                
+                // Filter map to this locality
+                const matchedProps = props.filter(p => p.title.includes(val) || val.includes(p.title) || true); // City match logic
+                // For now just find props in that city
+                // Assuming localities list we sent are cities
+                const cityProps = props.filter(p => p.title.toLowerCase().includes(val.toLowerCase()) || true); // Simplified
+                
+                // Better approach: Fly to the first property in that city
+                const target = props.find(p => p.title.toLowerCase().includes(val.toLowerCase()) || true); 
+                // Wait, the localities are cities. Let's find props in that city.
+                // Re-calculating center/bounds for matching properties
+                const filtered = props.filter(p => p.url); // Use all for now as example
+                
+                // In reality, we should fetch coordinates for the city if none match exactly
+                // But since we have props, let's just zoom to the city properties
+                // Let's assume the user selection is one of our cities
+                const cityTargetProps = props; // Filtering logic depends on how data is structured
+                
+                // Correct logic: fly to city center or bounds of props in that city
+                if (map) {
+                    // Search for coords of this locality in Ahmedabad
+                    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(val + ', Ahmedabad')}&limit=1`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data && data.length > 0) {
+                                map.flyTo({
+                                    center: [parseFloat(data[0].lon), parseFloat(data[0].lat)],
+                                    zoom: 14,
+                                    essential: true
+                                });
+                            }
+                        });
+                }
+            });
+        });
+
+        let center = [72.5714, 23.0225]; // Ahmedabad Default
+        if (props.length > 0) {
+            center = [props[0].lng, props[0].lat];
+        }
+
+        const map = new maplibregl.Map({
+            container: 'homeMap',
+            style: 'https://tiles.openfreemap.org/styles/bright',
+            center: center,
+            zoom: 12,
+            antialias: true
+        });
+
+        // Add Navigation Controls (Moved to bottom right to avoid search overlap)
+        map.addControl(new maplibregl.NavigationControl(), 'bottom-right');
+
+        // Dynamic Google Maps Aesthetic Override (White Roads)
+        map.on('style.load', () => {
+            const layers = map.getStyle().layers;
+            layers.forEach(layer => {
+                if (layer['source-layer'] === 'transportation' || (layer.id && layer.id.includes('road'))) {
+                    if (layer.type === 'line') {
+                        if (layer.id.includes('casing') || layer.id.includes('outline')) {
+                            map.setPaintProperty(layer.id, 'line-color', '#e2e8f0');
+                        } else {
+                            map.setPaintProperty(layer.id, 'line-color', '#ffffff');
+                        }
+                    }
+                }
+            });
+        });
+
+        // Add Markers
+        props.forEach(prop => {
+            const el = document.createElement('div');
+            el.className = 'price-marker';
+            el.innerHTML = `
+                <div class="relative flex flex-col items-center group/marker transition-all duration-300 hover:scale-110">
+                    <!-- Price Bubble -->
+                    <div class="bg-arion-blue text-white px-3 py-1.5 rounded-lg shadow-lg border-2 border-white font-black text-xs whitespace-nowrap cursor-pointer relative z-20">
+                        ₹ ${parseFloat(prop.price).toLocaleString()}
+                    </div>
+                    <!-- 99acres Style Downside Pointer -->
+                    <div class="w-0 h-0 border-l-[7px] border-l-transparent border-r-[7px] border-r-transparent border-t-[7px] border-t-white -mt-[1px] relative z-10">
+                         <div class="absolute -top-[9px] -left-[6px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-arion-blue"></div>
+                    </div>
+                </div>
+            `;
+
+            el.addEventListener('click', () => {
+                window.location.href = prop.url;
+            });
+
+            new maplibregl.Marker({ 
+                element: el,
+                anchor: 'bottom' // Align the bottom of the pointer to the coordinate
+            })
+                .setLngLat([prop.lng, prop.lat])
+                .addTo(map);
+        });
+
+        // Fit bounds if multiple properties
+        if (props.length > 1) {
+            const bounds = new maplibregl.LngLatBounds();
+            props.forEach(p => bounds.extend([p.lng, p.lat]));
+            map.fitBounds(bounds, { padding: 100, maxZoom: 15 });
+        }
+    });
+</script>
+
+<style>
+    .maplibregl-ctrl-logo, .maplibregl-ctrl-attrib { display: none !important; }
+    .price-marker { cursor: pointer; }
+    
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f8fafc;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #cbd5e1;
+    }
+</style>
