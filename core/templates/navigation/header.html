@@ -23,7 +23,13 @@
         </nav>
 
         <!-- Right Side Actions -->
-        <div class="flex items-center">
+            <!-- List Property Button -->
+            <a href="{% if user.is_authenticated and user.role == 'OWNER' %}{% url 'analytics:owner_dashboard' %}{% else %}{% url 'accounts:login' %}{% endif %}"
+                class="mr-4 flex items-center gap-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-full shadow-lg transition-all active:scale-95 text-sm no-underline group">
+                <i class="fas fa-plus text-[10px] group-hover:rotate-90 transition-transform"></i>
+                List
+            </a>
+
             {% if user.is_authenticated %}
             <!-- User Profile Block with Dropdown -->
             <div class="relative" id="userDropdownContainer">
