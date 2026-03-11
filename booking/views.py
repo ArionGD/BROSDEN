@@ -15,7 +15,7 @@ def create_booking(request, property_id):
     # Enforce KYC before allowing booking
     if not request.user.is_kyc_verified:
         messages.warning(request, "Please complete your KYC verification before requesting a booking.")
-        return redirect(f"{reverse('payment:tenant_kyc')}?next={request.path}")
+        return redirect(f"{reverse('accounts:tenant_kyc')}?next={request.path}")
 
     prop = get_object_or_404(Property, id=property_id)
 

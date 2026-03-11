@@ -3,12 +3,13 @@ from django.conf import settings
 
 class Property(models.Model):
     PROPERTY_TYPES = (
-        ('APARTMENT', 'Apartment'),
-        ('PG', 'Paying Guest'),
+        ('APARTMENT', 'Apartment / Flat'),
+        ('PG', 'PG / Hostel'),
     )
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='properties')
     title = models.CharField(max_length=255)
+    unit_number = models.CharField(max_length=50, blank=True, help_text="Flat/Unit Number (Required for Legal Agreement)")
     description = models.TextField()
     price = models.DecimalField(max_digits=12, decimal_places=2)
     property_type = models.CharField(max_length=20, choices=PROPERTY_TYPES, default='APARTMENT')
@@ -16,25 +17,31 @@ class Property(models.Model):
     city = models.CharField(max_length=100)
     bedrooms = models.IntegerField(default=0)
     bathrooms = models.IntegerField(default=0)
-    sqft = models.IntegerField(default=0)
+    total_capacity = models.PositiveIntegerField(default=1, help_text="Total number of tenants this property can handle") # Moved from bottom
+    bed_count = models.PositiveIntegerField(default=1, help_text="Specific for PG/Hostel sharing count")
+    sqft = models.PositiveIntegerField(null=True, blank=True) # Changed from IntegerField(default=0)
     
     # Common Fields (Required for Both)
     contact_name = models.CharField(max_length=100, blank=True)
     contact_phone = models.CharField(max_length=20, blank=True)
-    availability_date = models.DateField(null=True, blank=True)
+    available_from = models.DateField(null=True, blank=True)
     security_deposit = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     
-    # Existing compatibility (can be used for calculations)
-    security_deposit_months = models.IntegerField(default=2, help_text="Number of months of rent for security deposit")
-    contract_fee_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=10.00, help_text="Percentage of security deposit for contract fee")
+    # Financials & Legal
+    electricity_included = models.BooleanField(default=False)
+    water_included = models.BooleanField(default=False)
+    maintenance_included = models.BooleanField(default=True)
+    wifi_included = models.BooleanField(default=False)
+    lock_in_period = models.IntegerField(default=0, help_text="Months")
+    notice_period = models.IntegerField(default=30, help_text="Days")
+    electricity_bill = models.FileField(upload_to='property/verification/electricity/', null=True, blank=True)
+    property_tax_slip = models.FileField(upload_to='property/verification/tax/', null=True, blank=True)
+    
+    # Existing compatibility
+    security_deposit_months = models.IntegerField(default=2)
+    contract_fee_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=10.00)
     
     # 2. Flat / Apartment Specific Fields
-    BHK_CHOICES = (
-        ('1BHK', '1BHK'),
-        ('2BHK', '2BHK'),
-        ('3BHK', '3BHK'),
-        ('4BHK+', '4BHK+'),
-    )
     FURNISHING_CHOICES = (
         ('FULLY', 'Fully Furnished'),
         ('SEMI', 'Semi-Furnished'),
@@ -45,38 +52,88 @@ class Property(models.Model):
         ('OPEN', 'Open Parking'),
     )
     
-    bhk_type = models.CharField(max_length=10, choices=BHK_CHOICES, null=True, blank=True)
+    furnishing_status = models.CharField(max_length=20, choices=FURNISHING_CHOICES, null=True, blank=True)
     floor_number = models.IntegerField(null=True, blank=True)
     total_floors = models.IntegerField(null=True, blank=True)
-    furnishing_status = models.CharField(max_length=20, choices=FURNISHING_CHOICES, null=True, blank=True)
     balconies = models.IntegerField(default=0)
     parking_type = models.CharField(max_length=20, choices=PARKING_CHOICES, null=True, blank=True)
-    maintenance_charges = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    amenities = models.TextField(blank=True, help_text="List amenities (Lift, Gym, etc.)")
     
     # 3. PG / Room Specific Fields
     SHARING_CHOICES = (
         ('SINGLE', 'Single'),
-        ('DOUBLE', 'Double'),
-        ('TRIPLE', 'Triple'),
-        ('QUADRUPLE', 'Quadruple'),
+        ('DOUBLE', '2-Sharing'),
+        ('TRIPLE', '3-Sharing'),
+        ('QUADRUPLE', '4-Sharing'),
     )
     GENDER_CHOICES = (
         ('BOYS', 'Boys Only'),
         ('GIRLS', 'Girls Only'),
-        ('COED', 'Co-ed'),
+        ('COED', 'Co-ed / Everyone'),
     )
     
     sharing_type = models.CharField(max_length=20, choices=SHARING_CHOICES, null=True, blank=True)
-    gender_preference = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
-    food_included = models.BooleanField(default=False)
-    food_details = models.TextField(blank=True, help_text="Specify meals: Breakfast, Lunch, Dinner")
-    ac_available = models.BooleanField(default=False)
-    laundry_available = models.BooleanField(default=False)
-    wifi_available = models.BooleanField(default=False)
-    rules_restrictions = models.TextField(blank=True, help_text="Curfew, Guest policy, etc.")
-    cleaning_frequency = models.CharField(max_length=100, blank=True)
+    gender_preference = models.CharField(max_length=10, choices=GENDER_CHOICES, default='COED')
+    is_for_students = models.BooleanField(default=True)
+    is_for_professionals = models.BooleanField(default=True)
     
+    # Amenities (Student/Bachelor Focused)
+    ac_available = models.BooleanField(default=False)
+    has_geyser = models.BooleanField(default=False)
+    has_wardrobe = models.BooleanField(default=False)
+    has_study_table = models.BooleanField(default=False)
+    has_workspace_desk = models.BooleanField(default=False)
+    has_ergonomic_chair = models.BooleanField(default=False)
+    has_washing_machine = models.BooleanField(default=False)
+    has_refrigerator = models.BooleanField(default=False)
+    has_stove = models.BooleanField(default=False)
+    has_microwave = models.BooleanField(default=False)
+    has_coffee_maker = models.BooleanField(default=False)
+    has_toaster = models.BooleanField(default=False)
+    has_induction_plate = models.BooleanField(default=False)
+    extra_amenities = models.TextField(blank=True, help_text="Additional amenities not mentioned above (comma separated)")
+    
+    food_provided = models.BooleanField(default=False)
+    provides_breakfast = models.BooleanField(default=False)
+    provides_lunch = models.BooleanField(default=False)
+    provides_dinner = models.BooleanField(default=False)
+    diet_type = models.CharField(max_length=20, choices=[('VEG', 'Pure Veg'), ('NONVEG', 'Non-Veg Allowed')], default='VEG')
+    
+    wifi_available = models.BooleanField(default=False)
+    wifi_speed = models.IntegerField(default=0, help_text="Mbps")
+    
+    has_cctv = models.BooleanField(default=False)
+    has_biometric = models.BooleanField(default=False)
+    has_security_guard = models.BooleanField(default=False)
+    
+    # Safety Amenities
+    has_smoke_alarm = models.BooleanField(default=False)
+    has_carbon_monoxide_alarm = models.BooleanField(default=False)
+    has_fire_extinguisher = models.BooleanField(default=False)
+    has_first_aid_kit = models.BooleanField(default=False)
+    has_emergency_exit_plan = models.BooleanField(default=False)
+    
+    laundry_service = models.BooleanField(default=False, help_text="Is laundry service provided?")
+    
+    # House Rules & Lifestyle
+    VISITOR_POLICY_CHOICES = (
+        ('ALLOWED', 'Visitors Allowed'),
+        ('NO', 'No Visitors'),
+        ('DAYTIME', 'Daytime Only'),
+        ('OVERNIGHT', 'Overnight Allowed'),
+    )
+    visitor_policy = models.CharField(max_length=20, choices=VISITOR_POLICY_CHOICES, default='ALLOWED')
+    curfew_time = models.CharField(max_length=50, default="No Curfew")
+    smoking_allowed = models.BooleanField(default=False)
+    alcohol_allowed = models.BooleanField(default=False)
+    pets_allowed = models.BooleanField(default=False)
+    non_veg_allowed = models.BooleanField(default=True, help_text="Non-veg cooking allowed")
+    extra_house_rules = models.TextField(blank=True, help_text="Additional rules or terms for tenants")
+    
+    # Location & Discovery
+    nearby_landmarks = models.TextField(blank=True, help_text="e.g., 500m from College")
+    connectivity_info = models.TextField(blank=True, help_text="Metro/BRTS distance")
+    
+    video_url = models.URLField(blank=True, help_text="Video tour link")
     is_verified = models.BooleanField(default=False)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)

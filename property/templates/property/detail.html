@@ -58,62 +58,64 @@
             <div class="bg-white border-b border-slate-100 pb-12">
                 <div class="flex flex-col md:flex-row justify-between items-start gap-6">
                     <div>
-                        <h1 class="text-5xl font-black text-slate-900 tracking-tight">{{ property.title }}</h1>
+                        <div class="flex items-center gap-3 mb-2">
+                            <h1 class="text-5xl font-black text-slate-900 tracking-tight">{{ property.title }}</h1>
+                            {% if property.unit_number %}
+                            <span class="bg-slate-100 text-slate-500 text-[10px] font-black uppercase px-3 py-1.5 rounded-lg border border-slate-200 mt-2">Unit: {{ property.unit_number }}</span>
+                            {% endif %}
+                        </div>
                         <p class="text-xl text-slate-500 mt-4 flex items-center">
-                            <i class="fas fa-location-dot mr-3 text-blue-500"></i> {{ property.address }}, 
-                            {{ property.city }}
+                            <i class="fas fa-location-dot mr-3 text-blue-500"></i> {{ property.address }}, {{ property.city }}
                         </p>
                     </div>
                     <div class="text-left md:text-right">
-                        <span class="text-xs font-black uppercase tracking-widest text-slate-400">Total Price</span>
+                        <span class="text-xs font-black uppercase tracking-widest text-slate-400">Monthly Rent</span>
                         <p class="text-5xl font-black text-blue-600 tracking-tighter">₹ {{ property.price }}</p>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Excluding Utilities</p>
                     </div>
                 </div>
 
-                <!-- Feature Pills -->
                 <div class="flex flex-wrap gap-4 mt-10">
-                    <div class="bg-slate-50 px-8 py-5 rounded-[2rem] border border-slate-100">
-                        <span class="block text-[10px] font-black uppercase text-slate-400 mb-1">Type</span>
-                        <span class="text-lg font-bold text-slate-800">{{ property.get_property_type_display }}</span>
-                    </div>
-                    <div class="bg-slate-50 px-8 py-5 rounded-[2rem] border border-slate-100">
-                        <span class="block text-[10px] font-black uppercase text-slate-400 mb-1">{% if property.property_type == 'APARTMENT' %}Configuration{% else %}Sharing{% endif %}</span>
-                        <span class="text-lg font-bold text-slate-800">
-                            {% if property.property_type == 'APARTMENT' %}{{ property.bhk_type|default:property.bedrooms }}{% else %}{{ property.get_sharing_type_display }}{% endif %}
-                        </span>
+                    <div class="bg-slate-50 px-6 py-4 rounded-[1.5rem] border border-slate-100 flex flex-col">
+                        <span class="text-[9px] font-black uppercase text-slate-400 tracking-widest leading-none mb-1">Type</span>
+                        <span class="text-sm font-black text-slate-800">{{ property.get_property_type_display }}</span>
                     </div>
                     {% if property.property_type == 'APARTMENT' %}
-                    <div class="bg-slate-50 px-8 py-5 rounded-[2rem] border border-slate-100">
-                        <span class="block text-[10px] font-black uppercase text-slate-400 mb-1">Furnishing</span>
-                        <span class="text-lg font-bold text-slate-800">{{ property.get_furnishing_status_display }}</span>
+                    <div class="bg-slate-50 px-6 py-4 rounded-[1.5rem] border border-slate-100 flex flex-col">
+                        <span class="text-[9px] font-black uppercase text-slate-400 tracking-widest leading-none mb-1">Configuration</span>
+                        <span class="text-sm font-black text-slate-800">{{ property.bedrooms }} BHK</span>
+                    </div>
+                    <div class="bg-slate-50 px-6 py-4 rounded-[1.5rem] border border-slate-100 flex flex-col">
+                        <span class="text-[9px] font-black uppercase text-slate-400 tracking-widest leading-none mb-1">Bathrooms</span>
+                        <span class="text-sm font-black text-slate-800">{{ property.bathrooms }} Private</span>
                     </div>
                     {% else %}
-                    <div class="bg-slate-50 px-8 py-5 rounded-[2rem] border border-slate-100">
-                        <span class="block text-[10px] font-black uppercase text-slate-400 mb-1">Gender</span>
-                        <span class="text-lg font-bold text-slate-800">{{ property.get_gender_preference_display }}</span>
+                    <div class="bg-slate-50 px-6 py-4 rounded-[1.5rem] border border-slate-100 flex flex-col">
+                        <span class="text-[9px] font-black uppercase text-slate-400 tracking-widest leading-none mb-1">Room Sharing</span>
+                        <span class="text-sm font-black text-slate-800">{{ property.get_sharing_type_display }}</span>
+                    </div>
+                    <div class="bg-slate-50 px-6 py-4 rounded-[1.5rem] border border-slate-100 flex flex-col">
+                        <span class="text-[9px] font-black uppercase text-slate-400 tracking-widest leading-none mb-1">Gender Preference</span>
+                        <span class="text-sm font-black text-slate-800">{{ property.get_gender_preference_display }}</span>
                     </div>
                     {% endif %}
-                    <div class="bg-slate-50 px-8 py-5 rounded-[2rem] border border-slate-100">
-                        <span class="block text-[10px] font-black uppercase text-slate-400 mb-1">Build Area</span>
-                        <span class="text-lg font-bold text-slate-800">{{ property.sqft }} sqft</span>
+                    <div class="bg-slate-50 px-6 py-4 rounded-[1.5rem] border border-slate-100 flex flex-col">
+                        <span class="text-[9px] font-black uppercase text-slate-400 tracking-widest leading-none mb-1">Square Feet</span>
+                        <span class="text-sm font-black text-slate-800">{{ property.sqft }} sqft</span>
                     </div>
-                    {% if property.property_type == 'PG' %}
-                    <div class="bg-blue-50 px-8 py-5 rounded-[2rem] border border-blue-100">
-                        <span class="block text-[10px] font-black uppercase text-blue-400 mb-1">Vacancy</span>
-                        <span class="text-lg font-bold text-blue-700">{{ property.available_spaces }} / 
-                            {{ property.total_capacity }} Spaces Available</span>
+                    <div class="bg-slate-50 px-6 py-4 rounded-[1.5rem] border border-slate-100 flex flex-col">
+                        <span class="text-[9px] font-black uppercase text-slate-400 tracking-widest leading-none mb-1">Available From</span>
+                        <span class="text-sm font-black text-slate-800">{{ property.available_from|date:"M d, Y"|default:"Immediate" }}</span>
                     </div>
-                    {% elif property.is_vacant %}
-                    <div class="bg-emerald-50 px-8 py-5 rounded-[2rem] border border-emerald-100">
-                        <span class="block text-[10px] font-black uppercase text-emerald-400 mb-1">Status</span>
-                        <span class="text-lg font-bold text-emerald-700">Available</span>
+                    <div class="bg-indigo-50/50 px-6 py-4 rounded-[1.5rem] border border-indigo-100 flex flex-col">
+                        <span class="text-[9px] font-black uppercase text-indigo-400 tracking-widest leading-none mb-1">Target Audience</span>
+                        <span class="text-sm font-black text-indigo-700">
+                            {% if property.is_for_students and property.is_for_professionals %}Anyone
+                            {% elif property.is_for_students %}Students
+                            {% elif property.is_for_professionals %}Professionals
+                            {% endif %}
+                        </span>
                     </div>
-                    {% else %}
-                    <div class="bg-rose-50 px-8 py-5 rounded-[2rem] border border-rose-100">
-                        <span class="block text-[10px] font-black uppercase text-rose-400 mb-1">Status</span>
-                        <span class="text-lg font-bold text-rose-700">Full</span>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
 
@@ -123,112 +125,304 @@
                     <button onclick="switchTab('description')" id="tab-description"
                         class="tab-btn border-indigo-500 text-indigo-600 whitespace-nowrap py-4 px-1 border-b-2 font-black text-sm transition-all"
                         aria-current="page">
-                        Description
+                        Overview & Amenities
                     </button>
                     <button onclick="switchTab('reviews')" id="tab-reviews"
                         class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition-all">
-                        Tenant Reviews ({{ property.reviews.count }})
+                        Reviews ({{ property.reviews.count }})
                     </button>
                     <button onclick="switchTab('feedback')" id="tab-feedback"
                         class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition-all">
-                        Feedback Loop
+                        Live Tracking
                     </button>
                 </nav>
             </div>
 
             <!-- Tab Panels -->
             <div id="panel-description" class="tab-panel py-8 animate-fadeIn">
-                <div class="prose prose-slate lg:prose-xl">
-                    <h3 class="text-2xl font-black text-slate-900 mb-6">About this property</h3>
-                    <p class="text-slate-600 leading-relaxed whitespace-pre-line">{{ property.description }}</p>
-                </div>
+                <div class="space-y-12">
+                    <!-- Description -->
+                    <div class="prose prose-slate lg:prose-xl max-w-none">
+                        <h3 class="text-2xl font-black text-slate-900 mb-4">About this space</h3>
+                        <p class="text-slate-600 leading-relaxed whitespace-pre-line">{{ property.description }}</p>
+                    </div>
 
-                <!-- Comprehensive Details Section -->
-                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <!-- Specific Features -->
+                    <!-- Amenities Grid -->
                     <div>
-                        <h4 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-6 flex items-center gap-2">
-                            <i class="fas fa-list-check"></i> Key Features
+                        <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6 px-1">Room Amenities & Fittings</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {% if property.ac_available %}
+                            <div class="flex items-center gap-3 p-4 bg-blue-50/30 rounded-2xl border border-blue-100">
+                                <i class="fas fa-snowflake text-blue-500"></i>
+                                <span class="text-xs font-black text-slate-700 uppercase">AC Unit</span>
+                            </div>
+                            {% endif %}
+                            {% if property.has_geyser %}
+                            <div class="flex items-center gap-3 p-4 bg-orange-50/30 rounded-2xl border border-orange-100">
+                                <i class="fas fa-hot-tub-person text-orange-500"></i>
+                                <span class="text-xs font-black text-slate-700 uppercase">Geyser</span>
+                            </div>
+                            {% endif %}
+                            {% if property.has_wardrobe %}
+                            <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                <i class="fas fa-door-closed text-slate-500"></i>
+                                <span class="text-xs font-black text-slate-700 uppercase">Wardrobe</span>
+                            </div>
+                            {% endif %}
+                            {% if property.has_study_table %}
+                            <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                <i class="fas fa-table text-slate-500"></i>
+                                <span class="text-xs font-black text-slate-700 uppercase">Study Table</span>
+                            </div>
+                            {% endif %}
+                            {% if property.has_washing_machine %}
+                            <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                <i class="fas fa-soap text-slate-500"></i>
+                                <span class="text-xs font-black text-slate-700 uppercase">Washing Machine</span>
+                            </div>
+                            {% endif %}
+                            {% if property.has_refrigerator %}
+                            <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                <i class="fas fa-refrigerator text-slate-500"></i>
+                                <span class="text-xs font-black text-slate-700 uppercase">Fridge</span>
+                            </div>
+                            {% endif %}
+                            {% if property.has_stove %}
+                            <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                <i class="fas fa-fire-burner text-slate-500"></i>
+                                <span class="text-xs font-black text-slate-700 uppercase">Induction/Stove</span>
+                            </div>
+                            {% endif %}
+                            {% if property.wifi_available %}
+                            <div class="flex items-center gap-3 p-4 bg-emerald-50/30 rounded-2xl border border-emerald-100">
+                                <i class="fas fa-wifi text-emerald-500"></i>
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] font-black text-slate-400 uppercase leading-none mb-0.5">WiFi</span>
+                                    <span class="text-xs font-black text-slate-700 uppercase">{{ property.wifi_speed }} Mbps</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% if property.laundry_service %}
+                            <div class="flex items-center gap-3 p-4 bg-indigo-50/30 rounded-2xl border border-indigo-100">
+                                <i class="fas fa-soap text-indigo-500"></i>
+                                <span class="text-xs font-black text-slate-700 uppercase">Laundry Service</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if property.has_workspace_desk %}
+                            <div class="flex items-center gap-3 p-4 bg-blue-50/30 rounded-2xl border border-blue-100">
+                                <i class="fas fa-desktop text-blue-600"></i>
+                                <span class="text-xs font-black text-slate-700 uppercase">Work Desk</span>
+                            </div>
+                            {% endif %}
+                            {% if property.has_ergonomic_chair %}
+                            <div class="flex items-center gap-3 p-4 bg-indigo-50/30 rounded-2xl border border-indigo-100">
+                                <i class="fas fa-chair text-indigo-500"></i>
+                                <span class="text-xs font-black text-slate-700 uppercase">Ergo Chair</span>
+                            </div>
+                            {% endif %}
+                            {% if property.has_coffee_maker %}
+                            <div class="flex items-center gap-3 p-4 bg-amber-50/30 rounded-2xl border border-amber-100">
+                                <i class="fas fa-coffee text-amber-600"></i>
+                                <span class="text-xs font-black text-slate-700 uppercase">Coffee/Tea</span>
+                            </div>
+                            {% endif %}
+                            {% if property.has_toaster %}
+                            <div class="flex items-center gap-3 p-4 bg-orange-50/30 rounded-2xl border border-orange-100">
+                                <i class="fas fa-bread-slice text-orange-500"></i>
+                                <span class="text-xs font-black text-slate-700 uppercase">Toaster</span>
+                            </div>
+                            {% endif %}
+                            {% if property.has_induction_plate %}
+                            <div class="flex items-center gap-3 p-4 bg-yellow-50/30 rounded-2xl border border-yellow-100">
+                                <i class="fas fa-bolt text-yellow-500"></i>
+                                <span class="text-xs font-black text-slate-700 uppercase">Induction</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        {% if property.extra_amenities %}
+                        <div class="mt-8 pt-8 border-t border-slate-100">
+                            <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 px-1">Added Perks & Features</h4>
+                            <p class="text-xs font-bold text-slate-600 bg-slate-50 px-4 py-3 rounded-xl border border-slate-100 leading-relaxed italic">
+                               <i class="fas fa-plus-circle text-blue-400 mr-2"></i> {{ property.extra_amenities }}
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Safety & Security Section -->
+                    <div class="bg-white border border-slate-200 rounded-[2.5rem] p-8 md:p-10">
+                        <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8 px-1">Safety & Security Essentials</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            {% if property.has_cctv %}
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center text-sm shadow-sm border border-blue-100">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <span class="text-[11px] font-black text-slate-700 uppercase leading-tight">CCTV MONITORING</span>
+                            </div>
+                            {% endif %}
+                            {% if property.has_smoke_alarm %}
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center text-sm shadow-sm border border-red-100">
+                                    <i class="fas fa-wind"></i>
+                                </div>
+                                <span class="text-[11px] font-black text-slate-700 uppercase leading-tight">SMOKE ALARM</span>
+                            </div>
+                            {% endif %}
+                            {% if property.has_fire_extinguisher %}
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center text-sm shadow-sm border border-red-100">
+                                    <i class="fas fa-fire-extinguisher"></i>
+                                </div>
+                                <span class="text-[11px] font-black text-slate-700 uppercase leading-tight">FIRE EXT.</span>
+                            </div>
+                            {% endif %}
+                            {% if property.has_first_aid_kit %}
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center text-sm shadow-sm border border-emerald-100">
+                                    <i class="fas fa-kit-medical"></i>
+                                </div>
+                                <span class="text-[11px] font-black text-slate-700 uppercase leading-tight">FIRST AID KIT</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if property.property_type != 'PG' %}
+                    <!-- Apartment Specific Info -->
+                    <div class="bg-white border border-slate-200 rounded-[2.5rem] p-8 md:p-10">
+                        <h4 class="text-xl font-black text-slate-900 flex items-center gap-3 mb-8">
+                            <i class="fas fa-building text-blue-500"></i> Apartment Specifics
                         </h4>
-                        <div class="space-y-4">
-                            {% if property.property_type == 'APARTMENT' %}
-                                <div class="flex justify-between items-center py-3 border-b border-slate-50">
-                                    <span class="text-slate-500 font-bold">Floor</span>
-                                    <span class="font-black text-slate-800">{{ property.floor_number }} of {{ property.total_floors }}</span>
-                                </div>
-                                <div class="flex justify-between items-center py-3 border-b border-slate-50">
-                                    <span class="text-slate-500 font-bold">Balconies</span>
-                                    <span class="font-black text-slate-800">{{ property.balconies }}</span>
-                                </div>
-                                <div class="flex justify-between items-center py-3 border-b border-slate-50">
-                                    <span class="text-slate-500 font-bold">Parking</span>
-                                    <span class="font-black text-slate-800">{{ property.get_parking_type_display }}</span>
-                                </div>
-                                <div class="flex justify-between items-center py-3 border-b border-slate-50">
-                                    <span class="text-slate-500 font-bold">Maintenance</span>
-                                    <span class="font-black text-slate-800">₹ {{ property.maintenance_charges }} / mo</span>
-                                </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Furnishing</span>
+                                <span class="text-sm font-black text-slate-800 uppercase">{{ property.get_furnishing_status_display }}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Floor</span>
+                                <span class="text-sm font-black text-slate-800 uppercase">{{ property.floor_number }} / {{ property.total_floors }}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Parking</span>
+                                <span class="text-sm font-black text-slate-800 uppercase">{{ property.get_parking_type_display }}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Balconies</span>
+                                <span class="text-sm font-black text-slate-800 uppercase">{{ property.balconies }} Private</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if property.property_type == 'PG' %}
+                    <!-- Food & Dining (PG Only) -->
+                    <div class="bg-amber-50/30 border border-amber-100 rounded-[2.5rem] p-8 md:p-10">
+                        <div class="flex items-center justify-between mb-8">
+                            <h4 class="text-xl font-black text-slate-900 flex items-center gap-3">
+                                <i class="fas fa-utensils text-orange-500"></i> Mess & Food Facility
+                            </h4>
+                            {% if property.food_provided %}
+                            <span class="bg-emerald-500 text-white text-[9px] font-black uppercase px-3 py-1 rounded-lg">Available</span>
                             {% else %}
-                                <div class="flex justify-between items-center py-3 border-b border-slate-50">
-                                    <span class="text-slate-500 font-bold">Food Included</span>
-                                    <span class="font-black {% if property.food_included %}text-emerald-500{% else %}text-rose-500{% endif %}">
-                                        {% if property.food_included %}Yes{% else %}No{% endif %}
-                                    </span>
+                            <span class="bg-slate-200 text-slate-500 text-[9px] font-black uppercase px-3 py-1 rounded-lg">Not Provided</span>
+                            {% endif %}
+                        </div>
+
+                        {% if property.food_provided %}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Meal Options</span>
+                                <div class="flex gap-3">
+                                    <span class="px-4 py-2 rounded-xl {% if property.provides_breakfast %}bg-white text-orange-600 border border-orange-100 shadow-sm{% else %}bg-slate-100 text-slate-400 opacity-50{% endif %} text-xs font-black uppercase">Breakfast</span>
+                                    <span class="px-4 py-2 rounded-xl {% if property.provides_lunch %}bg-white text-orange-600 border border-orange-100 shadow-sm{% else %}bg-slate-100 text-slate-400 opacity-50{% endif %} text-xs font-black uppercase">Lunch</span>
+                                    <span class="px-4 py-2 rounded-xl {% if property.provides_dinner %}bg-white text-orange-600 border border-orange-100 shadow-sm{% else %}bg-slate-100 text-slate-400 opacity-50{% endif %} text-xs font-black uppercase">Dinner</span>
                                 </div>
-                                {% if property.food_included %}
-                                <div class="py-3 border-b border-slate-50">
-                                    <span class="text-slate-500 font-bold block mb-1">Meal Details</span>
-                                    <p class="text-sm font-medium text-slate-700">{{ property.food_details }}</p>
+                            </div>
+                            <div class="space-y-4">
+                                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Dietary Preferance</span>
+                                <p class="text-sm font-black text-slate-800 uppercase tracking-wide">
+                                    <i class="fas fa-leaf mr-2 text-emerald-500"></i> {{ property.get_diet_type_display }}
+                                </p>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="text-slate-500 text-sm font-medium italic">Standard self-cooking options might be available if a kitchen is shared.</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Security & Rules -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Security -->
+                        <div class="bg-slate-900 text-white rounded-[2.5rem] p-8 shadow-xl">
+                            <h4 class="text-xs font-black uppercase tracking-[0.2em] text-blue-400 mb-6">Security Features</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-4 group">
+                                    <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center {% if property.has_cctv %}text-blue-400{% else %}text-slate-600{% endif %}">
+                                        <i class="fas fa-video"></i>
+                                    </div>
+                                    <span class="text-xs font-black uppercase {% if property.has_cctv %}text-white{% else %}text-slate-500 line-through{% endif %}">CCTV Surveillance</span>
+                                </div>
+                                <div class="flex items-center gap-4 group">
+                                    <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center {% if property.has_biometric %}text-blue-400{% else %}text-slate-600{% endif %}">
+                                        <i class="fas fa-fingerprint"></i>
+                                    </div>
+                                    <span class="text-xs font-black uppercase {% if property.has_biometric %}text-white{% else %}text-slate-500 line-through{% endif %}">Biometric Entry</span>
+                                </div>
+                                <div class="flex items-center gap-4 group">
+                                    <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center {% if property.has_security_guard %}text-blue-400{% else %}text-slate-600{% endif %}">
+                                        <i class="fas fa-user-shield"></i>
+                                    </div>
+                                    <span class="text-xs font-black uppercase {% if property.has_security_guard %}text-white{% else %}text-slate-500 line-through{% endif %}">24/7 On-site Guard</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lifestyle Rules -->
+                        <div class="bg-rose-50/50 border border-rose-100 rounded-[2.5rem] p-8">
+                            <h4 class="text-xs font-black uppercase tracking-[0.2em] text-rose-500 mb-6">House Rules</h4>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center py-2 border-b border-rose-100/50">
+                                    <span class="text-[10px] font-black uppercase text-slate-500">Visitor Policy</span>
+                                    <span class="text-xs font-black text-slate-800">{{ property.get_visitor_policy_display }}</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-rose-100/50">
+                                    <span class="text-[10px] font-black uppercase text-slate-500">Curfew</span>
+                                    <span class="text-xs font-black text-slate-800">{{ property.curfew_time }}</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2 pt-2">
+                                    <span class="px-3 py-1 rounded-lg text-[9px] font-black uppercase {% if property.smoking_allowed %}bg-rose-500 text-white{% else %}bg-slate-200 text-slate-400 opacity-50{% endif %}">Smoking</span>
+                                    <span class="px-3 py-1 rounded-lg text-[9px] font-black uppercase {% if property.alcohol_allowed %}bg-rose-500 text-white{% else %}bg-slate-200 text-slate-400 opacity-50{% endif %}">Alcohol</span>
+                                    <span class="px-3 py-1 rounded-lg text-[9px] font-black uppercase {% if property.pets_allowed %}bg-emerald-500 text-white{% else %}bg-slate-200 text-slate-400 opacity-50{% endif %}">Pets</span>
+                                    <span class="px-3 py-1 rounded-lg text-[9px] font-black uppercase {% if property.non_veg_allowed %}bg-emerald-500 text-white{% else %}bg-slate-200 text-slate-400 opacity-50{% endif %}">Non-Veg</span>
+                                </div>
+                                {% if property.extra_house_rules %}
+                                <div class="mt-4 p-4 bg-white/50 rounded-2xl border border-rose-100/50">
+                                    <span class="text-[9px] font-black uppercase text-rose-400 block mb-2">Additional Terms</span>
+                                    <p class="text-[11px] text-slate-600 leading-relaxed italic">"{{ property.extra_house_rules }}"</p>
                                 </div>
                                 {% endif %}
-                                <div class="flex justify-between items-center py-3 border-b border-slate-50">
-                                    <span class="text-slate-500 font-bold">AC Availability</span>
-                                    <span class="font-black text-slate-800">{% if property.ac_available %}Available{% else %}Non-AC{% endif %}</span>
-                                </div>
-                                <div class="flex justify-between items-center py-3 border-b border-slate-50">
-                                    <span class="text-slate-500 font-bold">WiFi</span>
-                                    <span class="font-black {% if property.wifi_available %}text-blue-500{% else %}text-slate-400{% endif %}">
-                                        {% if property.wifi_available %}High Speed{% else %}Not Available{% endif %}
-                                    </span>
-                                </div>
-                            {% endif %}
-                            <div class="flex justify-between items-center py-3 border-b border-slate-50">
-                                <span class="text-slate-500 font-bold">Available From</span>
-                                <span class="font-black text-slate-800">{{ property.availability_date|date:"d M, Y"|default:"Immediate" }}</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Amenities & Rules -->
-                    <div>
-                        <h4 class="text-sm font-black uppercase tracking-widest text-indigo-600 mb-6 flex items-center gap-2">
-                            <i class="fas fa-sparkles"></i> Additional Info
-                        </h4>
-                        {% if property.property_type == 'APARTMENT' %}
-                            <div class="bg-indigo-50/50 rounded-2xl p-6 border border-indigo-100">
-                                <span class="text-[10px] font-black uppercase text-indigo-400 block mb-3">Amenities</span>
-                                <div class="flex flex-wrap gap-2">
-                                    {% if property.amenities %}
-                                        {% for amenity in property.amenities.split|slice:":20" %}
-                                            <span class="bg-white px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-700 shadow-sm border border-indigo-100">{{ amenity }}</span>
-                                        {% endfor %}
-                                    {% else %}
-                                        <span class="text-xs italic text-slate-400 font-medium">Standard Apartment Amenities included.</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        {% else %}
-                            <div class="space-y-4">
-                                <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100">
-                                    <span class="text-[10px] font-black uppercase text-slate-400 block mb-2">Cleaning Service</span>
-                                    <span class="text-sm font-bold text-slate-700">{{ property.cleaning_frequency|default:"Weekly Housekeeping" }}</span>
-                                </div>
-                                <div class="bg-rose-50 rounded-2xl p-5 border border-rose-100">
-                                    <span class="text-[10px] font-black uppercase text-rose-400 block mb-2">Rules & Restrictions</span>
-                                    <p class="text-xs font-bold text-rose-700 leading-relaxed">{{ property.rules_restrictions|default:"Please follow standard shared living etiquette." }}</p>
-                                </div>
-                            </div>
-                        {% endif %}
+                    <!-- Location Insights -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-slate-50 rounded-[2.5rem] p-8 border border-slate-200">
+                            <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
+                                <i class="fas fa-university"></i> Landmarks
+                            </h4>
+                            <p class="text-sm font-medium text-slate-600 leading-relaxed">{{ property.nearby_landmarks|default:"Central location with easy access." }}</p>
+                        </div>
+                        <div class="bg-slate-50 rounded-[2.5rem] p-8 border border-slate-200">
+                            <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
+                                <i class="fas fa-bus"></i> Connectivity
+                            </h4>
+                            <p class="text-sm font-medium text-slate-600 leading-relaxed">{{ property.connectivity_info|default:"Well connected via public transport." }}</p>
+                        </div>
                     </div>
                 </div>
 
@@ -355,8 +549,8 @@
                 <!-- Financial Breakdown -->
                 {% with breakdown=property.get_financial_breakdown %}
                 <div class="mb-8 pb-6 border-b border-slate-50">
-                    <h3 class="text-xl font-black text-slate-900 mb-6">Pricing Breakdown</h3>
-                    <div class="space-y-4">
+                    <h3 class="text-xl font-black text-slate-900 mb-6">Financials & Legal</h3>
+                    <div class="space-y-4 text-sm">
                         <div class="flex justify-between items-center">
                             <span class="text-slate-500 font-bold">Monthly Rent</span>
                             <span class="font-black text-slate-900">₹ {{ property.price }}</span>
@@ -366,11 +560,36 @@
                             <span class="font-black text-slate-900">₹ {{ property.security_deposit|default:breakdown.security_deposit }}</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-slate-500 font-bold">One-time Contract Fee</span>
-                            <span class="font-black text-blue-600">₹ {{ breakdown.contract_fee }}</span>
+                            <span class="text-slate-500 font-bold">Lock-in Period</span>
+                            <span class="font-black text-slate-900">{{ property.lock_in_period }} Months</span>
                         </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-500 font-bold">Notice Period</span>
+                            <span class="font-black text-slate-900">{{ property.notice_period }} Days</span>
+                        </div>
+                        
+                        <!-- Utility Checkboxes Display -->
+                        <div class="pt-4 grid grid-cols-2 gap-2">
+                            <div class="flex items-center gap-2 {% if property.electricity_included %}text-emerald-600{% else %}text-slate-300{% endif %}">
+                                <i class="fas fa-{% if property.electricity_included %}circle-check{% else %}circle-xmark{% endif %} text-[10px]"></i>
+                                <span class="text-[10px] font-black uppercase tracking-wider">Electricity</span>
+                            </div>
+                            <div class="flex items-center gap-2 {% if property.water_included %}text-emerald-600{% else %}text-slate-300{% endif %}">
+                                <i class="fas fa-{% if property.water_included %}circle-check{% else %}circle-xmark{% endif %} text-[10px]"></i>
+                                <span class="text-[10px] font-black uppercase tracking-wider">Water</span>
+                            </div>
+                            <div class="flex items-center gap-2 {% if property.maintenance_included %}text-emerald-600{% else %}text-slate-300{% endif %}">
+                                <i class="fas fa-{% if property.maintenance_included %}circle-check{% else %}circle-xmark{% endif %} text-[10px]"></i>
+                                <span class="text-[10px] font-black uppercase tracking-wider">Maintenance</span>
+                            </div>
+                            <div class="flex items-center gap-2 {% if property.wifi_included %}text-emerald-600{% else %}text-slate-300{% endif %}">
+                                <i class="fas fa-{% if property.wifi_included %}circle-check{% else %}circle-xmark{% endif %} text-[10px]"></i>
+                                <span class="text-[10px] font-black uppercase tracking-wider">WiFi</span>
+                            </div>
+                        </div>
+
                         <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
-                            <span class="text-slate-900 font-black">Total Initial Payment</span>
+                            <span class="text-slate-900 font-black">Total to Move-in</span>
                             <span class="text-2xl font-black text-blue-600">₹ {{ breakdown.total }}</span>
                         </div>
                     </div>
@@ -379,7 +598,18 @@
 
                 <!-- Contact Info Section -->
                 <div class="mb-8 p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
-                    <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 px-1">Direct Contact</h4>
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Host Contact</h4>
+                        {% if property.electricity_bill and property.property_tax_slip %}
+                        <span class="bg-blue-100 text-blue-600 text-[8px] font-black uppercase px-2 py-0.5 rounded-md flex items-center gap-1">
+                            <i class="fas fa-file-shield"></i> Docs Verified
+                        </span>
+                        {% elif property.electricity_bill or property.property_tax_slip %}
+                        <span class="bg-amber-100 text-amber-600 text-[8px] font-black uppercase px-2 py-0.5 rounded-md flex items-center gap-1">
+                            <i class="fas fa-file-circle-exclamation"></i> Proof Pending
+                        </span>
+                        {% endif %}
+                    </div>
                     <div class="space-y-4">
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 bg-white rounded-xl shadow-sm border border-slate-200 flex items-center justify-center text-blue-500">

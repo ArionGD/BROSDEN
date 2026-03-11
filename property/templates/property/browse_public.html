@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Marketplace | BrosDen-AV{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    {% include "property/snippets/browse_inner.html" %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    {% include "property/snippets/browse_js.html" %}
+{% endblock %}

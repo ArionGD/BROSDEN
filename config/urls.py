@@ -35,6 +35,7 @@ urlpatterns = [
     path('map/', include('map.urls')),
     path('vibe/', include('vibe.urls')),
     path('onboarding/', include('onboarding.urls')),
+    path('sys-admin/', include('sys_admin.urls')),
     path('feedback/', include('feedback.urls')),
     path('', include('core.urls')),
 ]

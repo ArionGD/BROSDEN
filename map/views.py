@@ -9,13 +9,20 @@ def fullscreen_map(request):
     focus_id = request.GET.get('focus')
     properties = Property.objects.exclude(latitude__isnull=True).exclude(longitude__isnull=True)
     
+    # If the user is an owner, show ONLY their properties in the map explorer
+    if hasattr(request.user, 'role') and request.user.role == 'OWNER':
+        properties = properties.filter(owner=request.user)
+    
     # Determine base template based on role
-    base_template = 'tenant/portal_base.html' if request.user.role == 'TENANT' else 'owner/portal_base.html'
+    base_template = 'tenant/portal_base.html' if hasattr(request.user, 'role') and request.user.role == 'TENANT' else 'owner/portal_base.html'
+    
+    map_title = "My Property Portfolio" if hasattr(request.user, 'role') and request.user.role == 'OWNER' else "Global Explorer"
     
     return render(request, 'map/fullscreen_map.html', {
         'properties': properties,
         'focus_id': focus_id,
-        'base_template': base_template
+        'base_template': base_template,
+        'map_title': map_title
     })
 
 def smart_recommend_api(request):

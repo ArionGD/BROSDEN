@@ -1,0 +1,98 @@
+{% extends "sys_admin/portal_base.html" %}
+{% load account_tags %}
+
+{% block portal_content %}
+<div class="mb-10">
+    <h1 class="text-3xl font-black text-slate-900 tracking-tighter">Tenant KYC</h1>
+    <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-1">Global Identity Verification Audit</p>
+</div>
+
+<div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+    <table class="w-full text-left">
+        <thead class="bg-slate-50 border-b border-slate-200">
+            <tr>
+                <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Submit Date</th>
+                <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Tenant Name</th>
+                <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">ID Type</th>
+                <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Trust Score</th>
+                <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Action</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+            {% for kyc in kyc_list %}
+            <tr class="hover:bg-indigo-50/30 transition-colors group">
+                <td class="px-8 py-6 text-xs font-bold text-slate-500">{{ kyc.submitted_at|date:"d M Y" }}</td>
+                <td class="px-8 py-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 shadow-sm border border-slate-200">
+                            {% if kyc.passport_photo %}
+                            <img src="{{ kyc.passport_photo.url }}" class="w-full h-full object-cover">
+                            {% else %}
+                            <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                <i class="fas fa-user text-sm"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-sm font-black text-slate-900 leading-none mb-1">{{ kyc.full_name }}</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">@{{ kyc.user.username }}</span>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-8 py-6">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-black text-slate-700 leading-none mb-1">{{ kyc.get_id_type_display }}</span>
+                        <span class="text-[10px] font-bold text-indigo-500 tracking-tighter uppercase font-mono">{{ kyc.id_number }}</span>
+                    </div>
+                </td>
+                <td class="px-8 py-6">
+                    <div class="flex flex-col gap-1.5 w-32">
+                        <div class="flex justify-between items-center px-1">
+                            <span class="text-[9px] font-black text-slate-400">AI CONFIDENCE</span>
+                            <span class="text-[9px] font-black {% if kyc.verification_score > 0.8 or kyc.verification_score > 80 %}text-emerald-500{% else %}text-amber-500{% endif %}">
+                                {% if kyc.verification_score <= 1 %}{{ kyc.verification_score|multiply:100|floatformat:1 }}{% else %}{{ kyc.verification_score|floatformat:1 }}{% endif %}%
+                            </span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
+                            <div class="h-full kyc-score-bar transition-all duration-1000 ease-out {% if kyc.verification_score > 0.8 or kyc.verification_score > 80 %}bg-emerald-500{% else %}bg-amber-500{% endif %}"
+                                 data-score="{{ kyc.verification_score }}">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-8 py-6">
+                    <div class="flex items-center gap-2">
+                        <a href="{% url 'sys_admin:tenant_kyc_detail' kyc.pk %}" class="px-4 py-2 bg-slate-900 text-white text-[10px] font-black rounded-xl hover:bg-emerald-600 transition-all flex items-center gap-2 no-underline">
+                            VERIFY IDENTITY <i class="fas fa-shield-check text-[8px]"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="px-8 py-20 text-center">
+                    <div class="flex flex-col items-center">
+                        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-fingerprint text-slate-200 text-3xl"></i>
+                        </div>
+                        <h4 class="text-sm font-black text-slate-900">No Pending Tenant KYC</h4>
+                        <p class="text-xs font-bold text-slate-400">All identity nodes are secure.</p>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.kyc-score-bar').forEach(bar => {
+            let score = parseFloat(bar.dataset.score);
+            // Auto-detect if score is 0-1 scale or 0-100
+            if (score <= 1 && score > 0) score = score * 100;
+            bar.style.width = score + '%';
+        });
+    });
+</script>
+{% endblock %}

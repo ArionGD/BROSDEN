@@ -34,12 +34,20 @@
             </div>
 
             <div class="flex gap-6 mt-6 pt-6 border-t border-slate-50">
-                <span class="text-sm font-semibold text-slate-600"><i class="fas fa-bed text-blue-500 mr-2"></i>
-                    {{ property.bedrooms }} BHK</span>
-                <span class="text-sm font-semibold text-slate-600"><i class="fas fa-maximize text-blue-500 mr-2"></i>
-                    {{ property.sqft }} sqft</span>
-                <span class="text-sm font-semibold text-slate-600"><i class="fas fa-tag text-blue-500 mr-2"></i>
-                    {{ property.get_property_type_display }}</span>
+                <span class="text-xs font-black text-slate-400 uppercase tracking-widest leading-none">
+                    <i class="fas fa-bed text-blue-500 mr-2"></i> {{ property.get_property_type_display }}
+                </span>
+                <span class="text-xs font-black text-slate-400 uppercase tracking-widest leading-none">
+                    <i class="fas fa-users text-blue-500 mr-2"></i> {{ property.get_sharing_type_display|default:"Private" }}
+                </span>
+                <span class="text-xs font-black text-slate-400 uppercase tracking-widest leading-none">
+                    <i class="fas fa-venus-mars text-indigo-500 mr-2"></i> {{ property.get_gender_preference_display }}
+                </span>
+                {% if property.unit_number %}
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none bg-slate-50 px-2 py-1 rounded">
+                    #{{ property.unit_number }}
+                </span>
+                {% endif %}
             </div>
         </div>
         <div class="flex flex-col justify-center gap-2">

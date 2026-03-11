@@ -1,0 +1,390 @@
+<div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div>
+        <h2 class="text-4xl font-black text-slate-900 tracking-tight">Marketplace</h2>
+        <p class="text-slate-500 font-medium mt-1">Explore verified properties in your favorite cities.</p>
+    </div>
+    <a href="{% url 'map:explore' %}"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black shadow-xl shadow-blue-100 flex items-center gap-3 transition-all transform hover:-translate-y-1 active:scale-95">
+        <i class="fas fa-map-location-dot"></i> View on Map
+    </a>
+</div>
+
+<!-- Filters & Smart Match -->
+<form method="GET" action="{% url 'property:browse' %}" class="bg-white border border-slate-200 rounded-3xl p-6 mb-10 shadow-sm flex flex-col gap-6">
+    <!-- Top Row: Global Fast Filters -->
+    <div class="flex flex-wrap gap-4 items-center">
+        <!-- Text Search -->
+        <div class="flex-1 min-w-[200px] relative">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+            <input type="text" name="q" value="{{ request_params.q|default:'' }}" placeholder="Search areas, colleges, landmarks..."
+                class="w-full pl-12 pr-4 py-3 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:ring-4 focus:ring-blue-100 transition-all">
+        </div>
+
+        <!-- City Select -->
+        <select name="city" class="px-6 py-3 bg-slate-50 rounded-xl border border-slate-100 font-bold text-slate-600 outline-none">
+            <option value="All Cities">All Cities</option>
+            {% for city in cities %}
+            <option value="{{ city }}" {% if city == request_params.city %}selected{% endif %}>{{ city }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Advanced Toggle -->
+        <button type="button" onclick="toggleAdvancedFilters()" 
+            class="px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-black flex items-center gap-3 hover:bg-slate-200 transition-all border border-slate-200">
+            <i class="fas fa-sliders-h" id="adv-filter-icon"></i> Filtering Suite
+        </button>
+
+        <!-- Apply Button -->
+        <button type="submit" class="px-8 py-3 bg-slate-900 text-white rounded-xl font-black shadow-lg hover:bg-black transition-all">
+            Apply Filters
+        </button>
+        
+        <a href="{% url 'property:browse' %}" class="px-4 py-3 text-slate-400 hover:text-slate-600 transition-colors font-bold text-sm">Clear</a>
+    </div>
+
+    <!-- Advanced Filters Suite (Toggleable) -->
+    <div id="advanced-filters-panel" class="hidden animate-in fade-in slide-in-from-top-4 duration-300 flex flex-col gap-8 pt-6 border-t border-slate-100">
+        
+        <!-- SECTION 1: Universal Base Filters -->
+        <div class="space-y-4">
+            <h4 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">1. Universal Logistics</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Price Range -->
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase text-slate-500">Monthly Budget (₹)</label>
+                    <div class="flex gap-2">
+                        <input type="number" name="min_price" value="{{ request_params.min_price|default:'' }}" placeholder="Min (ex: 2000)" class="w-full px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-sm">
+                        <input type="number" name="max_price" value="{{ request_params.max_price|default:'' }}" placeholder="Max" class="w-full px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-sm">
+                    </div>
+                </div>
+                <!-- Property Type -->
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase text-slate-500">Property Type</label>
+                    <select name="type" class="w-full px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-sm">
+                        <option value="">Any Type</option>
+                        <option value="APARTMENT" {% if request_params.type == 'APARTMENT' %}selected{% endif %}>Flat / Apartment</option>
+                        <option value="PG" {% if request_params.type == 'PG' %}selected{% endif %}>PG / Hostel</option>
+                        <option value="SHARED" {% if request_params.type == 'SHARED' %}selected{% endif %}>Shared Flat</option>
+                    </select>
+                </div>
+                <!-- Gender -->
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase text-slate-500">Gender Preference</label>
+                    <select name="gender" class="w-full px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-sm">
+                        <option value="">Any Gender</option>
+                        <option value="BOYS" {% if request_params.gender == 'BOYS' %}selected{% endif %}>Boys Only</option>
+                        <option value="GIRLS" {% if request_params.gender == 'GIRLS' %}selected{% endif %}>Girls Only</option>
+                        <option value="COED" {% if request_params.gender == 'COED' %}selected{% endif %}>Co-ed / General</option>
+                    </select>
+                </div>
+                <!-- Available From -->
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase text-slate-500">Available From</label>
+                    <input type="date" name="available_from" value="{{ request_params.available_from|default:'' }}" class="w-full px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-sm">
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: PG & Hostel Specific -->
+        <div class="space-y-4 pt-6 border-t border-slate-50">
+            <h4 class="text-xs font-black text-emerald-500 uppercase tracking-[0.2em]">2. PG & Hostel Specialist</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Sharing Type -->
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase text-slate-500">Occupancy Type</label>
+                    <select name="sharing_type" class="w-full px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-sm">
+                        <option value="">Any Sharing</option>
+                        <option value="SINGLE" {% if request_params.sharing_type == 'SINGLE' %}selected{% endif %}>Single / Private</option>
+                        <option value="DOUBLE" {% if request_params.sharing_type == 'DOUBLE' %}selected{% endif %}>2-Sharing</option>
+                        <option value="TRIPLE" {% if request_params.sharing_type == 'TRIPLE' %}selected{% endif %}>3-Sharing</option>
+                        <option value="QUADRUPLE" {% if request_params.sharing_type == 'QUADRUPLE' %}selected{% endif %}>4+ Sharing (Dorm)</option>
+                    </select>
+                </div>
+                <!-- Food Options -->
+                <div class="space-y-3 flex flex-col justify-end pb-1">
+                    <label class="flex items-center gap-2 cursor-pointer group">
+                        <input type="checkbox" name="breakfast" {% if request_params.breakfast %}checked{% endif %} class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                        <span class="text-[11px] font-bold text-slate-600 group-hover:text-blue-600 transition-colors">Breakfast Included</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer group">
+                        <input type="checkbox" name="full_meals" {% if request_params.full_meals %}checked{% endif %} class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                        <span class="text-[11px] font-bold text-slate-600 group-hover:text-blue-600 transition-colors">3 Full Meals (Mess)</span>
+                    </label>
+                </div>
+                <!-- Amenities Checklist -->
+                <div class="grid grid-cols-2 gap-x-4 gap-y-2 lg:col-span-2">
+                    <label class="flex items-center gap-2 cursor-pointer group">
+                        <input type="checkbox" name="wifi" {% if request_params.wifi %}checked{% endif %} class="w-4 h-4 rounded border-slate-300 text-blue-600">
+                        <span class="text-[11px] font-bold text-slate-600">High-Speed Wi-Fi</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer group">
+                        <input type="checkbox" name="laundry" {% if request_params.laundry %}checked{% endif %} class="w-4 h-4 rounded border-slate-300 text-blue-600">
+                        <span class="text-[11px] font-bold text-slate-600">Laundry Access</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer group">
+                        <input type="checkbox" name="study_table" {% if request_params.study_table %}checked{% endif %} class="w-4 h-4 rounded border-slate-300 text-blue-600">
+                        <span class="text-[11px] font-bold text-slate-600">Workstation Included</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer group">
+                        <input type="checkbox" name="no_curfew" {% if request_params.no_curfew %}checked{% endif %} class="w-4 h-4 rounded border-slate-300 text-blue-600">
+                        <span class="text-[11px] font-bold text-slate-600">No Curfew Access</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: Apartment Specific -->
+        <div class="space-y-4 pt-6 border-t border-slate-50">
+            <h4 class="text-xs font-black text-indigo-500 uppercase tracking-[0.2em]">3. Real Estate Infrastructure</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Configuration -->
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase text-slate-500">BHK Configuration</label>
+                    <select name="bedrooms" class="w-full px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-sm">
+                        <option value="">Any BHK</option>
+                        <option value="1" {% if request_params.bedrooms == '1' %}selected{% endif %}>1 RK / 1 BHK</option>
+                        <option value="2" {% if request_params.bedrooms == '2' %}selected{% endif %}>2 BHK</option>
+                        <option value="3" {% if request_params.bedrooms == '3' %}selected{% endif %}>3 BHK+</option>
+                    </select>
+                </div>
+                <!-- Furnishing -->
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase text-slate-500">Furnishing Setup</label>
+                    <select name="furnishing" class="w-full px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-sm">
+                        <option value="">Any Status</option>
+                        <option value="FULLY" {% if request_params.furnishing == 'FULLY' %}selected{% endif %}>Fully Furnished</option>
+                        <option value="SEMI" {% if request_params.furnishing == 'SEMI' %}selected{% endif %}>Semi-Furnished</option>
+                        <option value="UNFURNISHED" {% if request_params.furnishing == 'UNFURNISHED' %}selected{% endif %}>Unfurnished</option>
+                    </select>
+                </div>
+                <!-- Parking -->
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase text-slate-500">Parking Space</label>
+                    <select name="parking" class="w-full px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-sm">
+                        <option value="">No Preference</option>
+                        <option value="OPEN" {% if request_params.parking == 'OPEN' %}selected{% endif %}>Open Space</option>
+                        <option value="COVERED" {% if request_params.parking == 'COVERED' %}selected{% endif %}>Covered / Basement</option>
+                    </select>
+                </div>
+                <!-- Bachelor Policy -->
+                <div class="flex items-center gap-3 pt-6">
+                    <label class="flex items-center gap-2 cursor-pointer group bg-indigo-50 px-4 py-2 rounded-xl border border-indigo-100 w-full">
+                        <input type="checkbox" name="bachelors_allowed" {% if request_params.bachelors_allowed %}checked{% endif %} class="w-4 h-4 rounded text-indigo-600">
+                        <span class="text-[11px] font-black text-indigo-700 uppercase">Bachelor Friendly</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: Advanced Life-Context -->
+        <div class="space-y-4 pt-6 border-t border-slate-100">
+            <div class="flex items-center justify-between">
+                <h4 class="text-xs font-black text-orange-500 uppercase tracking-[0.2em]">4. The BrosDen Edge (Advanced)</h4>
+                <div class="flex items-center gap-2 text-[10px] font-black text-orange-400 uppercase bg-orange-50 px-3 py-1 rounded-full">
+                    <i class="fas fa-microchip"></i> AI Assisted
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Smart Match Trigger -->
+                <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-6 rounded-3xl shadow-xl flex items-center justify-between group overflow-hidden relative">
+                    <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas fa-wand-magic-sparkles text-7xl text-white"></i>
+                    </div>
+                    <div>
+                        <h5 class="text-white font-black text-sm">Smart AI Proximity Scan</h5>
+                        <p class="text-slate-400 text-[10px] font-medium mt-1">Calculate distance & cost matches instantly.</p>
+                    </div>
+                    <button type="button" onclick="toggleSmartMatch()" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-xs font-black hover:bg-blue-500 transition-all z-10">
+                        Configure AI
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <label class="flex items-center gap-3 bg-white p-4 rounded-3xl border border-slate-200 cursor-pointer hover:border-orange-500 transition-all group">
+                        <input type="checkbox" name="verified" {% if request_params.verified %}checked{% endif %} class="w-5 h-5 rounded-lg text-orange-500">
+                        <div>
+                            <span class="text-xs font-black text-slate-800 block">Verified Vault</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase">Legal Agreement Ready</span>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-3 bg-white p-4 rounded-3xl border border-slate-200 cursor-pointer hover:border-orange-500 transition-all group">
+                        <input type="checkbox" name="pets" {% if request_params.pets %}checked{% endif %} class="w-5 h-5 rounded-lg text-orange-500">
+                        <div>
+                            <span class="text-xs font-black text-slate-800 block">Pet Friendly</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase">Furry Friends Allowed</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>    <!-- Smart Match Panel (Hidden by default) -->
+    <div id="smart-match-panel" class="hidden animate-in fade-in slide-in-from-top-4 duration-300 border-t border-slate-100 pt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="space-y-3 col-span-1 md:col-span-1 lg:col-span-1">
+                <label class="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center justify-between">
+                    <span class="flex items-center gap-2"><i class="fas fa-building-user text-arion-blue"></i> Target Location</span>
+                    <button type="button" onclick="openMapPicker()" class="text-arion-blue hover:text-blue-700 transition-colors bg-blue-50 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-map-marked-alt"></i> Pick on Map</button>
+                </label>
+                <select id="target-dest" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 font-bold text-slate-600 outline-none" onchange="handleTargetChange()">
+                    <option value="23.0371,72.5445">Gujarat University, Ahmedabad</option>
+                    <option value="23.0238,72.5273">Lokmanya College Shivranjani, Ahmedabad</option>
+                    <option value="custom" id="custom-option" class="hidden">📍 Custom Map Location</option>
+                </select>
+            </div>
+
+            <div class="space-y-4 lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Distance Weight</label>
+                        <span id="w-dist-val" class="text-xs font-bold text-arion-blue">33%</span>
+                    </div>
+                    <input type="range" id="w-dist" min="0" max="100" value="33" 
+                        class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-arion-blue"
+                        oninput="updateWeightLabels()">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Cost Weight</label>
+                        <span id="w-cost-val" class="text-xs font-bold text-arion-blue">33%</span>
+                    </div>
+                    <input type="range" id="w-cost" min="0" max="100" value="33"
+                        class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-arion-blue"
+                        oninput="updateWeightLabels()">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Reputation Weight</label>
+                        <span id="w-rating-val" class="text-xs font-bold text-arion-blue">34%</span>
+                    </div>
+                    <input type="range" id="w-rating" min="0" max="100" value="34"
+                        class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-arion-blue"
+                        oninput="updateWeightLabels()">
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-8 flex justify-end gap-3">
+            <button type="button" onclick="toggleSmartMatch()" class="px-6 py-2 text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors">Cancel</button>
+            <button type="button" onclick="runSmartMatch()" id="run-match-btn" 
+                class="px-8 py-3 bg-slate-900 text-white rounded-xl font-black shadow-xl hover:bg-black transition-all flex items-center gap-3">
+                Calculate Best Matches
+            </button>
+        </div>
+    </div>
+</form>
+
+{% load account_tags %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 main-property-grid">
+    {% for prop in properties %}
+    {% owner_badge prop.owner as badge %}
+    <div
+        class="group bg-white rounded-[2rem] overflow-hidden border border-slate-200 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+        <div class="relative h-56 bg-slate-50 flex items-center justify-center text-slate-300 overflow-hidden image-container">
+            {% if prop.images.first %}
+            <img src="{{ prop.images.first.image.url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/f1f5f9/64748b?text=Property+Photo'">
+            {% else %}
+            <div class="flex flex-col items-center gap-2 opacity-40">
+                <i class="fas fa-house-chimney text-4xl"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest">No Image</span>
+            </div>
+            {% endif %}
+            <div class="absolute top-4 left-4 flex flex-col gap-2 items-start">
+                {% if prop.is_verified %}
+                <span
+                    class="bg-emerald-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-sm">Verified</span>
+                {% endif %}
+
+                <span
+                    class="text-[10px] font-black uppercase px-2 py-1 rounded flex items-center gap-1 shadow-sm opacity-90 group-hover:opacity-100 transition-opacity {% if badge.color == 'cyan' %}bg-cyan-500 text-white{% elif badge.color == 'amber' %}bg-amber-500 text-white{% elif badge.color == 'slate' %}bg-slate-500 text-white{% elif badge.color == 'orange' %}bg-orange-500 text-white{% elif badge.color == 'red' %}bg-red-500 text-white{% else %}bg-white text-slate-400{% endif %}"
+                    title="{{ badge.name }} Seller">
+                    <i class="{{ badge.icon }}"></i> {% if badge.avg > 0 %}{{ badge.avg|floatformat:1 }}
+                    {% else %}NEW{% endif %}
+                </span>
+            </div>
+            <div
+                class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-arion-blue font-black shadow-lg">
+                ₹ {{ prop.price }}
+            </div>
+
+            {% if user.is_authenticated and user.role == "TENANT" %}
+            <div class="absolute top-4 right-4">
+                <form action="{% url 'wishlist:toggle' prop.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="w-10 h-10 bg-white/90 backdrop-blur-md rounded-xl flex items-center justify-center shadow-lg transition-all hover:scale-110 active:scale-95 group/heart">
+                        <i
+                            class="fas fa-heart text-lg transition-colors {% if prop.id in wishlist_ids %}text-arion-orange{% else %}text-slate-300 group-hover/heart:text-arion-orange{% endif %}"></i>
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        <div class="p-8">
+            <h3 class="text-xl font-bold text-slate-900 group-hover:text-arion-blue transition-colors">
+                {{ prop.title }}
+            </h3>
+            <p class="text-slate-500 mt-2 text-sm flex items-center">
+                <i class="fas fa-location-dot mr-2 text-slate-300"></i> {{ prop.city }}
+            </p>
+
+            <div class="flex items-center justify-between mt-6 pt-6 border-t border-slate-50">
+                <div class="flex flex-col gap-1">
+                    {% if prop.property_type == 'APARTMENT' %}
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Apartment Details</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-black text-slate-800 uppercase">{{ prop.bedrooms }} BHK</span>
+                        <span class="w-1 h-1 bg-slate-200 rounded-full"></span>
+                        <span class="text-[10px] font-black text-indigo-600 uppercase">{{ prop.sqft }} SQFT</span>
+                    </div>
+                    {% else %}
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Sharing & Gender</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-black text-slate-800 uppercase">{{ prop.get_sharing_type_display|default:"Private" }}</span>
+                        <span class="w-1 h-1 bg-slate-200 rounded-full"></span>
+                        <span class="text-[10px] font-black text-indigo-600 uppercase">{{ prop.get_gender_preference_display }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="text-right">
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block leading-none mb-1">Available From</span>
+                    <span class="text-[10px] font-black text-emerald-600 uppercase">{{ prop.available_from|date:"M d"|default:"Now" }}</span>
+                </div>
+            </div>
+
+            <a href="{% url 'property:detail' prop.pk %}"
+                class="block w-full mt-8 bg-blue-50 text-arion-blue font-black py-4 rounded-xl text-center hover:bg-arion-blue hover:text-white transition-all shadow-blue-100">
+                View Details
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-full text-center py-20 bg-slate-50 rounded-[2rem]">
+        <h2 class="text-2xl font-black text-slate-900">No properties available yet</h2>
+        <p class="text-slate-500 mt-2 font-medium">Check back later for new listings.</p>
+    </div>
+    {% endfor %}
+</div>
+
+
+<!-- Map Picker Modal -->
+<div id="map-picker-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] hidden flex justify-center items-center p-4">
+    <div class="bg-white rounded-[2rem] w-full max-w-3xl overflow-hidden shadow-2xl scale-95 opacity-0 transition-all duration-300 border border-slate-100" id="map-modal-content">
+        <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+            <h3 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                <i class="fas fa-location-dot text-arion-blue"></i> Pin Target Location
+            </h3>
+            <button onclick="closeMapPicker()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white text-slate-400 hover:text-slate-800 hover:shadow-md transition-all"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div id="picker-map" style="height: 400px; width: 100%; z-index: 0;"></div>
+        <div class="p-6 bg-white border-t border-slate-100 flex justify-between items-center">
+            <p class="text-xs text-slate-500 font-medium"><i class="fas fa-info-circle mr-1"></i> Click anywhere on the map to set a pin.</p>
+            <div class="flex gap-3">
+                <button onclick="closeMapPicker()" class="px-6 py-3 font-bold text-slate-500 hover:text-slate-800 transition-colors rounded-xl">Cancel</button>
+                <button onclick="confirmMapLocation()" class="px-8 py-3 bg-slate-900 text-white rounded-xl font-black shadow-lg hover:bg-black transition-all flex items-center gap-2">
+                    <i class="fas fa-check"></i> Confirm Position
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

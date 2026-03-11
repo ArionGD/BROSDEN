@@ -1,0 +1,233 @@
+{% extends "sys_admin/portal_base.html" %}
+{% load account_tags %}
+
+{% block portal_content %}
+<div class="flex items-center justify-between mb-10">
+    <div class="flex items-center gap-4">
+        <a href="{% url 'sys_admin:tenant_kyc' %}" class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-900 hover:text-white transition-all no-underline">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <div>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tighter">Audit Request: {{ kyc.full_name }}</h1>
+            <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-1">Tenant Identity Sentinel — ID: #{{ kyc.pk }}</p>
+        </div>
+    </div>
+    <div class="flex items-center gap-3">
+        <span class="bg-amber-100 text-amber-600 text-[10px] font-black uppercase px-4 py-2 rounded-xl border border-amber-200 shadow-sm animate-pulse">
+            Awaiting Verdict
+        </span>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Main Audit Pane -->
+    <div class="lg:col-span-2 space-y-8">
+        <!-- Identity Dossier -->
+        <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+            <div class="px-8 py-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                    <i class="fas fa-id-card text-blue-500"></i> Identity Dossier
+                </h3>
+            </div>
+            <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Full Legal Name</p>
+                        <p class="font-bold text-slate-900">{{ kyc.full_name }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date of Birth</p>
+                        <p class="font-bold text-slate-900">{{ kyc.date_of_birth|date:"d M, Y" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Permanent Address</p>
+                        <p class="font-bold text-slate-900 leading-relaxed">{{ kyc.permanent_address }}</p>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Mobile Contact</p>
+                        <p class="font-bold text-slate-900">{{ kyc.mobile_number }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Email Interface</p>
+                        <p class="font-bold text-slate-900">{{ kyc.email_address }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Identity Tokens</p>
+                        <div class="flex flex-col gap-2">
+                            <span class="text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 inline-block w-fit">
+                                {{ kyc.get_id_type_display }}: {{ kyc.id_number }}
+                            </span>
+                            {% if kyc.pan_number %}
+                            <span class="text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 inline-block w-fit">
+                                PAN: {{ kyc.pan_number }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employment & Socio-Economic Status -->
+        <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+            <div class="px-8 py-6 bg-slate-50 border-b border-slate-100">
+                <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                    <i class="fas fa-briefcase text-orange-500"></i> Socio-Economic Data
+                </h3>
+            </div>
+            <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Employment Tier</p>
+                        <span class="bg-indigo-50 text-indigo-600 text-[10px] font-black px-3 py-1.5 rounded-lg border border-indigo-100">
+                            {{ kyc.get_tenant_type_display }}
+                        </span>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Occupation / Role</p>
+                        <p class="font-bold text-slate-900">{{ kyc.occupation|default:"N/A" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Monthly Income Node</p>
+                        <p class="text-xl font-black text-emerald-600">₹ {{ kyc.monthly_income|default:"0.00" }}</p>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Organization / Institution</p>
+                        <p class="font-bold text-slate-900">{{ kyc.employer_name|default:"Self-Employed / Independent" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Native Node (Home State)</p>
+                        <p class="font-bold text-slate-900">{{ kyc.home_state|default:"Domestic" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Emergency Relink</p>
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <p class="text-xs font-bold text-slate-900">{{ kyc.emergency_contact_name }} <span class="text-[10px] text-slate-400 uppercase font-black">({{ kyc.emergency_contact_relation }})</span></p>
+                            <p class="text-xs font-medium text-slate-500 mt-1">{{ kyc.emergency_contact_phone }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar: Verification Pane -->
+    <div class="space-y-8">
+        <!-- Document Sentinel -->
+        <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl">
+            <h3 class="text-xs font-black uppercase tracking-widest text-blue-400 mb-8">Document Sentinel</h3>
+            
+            <div class="space-y-6">
+                <!-- Aadhaar/Primary ID -->
+                <div class="group">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Primary Identity Asset</p>
+                    {% if kyc.aadhaar_image %}
+                    <div class="relative aspect-video rounded-2xl overflow-hidden border-2 border-slate-800 group-hover:border-blue-500 transition-all cursor-zoom-in" onclick="window.open('{{ kyc.aadhaar_image.url }}')">
+                        <img src="{{ kyc.aadhaar_image.url }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <i class="fas fa-expand text-2xl"></i>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="aspect-video rounded-2xl bg-slate-800 border-2 border-dashed border-slate-700 flex items-center justify-center text-slate-600">
+                        <i class="fas fa-file-excel text-2xl"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- PAN Card -->
+                <div class="group">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Financial Nexus (PAN)</p>
+                    {% if kyc.pan_image %}
+                    <div class="relative aspect-video rounded-2xl overflow-hidden border-2 border-slate-800 group-hover:border-orange-500 transition-all cursor-zoom-in" onclick="window.open('{{ kyc.pan_image.url }}')">
+                        <img src="{{ kyc.pan_image.url }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <i class="fas fa-expand text-2xl"></i>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="aspect-video rounded-2xl bg-slate-800 border-2 border-dashed border-slate-700 flex items-center justify-center text-slate-600">
+                        <i class="fas fa-file-excel text-2xl"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Passport Photo -->
+                <div class="group">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Facial Recognition Asset</p>
+                    {% if kyc.passport_photo %}
+                    <div class="relative w-32 h-32 rounded-3xl overflow-hidden border-2 border-slate-800 group-hover:border-blue-500 transition-all cursor-zoom-in mx-auto" onclick="window.open('{{ kyc.passport_photo.url }}')">
+                        <img src="{{ kyc.passport_photo.url }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <i class="fas fa-search-plus"></i>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="w-32 h-32 rounded-3xl bg-slate-800 border-2 border-dashed border-slate-700 flex items-center justify-center text-slate-600 mx-auto">
+                        <i class="fas fa-user-robot text-2xl"></i>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Confidence Metrics -->
+        <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm">
+            <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">AI Audit Metrics</h3>
+            <div class="space-y-6">
+                <div>
+                    <div class="flex justify-between items-center mb-2 px-1">
+                        <span class="text-[10px] font-black text-slate-900 uppercase">OCR Alignment</span>
+                        <span class="text-xs font-black text-emerald-500">
+                             {% if kyc.verification_score <= 1 %}{{ kyc.verification_score|multiply:100|floatformat:1 }}{% else %}{{ kyc.verification_score|floatformat:1 }}{% endif %}%
+                        </span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div class="h-full kyc-score-bar bg-emerald-500 transition-all duration-1000" data-score="{{ kyc.verification_score }}"></div>
+                    </div>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <p class="text-[10px] font-black text-slate-400 uppercase mb-2">Sentinel Recommendation</p>
+                    <p class="text-xs font-bold text-slate-700">
+                        {% if kyc.verification_score > 0.8 or kyc.verification_score > 80 %}
+                        <i class="fas fa-check-circle text-emerald-500 mr-2"></i> HIGH CONFIDENCE: Identity tokens match extracted OCR vectors.
+                        {% else %}
+                        <i class="fas fa-exclamation-triangle text-amber-500 mr-2"></i> MANUAL OVERRIDE: Low confidence in document clarity.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Verdict Actions -->
+        <div class="grid grid-cols-2 gap-4">
+            <form action="{% url 'sys_admin:approve_kyc' kyc.pk %}" method="POST" class="col-span-1">
+                {% csrf_token %}
+                <button type="submit" class="w-full py-5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-100 transition-all transform hover:-translate-y-1 active:scale-95 text-xs uppercase tracking-widest">
+                    APPROVE
+                </button>
+            </form>
+            <form action="{% url 'sys_admin:reject_kyc' kyc.pk %}" method="POST" class="col-span-1">
+                {% csrf_token %}
+                <button type="submit" class="w-full py-5 bg-slate-900 hover:bg-red-600 text-white font-black rounded-[2rem] shadow-xl shadow-slate-100 transition-all transform hover:-translate-y-1 active:scale-95 text-xs uppercase tracking-widest">
+                    REJECT
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.kyc-score-bar').forEach(bar => {
+            let score = parseFloat(bar.dataset.score);
+            if (score <= 1 && score > 0) score = score * 100;
+            bar.style.width = score + '%';
+        });
+    });
+</script>
+{% endblock %}

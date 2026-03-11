@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'vibe',
     'onboarding',
     'feedback',
+    'sys_admin',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

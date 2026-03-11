@@ -1,32 +1,3 @@
-{% extends user.portal_base|default:"base.html" %}
-
-{% block title %}Marketplace | BrosDen-AV{% endblock %}
-
-{% block extra_head %}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-{% endblock %}
-
-{% block content %}
-{% if user.is_authenticated and user.role != 'TENANT' %}
-    {# For Portal Users: Preserve the portal structure (header/sidebar) #}
-    {{ block.super }}
-{% else %}
-    {# For Guest/Public Users: Use the standard standalone layout #}
-    <div class="container mx-auto px-4 py-12">
-        {% include "property/snippets/browse_inner.html" %}
-    </div>
-{% endif %}
-{% endblock %}
-
-{% block portal_content %}
-{# This block is called inside portal_base.html templates #}
-<div class="pt-2">
-    {% include "property/snippets/browse_inner.html" %}
-</div>
-{% endblock %}
-
-{% block extra_js %}
 <script>
     // Map Picker Logic
     let pickerMap = null;
@@ -36,6 +7,8 @@
     function openMapPicker() {
         const modal = document.getElementById('map-picker-modal');
         const content = document.getElementById('map-modal-content');
+        if(!modal || !content) return;
+        
         modal.classList.remove('hidden');
         
         // Animation
@@ -71,6 +44,8 @@
     function closeMapPicker() {
         const modal = document.getElementById('map-picker-modal');
         const content = document.getElementById('map-modal-content');
+        if(!modal || !content) return;
+
         content.classList.remove('scale-100', 'opacity-100');
         content.classList.add('scale-95', 'opacity-0');
         setTimeout(() => {
@@ -87,47 +62,59 @@
         const select = document.getElementById('target-dest');
         const customOption = document.getElementById('custom-option');
         
-        customOption.value = `${selectedLatLng.lat},${selectedLatLng.lng}`;
-        customOption.classList.remove('hidden');
-        select.value = customOption.value;
+        if(customOption && select) {
+            customOption.value = `${selectedLatLng.lat},${selectedLatLng.lng}`;
+            customOption.classList.remove('hidden');
+            select.value = customOption.value;
+        }
         
         closeMapPicker();
-        
-        // Auto run match if possible
         runSmartMatch();
     }
 
     function handleTargetChange() {
-        // Re-run match if destination changed
         const select = document.getElementById('target-dest');
-        if(select.value !== 'custom') {
+        if(select && select.value !== 'custom') {
             runSmartMatch();
         }
     }
 
     function toggleSmartMatch() {
         const panel = document.getElementById('smart-match-panel');
-        panel.classList.toggle('hidden');
+        if(panel) panel.classList.toggle('hidden');
     }
 
     function toggleAdvancedFilters() {
         const panel = document.getElementById('advanced-filters-panel');
-        panel.classList.toggle('hidden');
+        if(panel) panel.classList.toggle('hidden');
+        
+        // Rotate icon
+        const icon = document.getElementById('adv-filter-icon');
+        if(icon) icon.classList.toggle('rotate-180');
     }
 
     function updateWeightLabels() {
-        document.getElementById('w-dist-val').innerText = document.getElementById('w-dist').value + '%';
-        document.getElementById('w-cost-val').innerText = document.getElementById('w-cost').value + '%';
-        document.getElementById('w-rating-val').innerText = document.getElementById('w-rating').value + '%';
+        const dist = document.getElementById('w-dist');
+        const cost = document.getElementById('w-cost');
+        const rating = document.getElementById('w-rating');
+        
+        if(dist) document.getElementById('w-dist-val').innerText = dist.value + '%';
+        if(cost) document.getElementById('w-cost-val').innerText = cost.value + '%';
+        if(rating) document.getElementById('w-rating-val').innerText = rating.value + '%';
     }
 
     async function runSmartMatch() {
         const btn = document.getElementById('run-match-btn');
+        if(!btn) return;
+
         const originalText = btn.innerHTML;
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-circle-notch fa-spin relative"></i> Analyzing...';
 
-        let targetVal = document.getElementById('target-dest').value;
+        const targetSelect = document.getElementById('target-dest');
+        if(!targetSelect) return;
+
+        let targetVal = targetSelect.value;
         if (targetVal === 'custom') {
             btn.disabled = false;
             btn.innerHTML = originalText;
@@ -136,9 +123,9 @@
         }
 
         const [lat, lng] = targetVal.split(',');
-        const w_dist = document.getElementById('w-dist').value;
-        const w_price = document.getElementById('w-cost').value;
-        const w_rating = document.getElementById('w-rating').value;
+        const w_dist = document.getElementById('w-dist')?.value || 33;
+        const w_price = document.getElementById('w-cost')?.value || 33;
+        const w_rating = document.getElementById('w-rating')?.value || 34;
 
         try {
             const response = await fetch(`/map/smart-api/?lat=${lat}&lng=${lng}&w_dist=${w_dist}&w_price=${w_price}&w_rating=${w_rating}`);
@@ -156,19 +143,16 @@
     }
 
     function reorderProperties(results) {
-        const grid = document.querySelector('.grid.grid-cols-1');
+        const grid = document.querySelector('.main-property-grid');
+        if(!grid) return;
         const cards = Array.from(grid.children);
         
-        // Create a map for quick lookup
         const scoreMap = {};
         results.forEach(r => scoreMap[r.id] = r);
 
-        // Reorder the DOM nodes
         cards.sort((a, b) => {
-            // Find ID from the link usually
             const aLink = a.querySelector('a[href*="/property/"]');
             const bLink = b.querySelector('a[href*="/property/"]');
-            // If it's a fallback box (no properties), ignore
             if (!aLink || !bLink) return 0;
 
             const aId = aLink.getAttribute('href').split('/').filter(Boolean).pop();
@@ -182,7 +166,6 @@
             return bData.score - aData.score;
         });
 
-        // Update UI with scores and append back to grid
         grid.innerHTML = '';
         cards.forEach(card => {
             const link = card.querySelector('a[href*="/property/"]');
@@ -191,19 +174,20 @@
             const id = link.getAttribute('href').split('/').filter(Boolean).pop();
             const data = scoreMap[id];
             
-            // Add/Update score badge
             let scoreBadge = card.querySelector('.smart-score-badge');
             if (!scoreBadge) {
-                const container = card.querySelector('.relative.h-56');
-                scoreBadge = document.createElement('div');
-                scoreBadge.className = 'smart-score-badge absolute top-4 left-1/2 -translate-x-1/2 bg-blue-600/90 text-white px-3 py-1.5 rounded-full text-xs font-black shadow-xl border-2 border-white/20 backdrop-blur-md animate-toast-in z-20 flex items-center gap-1.5';
-                container.appendChild(scoreBadge);
+                const container = card.querySelector('.image-container');
+                if(container) {
+                    scoreBadge = document.createElement('div');
+                    scoreBadge.className = 'smart-score-badge absolute top-4 left-1/2 -translate-x-1/2 bg-blue-600/90 text-white px-3 py-1.5 rounded-full text-xs font-black shadow-xl border-2 border-white/20 backdrop-blur-md animate-toast-in z-20 flex items-center gap-1.5';
+                    container.appendChild(scoreBadge);
+                }
             }
             
-            if (data) {
+            if (data && scoreBadge) {
                 scoreBadge.innerHTML = `<i class="fas fa-star text-yellow-300"></i> ${data.score}% Match <span class="bg-black/20 px-1.5 py-0.5 rounded text-[9px] ml-1">${data.dist_km}km</span>`;
                 scoreBadge.classList.remove('hidden');
-            } else {
+            } else if(scoreBadge) {
                 scoreBadge.classList.add('hidden');
             }
 
@@ -211,4 +195,3 @@
         });
     }
 </script>
-{% endblock %}

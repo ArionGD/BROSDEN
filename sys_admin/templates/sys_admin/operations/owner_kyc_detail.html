@@ -1,0 +1,155 @@
+{% extends "sys_admin/portal_base.html" %}
+{% load account_tags %}
+
+{% block portal_content %}
+<div class="flex items-center justify-between mb-10">
+    <div class="flex items-center gap-4">
+        <a href="{% url 'sys_admin:owner_kyc' %}" class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-900 hover:text-white transition-all no-underline">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <div>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tighter">Partner Audit: {{ kyc.full_name }}</h1>
+            <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-1">Owner Asset Sentinel — ID: #{{ kyc.pk }}</p>
+        </div>
+    </div>
+    <div class="flex items-center gap-3">
+        <span class="bg-indigo-100 text-indigo-600 text-[10px] font-black uppercase px-4 py-2 rounded-xl border border-indigo-200 shadow-sm">
+            Asset Verification Mode
+        </span>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-8">
+        <!-- Identity Dossier -->
+        <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+            <div class="px-8 py-6 bg-slate-50 border-b border-slate-100">
+                <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                    <i class="fas fa-id-card text-blue-500"></i> Partner Identity
+                </h3>
+            </div>
+            <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Full Name</p>
+                        <p class="font-bold text-slate-900">{{ kyc.full_name }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Permanent Address</p>
+                        <p class="font-bold text-slate-900 leading-relaxed">{{ kyc.permanent_address }}</p>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Contact Protocol</p>
+                        <p class="font-bold text-slate-900">{{ kyc.mobile_number }}</p>
+                        <p class="text-xs text-slate-500">{{ kyc.email_address }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Identity Tokens</p>
+                        <span class="text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                            {{ kyc.get_id_type_display }}: {{ kyc.id_number }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ownership Proof & Asset Details -->
+        <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+            <div class="px-8 py-6 bg-slate-50 border-b border-slate-100">
+                <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                    <i class="fas fa-file-invoice text-emerald-500"></i> Asset Proofs
+                </h3>
+            </div>
+            <div class="p-8 space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100">
+                        <p class="text-[9px] font-black text-emerald-600 uppercase mb-1">Property Type</p>
+                        <p class="text-sm font-black text-slate-900">{{ kyc.property_type|default:"Apartment/House" }}</p>
+                    </div>
+                    <div class="bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100">
+                        <p class="text-[9px] font-black text-emerald-600 uppercase mb-1">Reported Size</p>
+                        <p class="text-sm font-black text-slate-900">{{ kyc.property_size|default:"N/A" }}</p>
+                    </div>
+                    <div class="bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100">
+                        <p class="text-[9px] font-black text-emerald-600 uppercase mb-1">Financial Node</p>
+                        <p class="text-sm font-black text-slate-900">{{ kyc.bank_account_number|truncatechars:8 }}... ({{ kyc.bank_ifsc }})</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Asset Location Interface</p>
+                    <p class="font-bold text-slate-700 italic">"{{ kyc.property_address }}"</p>
+                </div>
+
+                {% if kyc.co_owner_name %}
+                <div class="pt-6 border-t border-slate-100">
+                    <p class="text-[10px] font-black text-slate-400 uppercase mb-2">Joint Ownership Nodes</p>
+                    <p class="text-sm font-black text-slate-900">{{ kyc.co_owner_name }} <span class="text-xs text-slate-400 font-bold ml-2">{{ kyc.co_owner_contact }}</span></p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar actions -->
+    <div class="space-y-8">
+        <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl">
+            <h3 class="text-xs font-black uppercase tracking-widest text-indigo-400 mb-8">Asset Evidence</h3>
+            
+            <div class="space-y-6">
+                <!-- Electricity Bill -->
+                <div class="group">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Ownership Proof (Util. Bill)</p>
+                    {% if kyc.ownership_proof %}
+                    <div class="relative aspect-video rounded-2xl overflow-hidden border-2 border-slate-800 group-hover:border-indigo-500 transition-all cursor-zoom-in" onclick="window.open('{{ kyc.ownership_proof.url }}')">
+                        <img src="{{ kyc.ownership_proof.url }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <i class="fas fa-external-link-alt text-2xl"></i>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="aspect-video rounded-2xl bg-slate-800 border-2 border-dashed border-slate-700 flex items-center justify-center text-slate-600">
+                        <i class="fas fa-file-circle-exclamation text-2xl"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Tax Receipt -->
+                <div class="group">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Gov Ledger Receipt (Tax)</p>
+                    {% if kyc.property_tax_receipt %}
+                    <div class="relative aspect-video rounded-2xl overflow-hidden border-2 border-slate-800 group-hover:border-emerald-500 transition-all cursor-zoom-in" onclick="window.open('{{ kyc.property_tax_receipt.url }}')">
+                        <img src="{{ kyc.property_tax_receipt.url }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <i class="fas fa-external-link-alt text-2xl"></i>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="aspect-video rounded-2xl bg-slate-800 border-2 border-dashed border-slate-700 flex items-center justify-center text-slate-600">
+                        <i class="fas fa-file-circle-exclamation text-2xl"></i>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Verdict Actions -->
+        <div class="grid grid-cols-2 gap-4">
+            <form action="{% url 'sys_admin:approve_kyc' kyc.pk %}" method="POST" class="col-span-1">
+                {% csrf_token %}
+                <button type="submit" class="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-[2rem] shadow-xl shadow-indigo-100 transition-all transform hover:-translate-y-1 active:scale-95 text-xs uppercase tracking-widest">
+                    APPROVE
+                </button>
+            </form>
+            <form action="{% url 'sys_admin:reject_kyc' kyc.pk %}" method="POST" class="col-span-1">
+                {% csrf_token %}
+                <button type="submit" class="w-full py-5 bg-slate-900 hover:bg-red-600 text-white font-black rounded-[2rem] shadow-xl shadow-slate-100 transition-all transform hover:-translate-y-1 active:scale-95 text-xs uppercase tracking-widest">
+                    REJECT
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

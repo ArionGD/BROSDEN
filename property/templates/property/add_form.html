@@ -2,209 +2,703 @@
 
 {% block portal_content %}
 <div class="max-w-4xl mx-auto pb-20">
-    <div class="mb-10">
-        <h2 class="text-3xl font-black text-slate-800 tracking-tight">{% if is_edit %}Edit Property{% else %}List a
-            Property{% endif %}</h2>
-        <p class="text-slate-500 font-medium mt-2">{% if is_edit %}Update your property details below.{% else %}Provide
-            the details below to reach potential tenants.{% endif %}</p>
+    <div class="text-center mb-10">
+        <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-50 text-blue-600 border-blue-100 rounded-3xl mb-5 shadow-sm border">
+            <i class="fas fa-city text-3xl"></i>
+        </div>
+        <h1 class="text-4xl font-black text-slate-900 tracking-tight">{% if is_edit %}Edit Property{% else %}List a Property{% endif %}</h1>
+        <p class="text-slate-500 font-medium mt-2 max-w-lg mx-auto">{% if is_edit %}Update your property details below.{% else %}Provide the details below to reach potential tenants.{% endif %}</p>
     </div>
 
-    <form method="POST" enctype="multipart/form-data" class="space-y-12">
+    <!-- Progress Indicator -->
+    <div class="flex items-center gap-3 mb-12 bg-slate-50 rounded-2xl p-4 border border-slate-100" id="progress-bar">
+        <div class="flex-1 text-center cursor-pointer" onclick="goToStep(1)">
+            <div id="step-indicator-1" class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-black mx-auto mb-1 transition-all">1</div>
+            <p id="step-text-1" class="text-[10px] font-black uppercase tracking-widest text-blue-600 transition-all">Core Info</p>
+        </div>
+        <div class="h-px flex-1 bg-slate-200"></div>
+        <div class="flex-1 text-center cursor-pointer" onclick="goToStep(2)">
+            <div id="step-indicator-2" class="w-8 h-8 bg-slate-200 text-slate-500 rounded-full flex items-center justify-center text-sm font-black mx-auto mb-1 transition-all">2</div>
+            <p id="step-text-2" class="text-[10px] font-black uppercase tracking-widest text-slate-400 transition-all">Specifics</p>
+        </div>
+        <div class="h-px flex-1 bg-slate-200"></div>
+        <div class="flex-1 text-center cursor-pointer" onclick="goToStep(3)">
+            <div id="step-indicator-3" class="w-8 h-8 bg-slate-200 text-slate-500 rounded-full flex items-center justify-center text-sm font-black mx-auto mb-1 transition-all">3</div>
+            <p id="step-text-3" class="text-[10px] font-black uppercase tracking-widest text-slate-400 transition-all">Pricing</p>
+        </div>
+        <div class="h-px flex-1 bg-slate-200"></div>
+        <div class="flex-1 text-center cursor-pointer" onclick="goToStep(4)">
+            <div id="step-indicator-4" class="w-8 h-8 bg-slate-200 text-slate-500 rounded-full flex items-center justify-center text-sm font-black mx-auto mb-1 transition-all">4</div>
+            <p id="step-text-4" class="text-[10px] font-black uppercase tracking-widest text-slate-400 transition-all">Location</p>
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-12" id="property-form">
         {% csrf_token %}
 
-        <!-- Section 1: Basic Information -->
-        <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
-            <div class="flex items-center gap-4 mb-2">
-                <div
-                    class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-black">
-                    1</div>
-                <h3 class="text-xl font-black text-slate-800">Core Information</h3>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="md:col-span-2 space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Property
-                        Title</label>
-                    {{ form.title }}
+        <!-- STEP 1: Core Property Identity -->
+        <div id="step-1" class="step-container">
+            <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center font-black shadow-inner">
+                        <i class="fas fa-fingerprint"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-slate-800">Core Property Identity</h3>
+                        <p class="text-xs text-slate-400 uppercase font-bold tracking-widest">Standard Airbnb style listing details</p>
+                    </div>
                 </div>
 
-                <div class="md:col-span-2 space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Description</label>
-                    {{ form.description }}
-                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Listing Title</label>
+                        {{ form.title }}
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1 px-1">e.g., Premium 2-Sharing PG for Students near University</p>
+                    </div>
 
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Property
-                        Type</label>
-                    {{ form.property_type }}
-                </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Property Type</label>
+                        {{ form.property_type }}
+                    </div>
 
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Area (sqft)</label>
-                    {{ form.sqft }}
-                </div>
-            </div>
-        </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Unit / Flat Number</label>
+                        {{ form.unit_number }}
+                    </div>
 
-        <!-- Section 2: Specific Details (Dynamic) -->
-        <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
-            <div class="flex items-center gap-4 mb-2">
-                <div
-                    class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-black">
-                    2</div>
-                <h3 class="text-xl font-black text-slate-800">Property Specifics</h3>
-            </div>
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Property Description</label>
+                        {{ form.description }}
+                    </div>
 
-            <!-- Apartment Fields -->
-            {% include "property/forms/apartment_fields.html" %}
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Total Capacity (Persons)</label>
+                        {{ form.total_capacity }}
+                    </div>
 
-            <!-- PG Fields -->
-            {% include "property/forms/pg_fields.html" %}
-        </div>
+                    <div class="pg-only space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Bed Count (Specific for Sharing)</label>
+                        {{ form.bed_count }}
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-1 px-1">e.g., 2 for 2-sharing room</p>
+                    </div>
 
-        <!-- Section 3: Pricing & Logistics -->
-        <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
-            <div class="flex items-center gap-4 mb-2">
-                <div
-                    class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-black">
-                    3</div>
-                <h3 class="text-xl font-black text-slate-800">Pricing & Logistics</h3>
-            </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Area (sqft)</label>
+                        {{ form.sqft }}
+                    </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Monthly Rent
-                        (₹)</label>
-                    {{ form.price }}
-                </div>
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Security Deposit
-                        (₹)</label>
-                    {{ form.security_deposit }}
-                </div>
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Available
-                        From</label>
-                    {{ form.availability_date }}
-                </div>
-                <div class="md:col-span-2 space-y-4">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Upload Property
-                        Photos</label>
-                    <div class="relative group">
-                        <span id="images-meta" data-existing-count="{{ property.images.count|default:0 }}" class="hidden"></span>
-                        <!-- Existing Images -->
-                        {% if is_edit and property.images.all %}
-                        <div class="mb-6 grid grid-cols-4 md:grid-cols-6 gap-4" id="existing-images">
-                            {% for img in property.images.all %}
-                            <div class="relative group/img aspect-square rounded-2xl overflow-hidden border-2 border-slate-100 shadow-sm transition-all hover:border-red-400" id="img-container-{{ img.pk }}">
-                                <img src="{{ img.image.url }}" class="w-full h-full object-cover">
-                                <button type="button" data-id="{{ img.pk }}" 
-                                    class="delete-existing-btn absolute inset-0 bg-red-500/80 text-white flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-all font-black text-xs uppercase tracking-widest">
-                                    <i class="fas fa-trash mr-2"></i> Delete
-                                </button>
-                            </div>
-                            {% endfor %}
+                    <!-- Apartment Specific Info (Step 1) -->
+                    <div class="apartment-only space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Furnishing Status</label>
+                        {{ form.furnishing_status }}
+                    </div>
+                    <div class="apartment-only space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Parking Type</label>
+                        {{ form.parking_type }}
+                    </div>
+                    <div class="apartment-only space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Floor / Total Floors</label>
+                        <div class="flex items-center gap-2">
+                            {{ form.floor_number }}
+                            <span class="text-slate-300">/</span>
+                            {{ form.total_floors }}
                         </div>
-                        {% endif %}
-
-                        <label for="id_images" id="upload-label"
-                            class="flex flex-col items-center justify-center w-full h-40 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-all group">
-                            <div class="flex flex-col items-center justify-center py-6">
-                                <i
-                                    class="fas fa-cloud-upload-alt text-4xl text-slate-300 group-hover:text-blue-500 transition-all mb-2"></i>
-                                <span class="text-sm font-bold text-slate-500 group-hover:text-blue-600" id="upload-hint">Click to upload multiple images</span>
-                                <span class="text-[10px] text-slate-400 uppercase font-black tracking-widest mt-1">PNG,
-                                    JPG up to 10MB (Limit: 10 Total)</span>
-                            </div>
-                            <input type="file" name="images" id="id_images" multiple accept="image/*" class="hidden">
-                        </label>
-                        <div id="image-preview" class="grid grid-cols-4 md:grid-cols-8 gap-4 mt-6"></div>
+                    </div>
+                    <div class="apartment-only space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Bedrooms (BHK)</label>
+                        {{ form.bedrooms }}
+                    </div>
+                    <div class="apartment-only space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Bathrooms</label>
+                        {{ form.bathrooms }}
+                    </div>
+                    <div class="apartment-only space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Balconies</label>
+                        {{ form.balconies }}
                     </div>
                 </div>
             </div>
+            <div class="mt-10 flex justify-end">
+                <button type="button" onclick="goToStep(2)" class="bg-blue-600 hover:bg-blue-700 text-white font-black py-4 px-10 rounded-2xl shadow-xl transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-3">
+                    Next Step <i class="fas fa-arrow-right text-sm"></i>
+                </button>
+            </div>
         </div>
 
-        <!-- Section 4: Contact & Location -->
-        <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
-            <div class="flex items-center gap-4 mb-2">
-                <div
-                    class="w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center font-black">
-                    4</div>
-                <h3 class="text-xl font-black text-slate-800">Contact & Location</h3>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Contact Name</label>
-                    {{ form.contact_name }}
-                </div>
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Contact
-                        Phone</label>
-                    {{ form.contact_phone }}
-                </div>
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">City</label>
-                    {{ form.city }}
-                </div>
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Full Address /
-                        Locality</label>
-                    {{ form.address }}
-                </div>
-
-                <!-- Geolocation -->
-                <div class="md:col-span-2 pt-6">
-                    <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden group shadow-2xl">
-                        <div
-                            class="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl transition-all group-hover:bg-blue-500/20">
+        <!-- STEP 2: Occupancy & Lifestyle -->
+        <div id="step-2" class="step-container hidden">
+            <div class="space-y-8">
+                <!-- Occupancy -->
+                <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
+                    <h3 class="text-xl font-black text-slate-800 flex items-center gap-3">
+                        <i class="fas fa-users text-indigo-500"></i> Occupancy Specifics
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="pg-only space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Room Sharing</label>
+                            {{ form.sharing_type }}
                         </div>
-                        <div class="relative flex flex-col md:flex-row items-center justify-between gap-6">
-                            <div class="flex-1">
-                                <h4 class="text-xl font-black mb-2 flex items-center gap-2">
-                                    <i class="fas fa-location-crosshairs text-blue-400"></i> Map Location
-                                </h4>
-                                <p class="text-slate-400 text-sm font-medium">Pin your property's exact location for
-                                    tenants.</p>
-                            </div>
-                            <button type="button" onclick="getLocation(event)"
-                                class="bg-white text-slate-900 px-8 py-4 rounded-2xl font-black shadow-xl hover:bg-blue-600 hover:text-white transition-all transform active:scale-95 whitespace-nowrap">
-                                Get Coordinates <i class="fas fa-bullseye ml-2"></i>
-                            </button>
+                        <div class="pg-only space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Gender Preference</label>
+                            {{ form.gender_preference }}
                         </div>
-                        <div class="grid grid-cols-2 gap-6 mt-8">
-                            <div class="space-y-2">
-                                <label
-                                    class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Latitude</label>
-                                {{ form.latitude }}
+                        <div class="space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Available From</label>
+                            {{ form.available_from }}
+                        </div>
+                    </div>
+                    <div class="bg-indigo-50/50 rounded-2xl p-6 border border-indigo-100 flex flex-wrap gap-8">
+                        <div class="flex items-center gap-3">
+                            {{ form.is_for_students }}
+                            <label class="text-sm font-black text-indigo-900 uppercase tracking-wide">For Students</label>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            {{ form.is_for_professionals }}
+                            <label class="text-sm font-black text-indigo-900 uppercase tracking-wide">For Professionals</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Amenities and Services -->
+                <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-10">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-6">
+                        <h3 class="text-xl font-black text-slate-800 flex items-center gap-3">
+                            <i class="fas fa-concierge-bell text-emerald-500"></i> Amenities & Services
+                        </h3>
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-3 py-1 rounded-lg border border-slate-100 italic">Select all that apply</span>
+                    </div>
+
+                    <!-- Type 1: Comfort & Household -->
+                    <div class="space-y-4">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1 flex items-center gap-2">
+                             Essentials & Comfort
+                        </h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                {{ form.ac_available }}
+                                <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-snowflake mr-2 text-blue-400"></i> AC Unit</span>
                             </div>
-                            <div class="space-y-2">
-                                <label
-                                    class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Longitude</label>
-                                {{ form.longitude }}
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                {{ form.has_geyser }}
+                                <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-hot-tub-person mr-2 text-orange-400"></i> Geyser</span>
+                            </div>
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                {{ form.has_wardrobe }}
+                                <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-door-closed mr-2 text-amber-400"></i> Wardrobe</span>
+                            </div>
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                {{ form.has_washing_machine }}
+                                <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-soap mr-2 text-blue-300"></i> Laundry M/c</span>
+                            </div>
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                {{ form.has_refrigerator }}
+                                <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-refrigerator mr-2 text-emerald-300"></i> Fridge</span>
+                            </div>
+                            <div class="pg-only p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                {{ form.laundry_service }}
+                                <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-tshirt mr-2 text-indigo-400"></i> Full Laundry</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Type 2: Pro & Connectivity -->
+                    <div class="space-y-4">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1 flex items-center gap-2">
+                             Pro Workspace & Web
+                        </h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                {{ form.wifi_available }}
+                                <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-wifi mr-2 text-blue-500"></i> High-Speed WiFi</span>
+                            </div>
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                {{ form.has_study_table }}
+                                <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-table mr-2 text-indigo-400"></i> Study Table</span>
+                            </div>
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                {{ form.has_workspace_desk }}
+                                <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-desktop mr-2 text-blue-600"></i> Pro Desk</span>
+                            </div>
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                {{ form.has_ergonomic_chair }}
+                                <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-chair mr-2 text-indigo-500"></i> Ergo Chair</span>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50/30 p-4 rounded-2xl flex items-center gap-4 border border-blue-50">
+                            <label class="text-[10px] font-black uppercase text-slate-400 flex items-center gap-2 min-w-max">
+                                <i class="fas fa-tachometer-alt"></i> Declared Spd (Mbps):
+                            </label>
+                            {{ form.wifi_speed }}
+                        </div>
+                    </div>
+
+                    <!-- Type 3: Kitchen & Food -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-4 overflow-hidden">
+                            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">Kitchen Essentials</h4>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                    {{ form.has_stove }}
+                                    <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-fire-burner mr-2 text-red-400"></i> Gas Stove</span>
+                                </div>
+                                <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                    {{ form.has_induction_plate }}
+                                    <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-bolt mr-2 text-yellow-500"></i> Induction</span>
+                                </div>
+                                <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                    {{ form.has_microwave }}
+                                    <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-box mr-2 text-slate-400"></i> Microwave</span>
+                                </div>
+                                <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center gap-3 hover:border-blue-200 transition-all">
+                                    {{ form.has_coffee_maker }}
+                                    <span class="text-[11px] font-black uppercase text-slate-600"><i class="fas fa-coffee mr-2 text-amber-600"></i> Coffee/Tea</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pg-only transition-all">
+                            <div class="bg-orange-50/50 border border-orange-100 rounded-[2rem] p-6 space-y-4 h-full flex flex-col justify-center">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center text-xs">
+                                        <i class="fas fa-utensils"></i>
+                                    </div>
+                                    <h4 class="font-black text-orange-800 uppercase tracking-widest text-[10px]">Mess & Food Facility</h4>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    {{ form.food_provided }}
+                                    <label class="text-xs font-black text-orange-900 uppercase">Meal Service Included?</label>
+                                </div>
+                                <div class="flex flex-wrap gap-4 pt-2">
+                                    <label class="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase">{{ form.provides_breakfast }} Breaky</label>
+                                    <label class="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase">{{ form.provides_lunch }} Lunch</label>
+                                    <label class="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase">{{ form.provides_dinner }} Dinner</label>
+                                </div>
+                                <div class="flex items-center gap-3 pt-2">
+                                    <span class="text-[9px] font-black text-orange-400 uppercase">VIBE</span>
+                                    {{ form.diet_type }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Type 4: Wide Safety & Security -->
+                    <div class="bg-blue-50/50 border border-blue-100 rounded-[2.5rem] p-8 space-y-8">
+                        <div class="flex items-center justify-between border-b border-blue-100/50 pb-4">
+                            <h4 class="font-black text-blue-800 uppercase tracking-[0.2em] text-xs flex items-center gap-3">
+                                <i class="fas fa-shield-halved text-blue-500"></i> Security & Emergency Response Essentials
+                            </h4>
+                            <span class="bg-blue-500/10 text-blue-600 text-[9px] font-black px-3 py-1 rounded-full uppercase">Safety First</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <!-- Digital Vigilance -->
+                            <div class="space-y-4">
+                                <span class="text-[9px] font-black text-blue-400 uppercase tracking-widest block">Digital Vigilance</span>
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-3 p-3 bg-white/50 rounded-xl border border-blue-50 hover:border-blue-300 transition-all">
+                                        {{ form.has_cctv }}
+                                        <label class="text-[11px] font-bold text-slate-700 uppercase">Live CCTV Coverage</label>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-3 bg-white/50 rounded-xl border border-blue-50 hover:border-blue-300 transition-all">
+                                        {{ form.has_biometric }}
+                                        <label class="text-[11px] font-bold text-slate-700 uppercase">Biometric Entry</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- On-Ground Presence -->
+                            <div class="space-y-4 border-l border-blue-100/50 pl-8">
+                                <span class="text-[9px] font-black text-blue-400 uppercase tracking-widest block">On-Ground Support</span>
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-3 p-3 bg-white/50 rounded-xl border border-blue-50 hover:border-blue-300 transition-all">
+                                        {{ form.has_security_guard }}
+                                        <label class="text-[11px] font-bold text-slate-700 uppercase">24/7 Professional Guard</label>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-3 bg-white/50 rounded-xl border border-blue-50 hover:border-blue-300 transition-all">
+                                        {{ form.has_first_aid_kit }}
+                                        <label class="text-[11px] font-bold text-slate-700 uppercase">Med-Kit on Premises</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Emergency Protocols -->
+                            <div class="space-y-4 border-l border-blue-100/50 pl-8">
+                                <span class="text-[9px] font-black text-red-400 uppercase tracking-widest block font-black">Fire & Crisis Risk</span>
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-3 p-3 bg-red-500/5 rounded-xl border border-red-100 hover:border-red-300 transition-all">
+                                        {{ form.has_smoke_alarm }}
+                                        <label class="text-[11px] font-bold text-red-900 uppercase">Smoke / Gas Detection</label>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-3 bg-red-500/5 rounded-xl border border-red-100 hover:border-red-300 transition-all">
+                                        {{ form.has_fire_extinguisher }}
+                                        <label class="text-[11px] font-bold text-red-900 uppercase">Fire Extinguisher</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/80 p-4 rounded-2xl border border-blue-100 flex items-center gap-4 flex-col sm:flex-row">
+                            <div class="flex items-center gap-3 sm:border-r border-blue-50 pr-6 w-full sm:w-auto">
+                                {{ form.has_emergency_exit_plan }}
+                                <label class="text-[11px] font-black text-slate-800 uppercase min-w-max">Emergency Exit Plan Visible</label>
+                            </div>
+                            <p class="text-[9px] font-bold text-blue-400 uppercase italic">Requirement: Clear map showing exit routes must be posted in common areas or behind doors.</p>
+                        </div>
+                    </div>
+
+                    <!-- Custom Additions -->
+                    <div class="bg-emerald-50/20 border border-emerald-100 rounded-[2.5rem] p-10 flex flex-col md:flex-row gap-8 items-center">
+                        <div class="md:w-1/3">
+                            <div class="w-12 h-12 bg-emerald-500 text-white rounded-2xl flex items-center justify-center text-xl mb-4 shadow-lg shadow-emerald-200">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <h4 class="text-lg font-black text-slate-800">Custom Options</h4>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Stand out from the crowd</p>
+                        </div>
+                        <div class="flex-1 w-full space-y-3">
+                            <label class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] px-1">Describe more perks (Comma Separated)</label>
+                            {{ form.extra_amenities }}
+                            <div class="flex gap-2 flex-wrap pt-1">
+                                <span class="text-[8px] font-black px-2 py-1 bg-white border border-emerald-100 text-emerald-500 rounded-md">ROOFTOP GARDEN</span>
+                                <span class="text-[8px] font-black px-2 py-1 bg-white border border-emerald-100 text-emerald-500 rounded-md">SMART LOCKS</span>
+                                <span class="text-[8px] font-black px-2 py-1 bg-white border border-emerald-100 text-emerald-500 rounded-md">PRIVATE GYM</span>
+                                <span class="text-[8px] font-black px-2 py-1 bg-white border border-emerald-100 text-emerald-500 rounded-md">MOVIE DECK</span>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- House Rules -->
+                <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
+                    <h3 class="text-xl font-black text-slate-800 flex items-center gap-3">
+                        <i class="fas fa-book-open text-rose-500"></i> House Rules & Lifestyle
+                    </h3>
+                    <div class="pg-only grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Visitor Policy</label>
+                            {{ form.visitor_policy }}
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Curfew Time</label>
+                            {{ form.curfew_time }}
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="p-4 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between hover:bg-rose-50 hover:border-rose-100 transition-all">
+                            <span class="text-[10px] font-black uppercase text-slate-600">Smoking Allowed</span>
+                            {{ form.smoking_allowed }}
+                        </div>
+                        <div class="p-4 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between hover:bg-rose-50 hover:border-rose-100 transition-all">
+                            <span class="text-[10px] font-black uppercase text-slate-600">Alcohol Allowed</span>
+                            {{ form.alcohol_allowed }}
+                        </div>
+                        <div class="p-4 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between hover:bg-rose-50 hover:border-rose-100 transition-all">
+                            <span class="text-[10px] font-black uppercase text-slate-600">Pets Allowed</span>
+                            {{ form.pets_allowed }}
+                        </div>
+                        <div class="p-4 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between hover:bg-rose-50 hover:border-rose-100 transition-all">
+                            <span class="text-[10px] font-black uppercase text-slate-600">Non-Veg Cooking</span>
+                            {{ form.non_veg_allowed }}
+                        </div>
+                    </div>
+
+                    <div class="pt-6 space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Special House Rules / Terms</label>
+                        {{ form.extra_house_rules }}
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1 px-1">e.g., No parties, Quiet hours after 10 PM, ID required for visitors...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 flex justify-between gap-6">
+                <button type="button" onclick="goToStep(1)" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-black py-4 px-10 rounded-2xl transition-all active:scale-95 flex items-center gap-3">
+                    <i class="fas fa-arrow-left text-sm"></i> Back
+                </button>
+                <button type="button" onclick="goToStep(3)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 px-10 rounded-2xl shadow-xl transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-3">
+                    Next Step <i class="fas fa-arrow-right text-sm"></i>
+                </button>
             </div>
         </div>
 
-        <!-- Form Actions -->
-        <div class="pt-10 flex gap-6 items-center">
-            <button type="submit"
-                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-2xl shadow-blue-200 transition-all transform hover:-translate-y-1 active:scale-95 text-lg">
-                {% if is_edit %}Save Changes{% else %}Launch Property Listing{% endif %}
-                <i class="fas {% if is_edit %}fa-save{% else %}fa-rocket{% endif %} ml-2 text-sm"></i>
-            </button>
-            <a href="{% url 'property:owner_list' %}"
-                class="px-10 py-5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl font-bold transition-all text-lg">
-                Cancel
-            </a>
+        <!-- STEP 3: Financials & Media -->
+        <div id="step-3" class="step-container hidden">
+            <div class="space-y-8">
+                <!-- Financials -->
+                <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
+                    <h3 class="text-xl font-black text-slate-800 flex items-center gap-3">
+                        <i class="fas fa-indian-rupee-sign text-emerald-500"></i> Financials & Legal
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Monthly Rent (₹)</label>
+                            {{ form.price }}
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Security Deposit (₹)</label>
+                            {{ form.security_deposit }}
+                        </div>
+                    </div>
+                    
+                    <div class="bg-emerald-50/50 border border-emerald-100 rounded-[2rem] p-8 space-y-6">
+                        <h4 class="font-black text-emerald-800 uppercase tracking-widest text-[10px]"><i class="fas fa-file-invoice mr-2"></i> Utility Inclusion Checklist</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <label class="flex flex-col gap-2 p-4 bg-white rounded-xl border border-emerald-100 hover:shadow-md transition-all">
+                                <span class="text-[9px] font-black uppercase text-emerald-600 tracking-wider">Electricity</span>
+                                <div class="flex items-center gap-2">
+                                    {{ form.electricity_included }}
+                                    <span class="text-xs font-bold text-slate-700">Included</span>
+                                </div>
+                            </label>
+                            <label class="flex flex-col gap-2 p-4 bg-white rounded-xl border border-emerald-100 hover:shadow-md transition-all">
+                                <span class="text-[9px] font-black uppercase text-emerald-600 tracking-wider">Water</span>
+                                <div class="flex items-center gap-2">
+                                    {{ form.water_included }}
+                                    <span class="text-xs font-bold text-slate-700">Included</span>
+                                </div>
+                            </label>
+                            <label class="flex flex-col gap-2 p-4 bg-white rounded-xl border border-emerald-100 hover:shadow-md transition-all">
+                                <span class="text-[9px] font-black uppercase text-emerald-600 tracking-wider">Maintenance</span>
+                                <div class="flex items-center gap-2">
+                                    {{ form.maintenance_included }}
+                                    <span class="text-xs font-bold text-slate-700">Included</span>
+                                </div>
+                            </label>
+                            <label class="flex flex-col gap-2 p-4 bg-white rounded-xl border border-emerald-100 hover:shadow-md transition-all">
+                                <span class="text-[9px] font-black uppercase text-emerald-600 tracking-wider">Wi-Fi</span>
+                                <div class="flex items-center gap-2">
+                                    {{ form.wifi_included }}
+                                    <span class="text-xs font-bold text-slate-700">Included</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Lock-in Period (Months)</label>
+                            {{ form.lock_in_period }}
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Notice Period (Days)</label>
+                            {{ form.notice_period }}
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 text-white rounded-[2rem] p-8 relative overflow-hidden group">
+                        <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl"></div>
+                        <div class="relative space-y-8">
+                            <div>
+                                <h4 class="text-lg font-black mb-1"><i class="fas fa-file-contract text-blue-400 mr-2"></i> Ownership Verification</h4>
+                                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-widest">Required for automated legal agreement</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <label class="block w-full cursor-pointer bg-white/10 hover:bg-white/20 border-2 border-dashed border-white/20 rounded-2xl p-6 text-center transition-all group/upload">
+                                    {{ form.electricity_bill }}
+                                    <i class="fas fa-bolt-lightning text-2xl text-yellow-400 mb-2 group-hover/upload:scale-110 transition-transform"></i>
+                                    <p class="text-[10px] font-black uppercase tracking-widest" id="electricity-filename">Latest Electricity Bill</p>
+                                    <p class="text-[8px] text-slate-500 uppercase mt-1">PDF / JPG / PNG</p>
+                                </label>
+
+                                <label class="block w-full cursor-pointer bg-white/10 hover:bg-white/20 border-2 border-dashed border-white/20 rounded-2xl p-6 text-center transition-all group/upload">
+                                    {{ form.property_tax_slip }}
+                                    <i class="fas fa-file-invoice-dollar text-2xl text-emerald-400 mb-2 group-hover/upload:scale-110 transition-transform"></i>
+                                    <p class="text-[10px] font-black uppercase tracking-widest" id="tax-filename">Recent Property Tax Slip</p>
+                                    <p class="text-[8px] text-slate-500 uppercase mt-1">PDF / JPG / PNG</p>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Media -->
+                <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
+                    <h3 class="text-xl font-black text-slate-800 flex items-center gap-3">
+                        <i class="fas fa-images text-indigo-500"></i> Visual Media
+                    </h3>
+                    
+                    <div class="space-y-2">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Video Tour Link (Optional)</label>
+                        {{ form.video_url }}
+                    </div>
+
+                    <div class="space-y-4 pt-4">
+                        <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Property Photos</label>
+                        <div class="relative group">
+                            <span id="images-meta" data-existing-count="{{ property.images.count|default:0 }}" class="hidden"></span>
+                            <!-- Existing Images -->
+                            {% if is_edit and property.images.all %}
+                            <div class="mb-6 grid grid-cols-4 md:grid-cols-6 gap-4" id="existing-images">
+                                {% for img in property.images.all %}
+                                <div class="relative group/img aspect-square rounded-2xl overflow-hidden border-2 border-slate-100 shadow-sm transition-all hover:border-red-400" id="img-container-{{ img.pk }}">
+                                    <img src="{{ img.image.url }}" class="w-full h-full object-cover">
+                                    <button type="button" data-id="{{ img.pk }}" 
+                                        class="delete-existing-btn absolute inset-0 bg-red-500/80 text-white flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-all font-black text-xs uppercase tracking-widest">
+                                        <i class="fas fa-trash mr-2"></i> Delete
+                                    </button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <label for="id_images" id="upload-label"
+                                class="flex flex-col items-center justify-center w-full h-40 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] cursor-pointer hover:bg-indigo-50 hover:border-indigo-300 transition-all group">
+                                <div class="flex flex-col items-center justify-center py-6">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-slate-300 group-hover:text-indigo-500 transition-all mb-2"></i>
+                                    <span class="text-sm font-bold text-slate-500 group-hover:text-indigo-600" id="upload-hint">Upload multiple images</span>
+                                    <span class="text-[10px] text-slate-400 uppercase font-black tracking-widest mt-1">Rooms, Common Areas, Building (Limit 10)</span>
+                                </div>
+                                <input type="file" name="images" id="id_images" multiple accept="image/*" class="hidden">
+                            </label>
+                            <div id="image-preview" class="grid grid-cols-4 md:grid-cols-8 gap-4 mt-6"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 flex justify-between gap-6">
+                <button type="button" onclick="goToStep(2)" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-black py-4 px-10 rounded-2xl transition-all active:scale-95 flex items-center gap-3">
+                    <i class="fas fa-arrow-left text-sm"></i> Back
+                </button>
+                <button type="button" onclick="goToStep(4)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 px-10 rounded-2xl shadow-xl transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-3">
+                    Next Step <i class="fas fa-arrow-right text-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 4: Location & Landmarks -->
+        <div id="step-4" class="step-container hidden">
+            <div class="space-y-8">
+                <div class="bg-white border border-slate-200 rounded-[2rem] p-10 shadow-sm space-y-8">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center font-black shadow-inner">
+                            <i class="fas fa-map-location-dot"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-black text-slate-800">Location & Discovery</h3>
+                            <p class="text-xs text-slate-400 uppercase font-bold tracking-widest">Help tenants discover your place</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="md:col-span-2 space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Nearby Landmarks</label>
+                            {{ form.nearby_landmarks }}
+                        </div>
+                        <div class="md:col-span-2 space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Connectivity Info</label>
+                            {{ form.connectivity_info }}
+                        </div>
+
+                        <!-- Geolocation -->
+                        <div class="md:col-span-2 pt-6">
+                            <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden group shadow-2xl">
+                                <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl transition-all group-hover:bg-blue-500/20"></div>
+                                <div class="relative flex flex-col md:flex-row items-center justify-between gap-6">
+                                    <div class="flex-1">
+                                        <h4 class="text-xl font-black mb-2 flex items-center gap-2">
+                                            <i class="fas fa-location-crosshairs text-blue-400"></i> Google Maps Pin
+                                        </h4>
+                                        <p class="text-slate-400 text-sm font-medium">Auto-fetch current location for the map.</p>
+                                    </div>
+                                    <button type="button" onclick="getLocation(event)"
+                                        class="bg-white text-slate-900 px-8 py-4 rounded-2xl font-black shadow-xl hover:bg-blue-600 hover:text-white transition-all transform active:scale-95 whitespace-nowrap">
+                                        Get Coordinates <i class="fas fa-bullseye ml-2"></i>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-2 gap-6 mt-8">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Latitude</label>
+                                        {{ form.latitude }}
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Longitude</label>
+                                        {{ form.longitude }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">City</label>
+                            {{ form.city }}
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Full Address / Locality</label>
+                            {{ form.address }}
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Contact Name</label>
+                            {{ form.contact_name }}
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Contact Phone</label>
+                            {{ form.contact_phone }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-10 flex flex-col sm:flex-row gap-6">
+                <button type="button" onclick="goToStep(3)" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-black py-4 px-10 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-3">
+                    <i class="fas fa-arrow-left text-sm"></i> Back
+                </button>
+                <button type="submit" class="flex-1 bg-slate-900 hover:bg-black text-white font-black py-5 rounded-2xl shadow-2xl shadow-slate-200 transition-all transform hover:-translate-y-1 active:scale-95 text-lg flex items-center justify-center gap-3">
+                    {% if is_edit %}Save Changes{% else %}Launch Property Listing{% endif %}
+                    <i class="fas {% if is_edit %}fa-save{% else %}fa-rocket{% endif %} text-sm"></i>
+                </button>
+            </div>
         </div>
     </form>
-</div>
+</div>    <script>
+    let currentStep = 1;
+    const totalSteps = 4;
 
-<script>
+    function goToStep(step) {
+        if (step < 1 || step > totalSteps) return;
+
+        // Validation: Before moving forward, simple check
+        if (step > currentStep) {
+            // Optional: Add field validation here if needed
+        }
+
+        // Hide all steps
+        document.querySelectorAll('.step-container').forEach(el => el.classList.add('hidden'));
+
+        // Show target step
+        document.getElementById(`step-${step}`).classList.remove('hidden');
+
+        // Update progress bar
+        for (let i = 1; i <= totalSteps; i++) {
+            const indicator = document.getElementById(`step-indicator-${i}`);
+            const text = document.getElementById(`step-text-${i}`);
+            
+            if (i < step) {
+                // Completed
+                indicator.className = "w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center text-sm font-black mx-auto mb-1 transition-all";
+                indicator.innerHTML = '<i class="fas fa-check text-xs"></i>';
+                text.className = "text-[10px] font-black uppercase tracking-widest text-emerald-600 transition-all";
+            } else if (i === step) {
+                // Current
+                let colorClass = 'blue';
+                if (i === 2) colorClass = 'indigo';
+                if (i === 3) colorClass = 'emerald';
+                if (i === 4) colorClass = 'amber';
+                
+                indicator.className = `w-8 h-8 bg-${colorClass}-600 text-white rounded-full flex items-center justify-center text-sm font-black mx-auto mb-1 transition-all shadow-lg scale-110`;
+                indicator.innerHTML = i;
+                text.className = `text-[10px] font-black uppercase tracking-widest text-${colorClass}-600 transition-all`;
+            } else {
+                // Pending
+                indicator.className = "w-8 h-8 bg-slate-200 text-slate-500 rounded-full flex items-center justify-center text-sm font-black mx-auto mb-1 transition-all";
+                indicator.innerHTML = i;
+                text.className = "text-[10px] font-black uppercase tracking-widest text-slate-400 transition-all";
+            }
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        currentStep = step;
+    }
+
     function getLocation(event) {
         const btn = event.currentTarget;
         const originalText = btn.innerHTML;
@@ -217,10 +711,10 @@
                     document.getElementById('id_latitude').value = position.coords.latitude.toFixed(6);
                     document.getElementById('id_longitude').value = position.coords.longitude.toFixed(6);
                     btn.innerHTML = 'Captured! <i class="fas fa-check-circle ml-2"></i>';
-                    btn.classList.add('bg-emerald-500', 'text-white');
+                    btn.className = 'bg-emerald-500 text-white px-8 py-4 rounded-2xl font-black shadow-xl transition-all whitespace-nowrap';
                     setTimeout(() => {
                         btn.innerHTML = originalText;
-                        btn.classList.remove('bg-emerald-500', 'text-white');
+                        btn.className = 'bg-white text-slate-900 px-8 py-4 rounded-2xl font-black shadow-xl hover:bg-blue-600 hover:text-white transition-all transform active:scale-95 whitespace-nowrap';
                         btn.disabled = false;
                     }, 3000);
                 },
@@ -239,42 +733,49 @@
 
     // Dynamic field toggling
     const typeSelect = document.getElementById('id_property_type');
-    const aptFields = document.getElementById('apartment-fields');
-    const pgFields = document.getElementById('pg-fields');
 
     function toggleFields() {
         const val = typeSelect.value;
-        if (val === 'APARTMENT') {
-            aptFields.classList.remove('hidden');
-            pgFields.classList.add('hidden');
-        } else if (val === 'PG') {
-            aptFields.classList.add('hidden');
-            pgFields.classList.remove('hidden');
+        const pgElements = document.querySelectorAll('.pg-only');
+        const aptElements = document.querySelectorAll('.apartment-only');
+
+        if (val === 'PG') {
+            pgElements.forEach(el => el.classList.remove('hidden'));
+            aptElements.forEach(el => el.classList.add('hidden'));
+        } else if (val === 'APARTMENT') {
+            pgElements.forEach(el => el.classList.add('hidden'));
+            aptElements.forEach(el => el.classList.remove('hidden'));
         } else {
-            aptFields.classList.add('hidden');
-            pgFields.classList.add('hidden');
+            pgElements.forEach(el => el.classList.add('hidden'));
+            aptElements.forEach(el => el.classList.add('hidden'));
         }
     }
 
-    typeSelect.addEventListener('change', toggleFields);    // Image Selection Accumulation logic
+    typeSelect?.addEventListener('change', toggleFields);
+
+    // Image Selection Accumulation logic
     let selectedFiles = [];
     const imageInput = document.getElementById('id_images');
     const imagePreview = document.getElementById('image-preview');
     const uploadHint = document.getElementById('upload-hint');
     const metaBox = document.getElementById('images-meta');
-    const existingCount = parseInt(metaBox.dataset.existingCount || '0');
+    const existingCount = parseInt(metaBox?.dataset.existingCount || '0');
 
     function updateInputAndHint() {
         const dt = new DataTransfer();
         selectedFiles.forEach(file => dt.items.add(file));
-        imageInput.files = dt.files;
+        if (imageInput) imageInput.files = dt.files;
         
         if (selectedFiles.length > 0) {
-            uploadHint.textContent = `${selectedFiles.length} images selected`;
-            uploadHint.classList.add('text-blue-600');
+            if (uploadHint) {
+                uploadHint.textContent = `${selectedFiles.length} images selected`;
+                uploadHint.classList.add('text-emerald-600');
+            }
         } else {
-            uploadHint.textContent = 'Click to upload multiple images';
-            uploadHint.classList.remove('text-blue-600');
+            if (uploadHint) {
+                uploadHint.textContent = 'Click to upload multiple images';
+                uploadHint.classList.remove('text-emerald-600');
+            }
         }
     }
 
@@ -288,7 +789,7 @@
         }
     };
 
-    imageInput.addEventListener('change', function () {
+    imageInput?.addEventListener('change', function () {
         const newFiles = Array.from(this.files);
         const limit = 10 - existingCount - selectedFiles.length;
         
@@ -337,7 +838,27 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        goToStep(1);
         toggleFields();
+
+        // Verification Filenames
+        document.getElementById('id_electricity_bill')?.addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name || 'Latest Electricity Bill';
+            const label = document.getElementById('electricity-filename');
+            if (label) {
+                label.textContent = fileName;
+                label.classList.add('text-yellow-400');
+            }
+        });
+
+        document.getElementById('id_property_tax_slip')?.addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name || 'Recent Property Tax Slip';
+            const label = document.getElementById('tax-filename');
+            if (label) {
+                label.textContent = fileName;
+                label.classList.add('text-emerald-400');
+            }
+        });
 
         document.querySelectorAll('.delete-existing-btn').forEach(btn => {
             btn.addEventListener('click', () => deleteExistingImage(btn.dataset.id));

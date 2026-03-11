@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Sentinel - System Admin Portal{% endblock %}
+
+{% block body_class %}no-global-scroll overscroll-none{% endblock %}
+{% block header %}{% endblock %}
+
+{% block content %}
+<div class="flex flex-col h-screen overflow-hidden bg-white">
+    <!-- Header: Full width -->
+    {% include "sys_admin/navigation/header.html" %}
+
+    <!-- Below Header: Sidebar and Main Content Container -->
+    <div class="flex-1 flex overflow-hidden relative">
+        {% include "sys_admin/navigation/sidebar.html" %}
+
+        <main id="portal-main" class="flex-1 overflow-y-auto p-10 bg-white overscroll-none portal-scroll">
+            <div class="max-w-[1600px] mx-auto">
+                {% block portal_content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        const get = id => document.getElementById(id);
+        const sb = get('sidebar'), btn = get('sidebarToggle'), ic = get('toggleIcon');
+
+        btn?.addEventListener('click', () => {
+            const c = sb.classList.toggle('w-16');
+            sb.classList.toggle('w-72', !c);
+            sb.classList.toggle('sidebar-collapsed', c);
+            ic?.classList.toggle('fa-chevron-right', c);
+            ic?.classList.toggle('fa-chevron-left', !c);
+            sb.querySelectorAll('.sidebar-text').forEach(t => t.classList.toggle('hidden', c));
+        });
+    })();
+</script>
+{% endblock %}

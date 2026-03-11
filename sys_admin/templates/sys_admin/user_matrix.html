@@ -1,0 +1,171 @@
+{% extends "sys_admin/portal_base.html" %}
+
+{% block portal_content %}
+<style>
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.4);
+        --glass-border: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Mesh Gradient Background for the page to make glass visible */
+    .matrix-workspace {
+        position: relative;
+        background: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+                    radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
+                    radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.05) 0px, transparent 50%),
+                    radial-gradient(at 0% 100%, rgba(239, 68, 68, 0.05) 0px, transparent 50%);
+        border-radius: 3rem;
+        padding: 2rem;
+    }
+
+    .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .glass-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        background: rgba(255, 255, 255, 0.55);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .card-border-b {
+        border-bottom: 5px solid var(--border-color, #e2e8f0);
+    }
+
+    .icon-container {
+        position: relative;
+        z-index: 2;
+    }
+</style>
+
+<div class="mb-10">
+    <h1 class="text-3xl font-black text-slate-900 tracking-tighter">User Matrix</h1>
+    <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-1">Growth & Identity Distribution Interface</p>
+</div>
+
+<div class="matrix-workspace">
+
+<!-- BLOCK 1: TENANT ECOSYSTEM -->
+<div class="mb-12">
+    <div class="flex items-center gap-3 mb-6">
+        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+            <i class="fas fa-user-graduate text-sm"></i>
+        </div>
+        <h2 class="text-xl font-black text-slate-800 tracking-tight">Tenant Ecosystem</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Card 1: Total Tenants -->
+        <div class="glass-card card-border-b p-6 rounded-[2.5rem] shadow-sm" style="--border-color: #3b82f6;">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-blue-100">
+                    <i class="fas fa-users text-lg"></i>
+                </div>
+            </div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Tenants</p>
+            <h3 class="text-3xl font-black text-slate-900">{{ tenant_stats.total }}</h3>
+        </div>
+
+        <!-- Card 2: Active Nodes -->
+        <div class="glass-card card-border-b p-6 rounded-[2.5rem] shadow-sm" style="--border-color: #10b981;">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 bg-emerald-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-100">
+                    <i class="fas fa-network-wired text-lg"></i>
+                </div>
+            </div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Active Nodes</p>
+            <h3 class="text-3xl font-black text-slate-900">{{ tenant_stats.active }}</h3>
+        </div>
+
+        <!-- Card 3: Identity Verified -->
+        <div class="glass-card card-border-b p-6 rounded-[2.5rem] shadow-sm" style="--border-color: #0ea5e9;">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 bg-sky-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-sky-100">
+                    <i class="fas fa-user-check text-lg"></i>
+                </div>
+            </div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Identity Verified</p>
+            <h3 class="text-3xl font-black text-slate-900">{{ tenant_stats.verified }}</h3>
+        </div>
+
+        <!-- Card 4: KYC Pending -->
+        <div class="glass-card card-border-b p-6 rounded-[2.5rem] shadow-sm" style="--border-color: #f59e0b;">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 bg-amber-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-amber-100">
+                    <i class="fas fa-clock-rotate-left text-lg"></i>
+                </div>
+                <a href="{% url 'sys_admin:tenant_kyc' %}" class="text-[10px] font-black text-indigo-600 hover:text-indigo-800 uppercase tracking-widest no-underline relative z-10">Audit List</a>
+            </div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">KYC Pending</p>
+            <h3 class="text-3xl font-black text-slate-900">{{ tenant_stats.pending_kyc }}</h3>
+        </div>
+    </div>
+</div>
+
+<!-- BLOCK 2: OWNER NETWORK -->
+<div>
+    <div class="flex items-center gap-3 mb-6">
+        <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600">
+            <i class="fas fa-user-tie text-sm"></i>
+        </div>
+        <h2 class="text-xl font-black text-slate-800 tracking-tight">Owner Network</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Card 1: Total Owners -->
+        <div class="glass-card card-border-b p-6 rounded-[2.5rem] shadow-sm" style="--border-color: #ea580c;">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 bg-orange-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-orange-100">
+                    <i class="fas fa-handshake text-lg"></i>
+                </div>
+            </div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Partners</p>
+            <h3 class="text-3xl font-black text-slate-900">{{ owner_stats.total }}</h3>
+        </div>
+
+        <!-- Card 2: Active Nodes -->
+        <div class="glass-card card-border-b p-6 rounded-[2.5rem] shadow-sm" style="--border-color: #10b981;">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 bg-emerald-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-100">
+                    <i class="fas fa-plug-circle-check text-lg"></i>
+                </div>
+            </div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Active Nodes</p>
+            <h3 class="text-3xl font-black text-slate-900">{{ owner_stats.active }}</h3>
+        </div>
+
+        <!-- Card 3: Identity Verified -->
+        <div class="glass-card card-border-b p-6 rounded-[2.5rem] shadow-sm" style="--border-color: #2563eb;">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-blue-100">
+                    <i class="fas fa-file-shield text-lg"></i>
+                </div>
+            </div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Identity Verified</p>
+            <h3 class="text-3xl font-black text-slate-900">{{ owner_stats.verified }}</h3>
+        </div>
+
+        <!-- Card 4: KYC Pending -->
+        <div class="glass-card card-border-b p-6 rounded-[2.5rem] shadow-sm" style="--border-color: #e11d48;">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 bg-rose-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-rose-100">
+                    <i class="fas fa-file-circle-exclamation text-lg"></i>
+                </div>
+                <a href="{% url 'sys_admin:owner_kyc' %}" class="text-[10px] font-black text-indigo-600 hover:text-indigo-800 uppercase tracking-widest no-underline relative z-10">Audit List</a>
+            </div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">KYC Pending</p>
+            <h3 class="text-3xl font-black text-slate-900">{{ owner_stats.pending_kyc }}</h3>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}

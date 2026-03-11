@@ -1,0 +1,92 @@
+<aside id="sidebar"
+    class="w-72 h-full bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 transition-all duration-300 relative overflow-hidden group/sidebar">
+    <div class="py-6 overflow-y-auto overflow-x-hidden flex-1 no-scrollbar flex flex-col px-4 transition-all duration-300 [.sidebar-collapsed_&]:px-2">
+        
+        <!-- Section: Authority -->
+        <h2 class="sidebar-text text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1 transition-all duration-200">
+            System Authority</h2>
+        
+        <nav class="space-y-1.5 mb-8">
+            <a href="{% url 'sys_admin:dashboard' %}"
+                class="flex items-center px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl font-bold transition-all shadow-sm border-l-4 border-indigo-600 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                <i class="fas fa-microchip w-6 text-center text-base group-hover/nav:scale-110 transition-transform"></i> 
+                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Core Sentinel</span>
+            </a>
+            
+            <a href="{% url 'sys_admin:user_matrix' %}"
+                class="flex items-center px-4 py-2 {% if request.resolver_match.url_name == 'user_matrix' %}bg-indigo-50 text-indigo-600 border-indigo-600{% else %}text-slate-500 hover:bg-slate-50 border-transparent hover:border-slate-300{% endif %} rounded-xl font-bold transition-all border-l-4 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                <i class="fas fa-users-gear w-6 text-center text-base text-indigo-400 group-hover/nav:scale-110 transition-transform"></i> 
+                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">User Matrix</span>
+            </a>
+
+            <a href="{% url 'property:browse' %}"
+                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                <i class="fas fa-building-shield w-6 text-center text-base text-emerald-400 group-hover/nav:scale-110 transition-transform"></i> 
+                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Property Vault</span>
+            </a>
+        </nav>
+
+        <!-- Section: Finances -->
+        <h2 class="sidebar-text text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1 transition-all duration-200">
+            Global Ledger</h2>
+        <nav class="space-y-1.5 mb-8">
+            <a href="#"
+                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                <i class="fas fa-vault w-6 text-center text-base text-amber-500 group-hover/nav:scale-110 transition-transform"></i> 
+                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Transfers</span>
+            </a>
+            <a href="#"
+                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                <i class="fas fa-scale-balanced w-6 text-center text-base text-blue-400 group-hover/nav:scale-110 transition-transform"></i> 
+                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Resolutions</span>
+            </a>
+        </nav>
+
+        <!-- Section: Operations -->
+        <h2 class="sidebar-text text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1 transition-all duration-200">
+            Operations Center</h2>
+        <nav class="space-y-1.5 mb-8">
+            <a href="{% url 'sys_admin:listing_requests' %}"
+                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-indigo-600 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                <i class="fas fa-clipboard-list w-6 text-center text-base text-blue-500 group-hover/nav:scale-110 transition-transform"></i> 
+                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Listing Requests</span>
+            </a>
+            <a href="{% url 'sys_admin:tenant_kyc' %}"
+                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-indigo-600 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                <i class="fas fa-id-card w-6 text-center text-base text-emerald-500 group-hover/nav:scale-110 transition-transform"></i> 
+                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Tenant KYC</span>
+            </a>
+            <a href="{% url 'sys_admin:owner_kyc' %}"
+                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-indigo-600 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                <i class="fas fa-user-shield w-6 text-center text-base text-amber-500 group-hover/nav:scale-110 transition-transform"></i> 
+                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Owner KYC</span>
+            </a>
+        </nav>
+
+        <!-- Section: Infrastructure -->
+        <h2 class="sidebar-text text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1 transition-all duration-200">
+            Infra Layer</h2>
+        <nav class="space-y-1.5">
+            <a href="/admin/"
+                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                <i class="fas fa-database w-6 text-center text-base text-orange-500 group-hover/nav:scale-110 transition-transform"></i> 
+                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Raw Records</span>
+            </a>
+            <a href="{% url 'accounts:logout' %}"
+                class="flex items-center px-4 py-2 text-red-500 hover:bg-red-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-red-600 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                <i class="fas fa-power-off w-6 text-center text-base group-hover/nav:scale-110 transition-transform"></i> 
+                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Sign Out</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Toggle Button -->
+    <div class="mt-auto px-4 py-5 border-t border-slate-100 overflow-hidden flex flex-col transition-all duration-300 [.sidebar-collapsed_&]:px-2">
+        <div class="mt-4">
+            <button id="sidebarToggle"
+                class="w-full h-12 bg-slate-900 hover:bg-indigo-700 text-white rounded-xl flex items-center justify-center shadow-lg shadow-slate-200 transition-all active:scale-95 group overflow-hidden border border-slate-800">
+                <i id="toggleIcon" class="fas fa-chevron-left text-base font-black transition-colors text-white"></i>
+            </button>
+        </div>
+    </div>
+</aside>
