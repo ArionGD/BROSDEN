@@ -27,7 +27,7 @@ urlpatterns = [
     path('payment/', include('payment.urls')),
     path('contract/', include('contract.urls')),
     path('chat/', include('chat.urls')),
-    path('support/', include('helpdesk.urls')),
+    path('helpdesk/', include('helpdesk.urls')),
     path('accounts/', include('accounts.urls')),
     path('notifications/', include('notifications.urls')),
     path('wishlist/', include('wishlist.urls')),
