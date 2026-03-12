@@ -181,23 +181,36 @@
         };
         new ApexCharts(document.querySelector("#occupancyChart"), occupancyOptions).render();
 
-        // 3. Funnel Chart
+        // 3. Funnel Chart (Vertical Bar Chart)
         var funnelOptions = {
-            series: [approvedCount, pendingCount, rejectedCount],
+            series: [{
+                name: 'Requests',
+                data: [approvedCount, pendingCount, rejectedCount]
+            }],
             chart: {
-                type: 'donut',
-                height: 300
+                type: 'bar',
+                height: 300,
+                toolbar: { show: false }
             },
-            labels: ['Approved', 'Pending', 'Rejected'],
-            colors: ['#10b981', '#f59e0b', '#ef4444'],
-            legend: { position: 'bottom', fontWeight: 700 },
             plotOptions: {
-                pie: {
-                    donut: { size: '75%' }
+                bar: {
+                    borderRadius: 8,
+                    columnWidth: '50%',
+                    distributed: true,
                 }
             },
-            stroke: { show: false },
-            dataLabels: { enabled: false }
+            colors: ['#10b981', '#f59e0b', '#ef4444'],
+            dataLabels: { enabled: false },
+            legend: { show: false },
+            xaxis: {
+                categories: ['Approved', 'Pending', 'Rejected'],
+                labels: { style: { colors: '#94a3b8', fontWeight: 600 } }
+            },
+            yaxis: {
+                labels: { style: { colors: '#94a3b8', fontWeight: 600 } }
+            },
+            grid: { borderColor: '#f1f5f9' },
+            tooltip: { theme: 'dark' }
         };
         new ApexCharts(document.querySelector("#funnelChart"), funnelOptions).render();
 
