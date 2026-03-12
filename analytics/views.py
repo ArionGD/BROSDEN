@@ -51,25 +51,30 @@ def owner_analytics(request):
     occupied = user_properties.filter(current_occupancy__gt=0).count()
     vacant = user_properties.filter(current_occupancy=0).count()
 
-    # Views per property
+    # Views per property (Top 5)
     views_query = PropertyView.objects.filter(property__owner=request.user).values('property__title').annotate(total_views=Count('id')).order_by('-total_views')[:5]
     views_data = list(views_query)
-    max_views = max([v['total_views'] for v in views_data]) if views_data else 1
     
-    for v in views_data:
-        v['percentage'] = (v['total_views'] / max_views * 100) if max_views > 0 else 0
+    view_labels = [v['property__title'] for v in views_data]
+    view_counts = [v['total_views'] for v in views_data]
+
+    # Mock/Demo data if empty for visual showcase
+    if not view_counts:
+        view_labels = ['Property A', 'Property B', 'Property C', 'Property D', 'Property E']
+        view_counts = [0, 0, 0, 0, 0]
 
     context = {
         'total_properties': total_properties,
         'total_requests': total_requests,
-        'approved_requests': approved_requests,
-        'pending_requests': pending_requests,
-        'rejected_requests': rejected_requests,
+        'approved_requests': approved_requests or 0,
+        'pending_requests': pending_requests or 0,
+        'rejected_requests': rejected_requests or 0,
         'actual_revenue': actual_revenue,
         'projected_revenue': projected_revenue,
         'total_rent_collected': total_rent_collected,
         'views_data': views_data,
-        'max_views': max_views,
+        'view_labels': view_labels,
+        'view_counts': view_counts,
         'income_labels': income_labels,
         'income_values': income_values,
         'occupied_count': occupied,

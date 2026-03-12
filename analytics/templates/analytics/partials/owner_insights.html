@@ -7,6 +7,8 @@
 {{ approved_requests|json_script:"approved-count" }}
 {{ pending_requests|json_script:"pending-count" }}
 {{ rejected_requests|json_script:"rejected-count" }}
+{{ view_labels|json_script:"view-labels" }}
+{{ view_counts|json_script:"view-counts" }}
 
 <div class="mb-12">
     <h2 class="text-4xl font-black text-slate-800 tracking-tight">Business Insights</h2>
@@ -82,24 +84,10 @@
         <div id="funnelChart" style="min-height: 300px;"></div>
     </div>
 
-    <!-- Chart: Property Views -->
+    <!-- Chart: Property Views (Horizontal Bar Chart) -->
     <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
         <h3 class="text-xl font-black text-slate-900 mb-8">Top Properties (by Views)</h3>
-        <div class="space-y-6">
-            {% for view in views_data %}
-            <div>
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-bold text-slate-700">{{ view.property__title }}</span>
-                    <span class="text-xs font-black bg-blue-50 text-blue-600 px-3 py-1 rounded-full">{{ view.total_views }} views</span>
-                </div>
-                <div class="w-full bg-slate-50 h-2 rounded-full overflow-hidden">
-                    <div class="bg-blue-500 h-full rounded-full view-bar" style="width: 0%" data-width="{{ view.percentage|floatformat:0 }}"></div>
-                </div>
-            </div>
-            {% empty %}
-            <p class="text-center text-slate-400 italic py-10">No view data available yet.</p>
-            {% endfor %}
-        </div>
+        <div id="viewsChart" style="min-height: 300px;"></div>
     </div>
 </div>
 
@@ -116,6 +104,8 @@
         const approvedCount = JSON.parse(document.getElementById('approved-count').textContent);
         const pendingCount = JSON.parse(document.getElementById('pending-count').textContent);
         const rejectedCount = JSON.parse(document.getElementById('rejected-count').textContent);
+        const viewLabels = JSON.parse(document.getElementById('view-labels').textContent);
+        const viewCounts = JSON.parse(document.getElementById('view-counts').textContent);
 
         // 1. Revenue Trends (Vertical Bar Chart)
         var revenueOptions = {
@@ -211,11 +201,36 @@
         };
         new ApexCharts(document.querySelector("#funnelChart"), funnelOptions).render();
 
-        // Animate Progress Bars
-        setTimeout(() => {
-            document.querySelectorAll('.view-bar').forEach(bar => {
-                bar.style.width = bar.getAttribute('data-width') + '%';
-            });
-        }, 500);
+        // 4. Property Views (Horizontal Bar Chart)
+        var viewsOptions = {
+            series: [{
+                name: 'Views',
+                data: viewCounts
+            }],
+            chart: {
+                type: 'bar',
+                height: 300,
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 6,
+                    horizontal: true,
+                    barHeight: '35%',
+                }
+            },
+            colors: ['#3b82f6'],
+            dataLabels: { enabled: false },
+            xaxis: {
+                categories: viewLabels,
+                labels: { style: { colors: '#94a3b8', fontWeight: 600 } }
+            },
+            yaxis: {
+                labels: { style: { colors: '#94a3b8', fontWeight: 600 } }
+            },
+            grid: { borderColor: '#f1f5f9' },
+            tooltip: { theme: 'dark' }
+        };
+        new ApexCharts(document.querySelector("#viewsChart"), viewsOptions).render();
     });
 </script>
