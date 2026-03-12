@@ -3,7 +3,7 @@
 {% block title %}Contract Execution Receipt | BrosDen-AV{% endblock %}
 
 {% block portal_content %}
-<div class="max-w-4xl mx-auto py-10">
+<div class="max-w-4xl mx-auto py-10" x-data>
     <div class="mb-10 flex justify-between items-end">
         <div>
             <span
@@ -12,7 +12,7 @@
             <h2 class="text-4xl font-black text-slate-900 tracking-tight mt-3">Contract Receipt</h2>
             <p class="text-slate-500 font-medium mt-1">Proof of digital contract execution and validation.</p>
         </div>
-        <button onclick="window.print()"
+        <button @click="window.print()"
             class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2">
             <i class="fas fa-print"></i> Print
         </button>

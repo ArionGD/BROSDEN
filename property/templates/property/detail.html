@@ -12,20 +12,34 @@
     </div>
 
     <!-- Main Detail Section -->
-    <div class="container mx-auto px-4 pb-20 grid grid-cols-1 lg:grid-cols-3 gap-12">
+    <div class="container mx-auto px-4 pb-20 grid grid-cols-1 lg:grid-cols-3 gap-12" x-data="{ 
+        activeTab: 'description',
+        imageUrls: [{% for img in property.images.all %}'{{ img.image.url }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        currentImageIndex: 0,
+        slideshowInterval: null,
+        initGallery() {
+            if (this.imageUrls.length > 1) {
+                this.slideshowInterval = setInterval(() => this.nextImage(), 4000);
+            }
+        },
+        changeImage(index) {
+            this.currentImageIndex = index;
+            clearInterval(this.slideshowInterval);
+            this.slideshowInterval = setInterval(() => this.nextImage(), 4000);
+        },
+        nextImage() {
+            if (this.imageUrls.length > 1) {
+                this.currentImageIndex = (this.currentImageIndex + 1) % this.imageUrls.length;
+            }
+        }
+    }" x-init="initGallery()">
         <!-- Left: Images & Info -->
         <div class="lg:col-span-2 space-y-12">
             <!-- Main Image Gallery -->
             {% if property.images.all %}
             <div class="relative group rounded-[3rem] overflow-hidden shadow-2xl">
-                <div id="main-image-container" class="w-full aspect-video bg-slate-100 relative flex items-center justify-center">
-                    <img id="active-image" src="{{ property.images.first.image.url }}" class="w-full h-full object-cover transition-opacity duration-500 ease-in-out">
-                    
-                    <div class="hidden" id="image-urls">
-                        {% for img in property.images.all %}
-                        <span data-url="{{ img.image.url }}"></span>
-                        {% endfor %}
-                    </div>
+                <div class="w-full aspect-video bg-slate-100 relative flex items-center justify-center">
+                    <img :src="imageUrls[currentImageIndex]" class="w-full h-full object-cover transition-opacity duration-500 ease-in-out">
                     
                     <div class="absolute top-8 left-8 flex gap-3 z-10">
                         {% if property.is_verified %}
@@ -35,10 +49,12 @@
                     </div>
 
                     <!-- Gallery Navigation Dots -->
-                    <div id="gallery-dots" class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10 bg-black/20 p-2 rounded-full backdrop-blur-sm">
-                        {% for img in property.images.all %}
-                        <button data-index="{{ forloop.counter0 }}" class="gallery-dot-btn w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white transition-all cursor-pointer {% if forloop.first %}bg-white w-8 shadow-md{% endif %}"></button>
-                        {% endfor %}
+                    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10 bg-black/20 p-2 rounded-full backdrop-blur-sm">
+                        <template x-for="(url, index) in imageUrls" :key="index">
+                            <button @click="changeImage(index)" 
+                                :class="index === currentImageIndex ? 'bg-white w-8 shadow-md' : 'bg-white/50'"
+                                class="w-2.5 h-2.5 rounded-full hover:bg-white transition-all cursor-pointer"></button>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -122,24 +138,26 @@
             <!-- Tab Navigation -->
             <div class="mt-12 border-b border-slate-200">
                 <nav class="flex space-x-8" aria-label="Tabs">
-                    <button onclick="switchTab('description')" id="tab-description"
-                        class="tab-btn border-indigo-500 text-indigo-600 whitespace-nowrap py-4 px-1 border-b-2 font-black text-sm transition-all"
-                        aria-current="page">
+                    <button @click="activeTab = 'description'"
+                        :class="activeTab === 'description' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
+                        class="whitespace-nowrap py-4 px-1 border-b-2 font-black text-sm transition-all" aria-current="page">
                         Overview & Amenities
                     </button>
-                    <button onclick="switchTab('reviews')" id="tab-reviews"
-                        class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition-all">
+                    <button @click="activeTab = 'reviews'"
+                        :class="activeTab === 'reviews' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
+                        class="whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition-all">
                         Reviews ({{ property.reviews.count }})
                     </button>
-                    <button onclick="switchTab('feedback')" id="tab-feedback"
-                        class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition-all">
+                    <button @click="activeTab = 'feedback'"
+                        :class="activeTab === 'feedback' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
+                        class="whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition-all">
                         Live Tracking
                     </button>
                 </nav>
             </div>
 
             <!-- Tab Panels -->
-            <div id="panel-description" class="tab-panel py-8 animate-fadeIn">
+            <div x-show="activeTab === 'description'" class="py-8 animate-fadeIn">
                 <div class="space-y-12">
                     <!-- Description -->
                     <div class="prose prose-slate lg:prose-xl max-w-none">
@@ -435,7 +453,7 @@
                 </div>
             </div>
 
-            <div id="panel-reviews" class="tab-panel py-8 hidden animate-fadeIn">
+            <div x-show="activeTab === 'reviews'" class="py-8 animate-fadeIn" style="display: none;">
                 <div class="flex items-center justify-between mb-8">
                     <h3 class="text-2xl font-black text-slate-900">Tenant Reviews</h3>
                     <a href="{% url 'reviews:add_review' property.id %}"
@@ -446,7 +464,7 @@
                 </div>
             </div>
 
-            <div id="panel-feedback" class="tab-panel py-8 hidden animate-fadeIn">
+            <div x-show="activeTab === 'feedback'" class="py-8 animate-fadeIn" style="display: none;">
                 <div class="mb-8">
                     <h3 class="text-2xl font-black text-slate-900 mb-2 font-arion">Continuous Feedback Loop</h3>
                     <p
@@ -703,87 +721,11 @@
     </div>
 </div>
 
+<!-- Remaining Alpine Wrapper -->
+            <!-- We will wrap the property details in an Alpine scope if possible, but let's use x-data on specific blocks -->
+            
 <script>
-    function switchTab(tab) {
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
-        document.querySelectorAll('.tab-btn').forEach(b => {
-            b.classList.remove('border-indigo-500', 'text-indigo-600');
-            b.classList.add('border-transparent', 'text-slate-500');
-        });
-
-        document.getElementById('panel-' + tab).classList.remove('hidden');
-        const btn = document.getElementById('tab-' + tab);
-        btn.classList.add('border-indigo-500', 'text-indigo-600');
-        btn.classList.remove('border-transparent', 'text-slate-500');
-    }
-
-    const imageUrls = Array.from(document.querySelectorAll('#image-urls span')).map(s => s.dataset.url);
-    let currentImageIndex = 0;
-    let slideshowInterval;
-    const activeImage = document.getElementById('active-image');
-    
-    // Preload images for smoother transitions
-    if (imageUrls.length > 0) {
-        imageUrls.forEach(url => {
-            const img = new Image();
-            img.src = url;
-        });
-    }
-
-    function changeImage(index) {
-        if (imageUrls.length === 0) return;
-        currentImageIndex = index;
-        
-        // Brief fade effect
-        activeImage.style.opacity = '0.7';
-        setTimeout(() => {
-            activeImage.src = imageUrls[currentImageIndex];
-            activeImage.style.opacity = '1';
-        }, 150);
-        
-        const dotsContainer = document.getElementById('gallery-dots');
-        if (dotsContainer) {
-            Array.from(dotsContainer.children).forEach((d, i) => {
-                if (i === currentImageIndex) {
-                    d.classList.remove('bg-white/50');
-                    d.classList.add('bg-white', 'w-8', 'shadow-md');
-                } else {
-                    d.classList.remove('bg-white', 'w-8', 'shadow-md');
-                    d.classList.add('bg-white/50');
-                }
-            });
-        }
-    }
-
-    function changeImageManual(index) {
-        changeImage(index);
-        resetSlideshow();
-    }
-
-    function nextImage() {
-        if (imageUrls.length <= 1) return;
-        let nextIndex = (currentImageIndex + 1) % imageUrls.length;
-        changeImage(nextIndex);
-    }
-
-    function startSlideshow() {
-        if (imageUrls.length > 1) {
-            slideshowInterval = setInterval(nextImage, 4000);
-        }
-    }
-
-    function resetSlideshow() {
-        clearInterval(slideshowInterval);
-        startSlideshow();
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        startSlideshow();
-
-        // Event listeners for gallery dots
-        document.querySelectorAll('.gallery-dot-btn').forEach(btn => {
-            btn.addEventListener('click', () => changeImageManual(parseInt(btn.dataset.index)));
-        });
-    });
+    // Converted to pure Alpine below but retained if custom logic needed. 
+    // In property view, Alpine is better directly on elements.
 </script>
 {% endblock %}

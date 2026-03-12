@@ -1,65 +1,86 @@
 {% extends "tenant/portal_base.html" %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-    <div class="bg-gray-800/60 backdrop-blur-2xl border border-gray-700 rounded-3xl shadow-2xl overflow-hidden p-8">
+<div class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8" x-data="{ ratings: { maintenance: 5, responsiveness: 5, safety: 5, vibe: 5 } }">
+    <!-- Premium Glassmorphic Card -->
+    <div class="bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden">
+        
+        <!-- Header -->
+        <div class="p-10 border-b border-white/10 bg-white/5 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl"></div>
+            <h2 class="text-3xl font-black tracking-tight text-white mb-2 relative z-10 flex items-center gap-3">
+                <i class="fas fa-star text-yellow-400"></i> Monthly Review
+            </h2>
+            <p class="text-sm font-medium text-slate-400 relative z-10 max-w-xl">
+                How was your past month at <strong class="text-white">{{ feedback_request.contract.booking.property.title }}</strong>? Your continuous feedback helps us maintain premium standards.
+            </p>
+        </div>
 
-        <h2 class="text-2xl font-bold tracking-tight text-white mb-2">Monthly Feedback Request</h2>
-        <p class="text-sm text-gray-400 mb-6">How was your past month at {{
-            feedback_request.contract.booking.property.title }}? Your continuous feedback helps maintain quality
-            standards.</p>
-
-        <form method="post" class="space-y-6">
+        <form method="post" class="p-10 space-y-10">
             {% csrf_token %}
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Maintenance -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Maintenance Quality (1-5)</label>
-                    <input type="range" name="maintenance_rating" min="1" max="5" value="5"
-                        class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-                        oninput="this.nextElementSibling.value = this.value">
-                    <output class="mt-1 text-sm text-indigo-400 font-bold block text-center">5</output>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Template for Range Slider (Maintenance) -->
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/5 hover:border-indigo-500/30 transition-colors">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="text-xs font-black uppercase text-slate-300 tracking-widest flex items-center gap-2">
+                            <i class="fas fa-tools text-indigo-400"></i> Maintenance
+                        </label>
+                        <span class="text-xl font-black text-white" x-text="ratings.maintenance"></span>
+                    </div>
+                    <input type="range" name="maintenance_rating" min="1" max="5" x-model="ratings.maintenance"
+                        class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500 hover:accent-indigo-400 transition-all">
                 </div>
-                <!-- Responsiveness -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Owner Responsiveness (1-5)</label>
-                    <input type="range" name="responsiveness_rating" min="1" max="5" value="5"
-                        class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-                        oninput="this.nextElementSibling.value = this.value">
-                    <output class="mt-1 text-sm text-indigo-400 font-bold block text-center">5</output>
+
+                <!-- Template for Range Slider (Responsiveness) -->
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/5 hover:border-emerald-500/30 transition-colors">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="text-xs font-black uppercase text-slate-300 tracking-widest flex items-center gap-2">
+                            <i class="fas fa-bolt text-emerald-400"></i> Responsiveness
+                        </label>
+                        <span class="text-xl font-black text-white" x-text="ratings.responsiveness"></span>
+                    </div>
+                    <input type="range" name="responsiveness_rating" min="1" max="5" x-model="ratings.responsiveness"
+                        class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500 hover:accent-emerald-400 transition-all">
                 </div>
-                <!-- Safety -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Safety & Security (1-5)</label>
-                    <input type="range" name="safety_rating" min="1" max="5" value="5"
-                        class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-                        oninput="this.nextElementSibling.value = this.value">
-                    <output class="mt-1 text-sm text-indigo-400 font-bold block text-center">5</output>
+
+                <!-- Template for Range Slider (Safety) -->
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/5 hover:border-rose-500/30 transition-colors">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="text-xs font-black uppercase text-slate-300 tracking-widest flex items-center gap-2">
+                            <i class="fas fa-shield-halved text-rose-400"></i> Security
+                        </label>
+                        <span class="text-xl font-black text-white" x-text="ratings.safety"></span>
+                    </div>
+                    <input type="range" name="safety_rating" min="1" max="5" x-model="ratings.safety"
+                        class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-rose-500 hover:accent-rose-400 transition-all">
                 </div>
-                <!-- Vibe -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Neighborhood/Hostel Vibe (1-5)</label>
-                    <input type="range" name="vibe_rating" min="1" max="5" value="5"
-                        class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-                        oninput="this.nextElementSibling.value = this.value">
-                    <output class="mt-1 text-sm text-indigo-400 font-bold block text-center">5</output>
+
+                <!-- Template for Range Slider (Vibe) -->
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/5 hover:border-amber-500/30 transition-colors">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="text-xs font-black uppercase text-slate-300 tracking-widest flex items-center gap-2">
+                            <i class="fas fa-heart text-amber-400"></i> Overall Vibe
+                        </label>
+                        <span class="text-xl font-black text-white" x-text="ratings.vibe"></span>
+                    </div>
+                    <input type="range" name="vibe_rating" min="1" max="5" x-model="ratings.vibe"
+                        class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500 hover:accent-amber-400 transition-all">
                 </div>
             </div>
 
-            <div class="pt-4">
-                <label for="comments" class="block text-sm font-medium text-gray-300 mb-2">Any specific comments for
-                    this month? (Optional)</label>
-                <textarea name="comments" id="comments" rows="4"
-                    class="block w-full bg-gray-900 border border-gray-700 rounded-xl shadow-sm py-3 px-4 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white transition-colors"></textarea>
+            <div class="space-y-3">
+                <label for="comments" class="text-xs font-black uppercase text-slate-300 tracking-widest flex items-center gap-2 ml-4">
+                    <i class="fas fa-comment-dots text-slate-400"></i> Additional Thoughts
+                </label>
+                <textarea name="comments" id="comments" rows="4" placeholder="Tell us what you loved or what needs improvement..."
+                    class="block w-full bg-slate-900 border border-slate-700 rounded-[2rem] shadow-inner py-6 px-8 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm font-medium text-white transition-all placeholder:text-slate-600"></textarea>
             </div>
 
-            <div class="pt-6 border-t border-gray-700 flex justify-end">
-                <button type="submit"
-                    class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all hover:-translate-y-0.5">
-                    Submit Monthly Feedback
-                </button>
-            </div>
+            <button type="submit"
+                class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black text-sm uppercase tracking-widest py-6 rounded-[2rem] shadow-[0_10px_30px_rgba(79,70,229,0.3)] hover:shadow-[0_15px_40px_rgba(79,70,229,0.5)] transform hover:-translate-y-1 transition-all flex items-center justify-center gap-3 active:scale-95">
+                Submit Feedback <i class="fas fa-paper-plane"></i>
+            </button>
         </form>
     </div>
 </div>

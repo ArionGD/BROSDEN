@@ -26,7 +26,8 @@
             <a href="{% url 'notifications:list' %}" title="Notifications"
                 class="w-10 h-10 bg-slate-50 hover:bg-amber-500/10 rounded-xl flex items-center justify-center text-slate-400 hover:text-amber-500 transition-all border border-slate-100 relative">
                 <i class="fas fa-bell text-sm"></i>
-                <span id="header-notif-badge" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-white rounded-full hidden"></span>
+                <span x-show="unreadCount > 0" x-cloak
+                      class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-white rounded-full"></span>
             </a>
             <a href="{% url 'helpdesk:home' %}" title="Support"
                 class="w-10 h-10 bg-slate-50 hover:bg-arion-blue-light/10 rounded-xl flex items-center justify-center text-slate-400 hover:text-arion-blue-light transition-all border border-slate-100">
@@ -34,8 +35,8 @@
             </a>
         </div>
 
-        <div class="relative group cursor-pointer">
-            <div class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <div class="relative z-50" x-data="{ open: false }">
+            <div class="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer" @click="open = !open">
                 <div class="text-right hidden sm:block">
                     <p class="text-sm font-bold text-slate-900">{{ user.username }}</p>
                     <p class="text-[10px] text-arion-blue font-black uppercase tracking-widest">{% if user.kyc.is_verified %}Verified Tenant{% else %}Tenant{% endif %}</p>
@@ -49,11 +50,19 @@
                         <i class="fas fa-user text-base"></i>
                     {% endif %}
                 </div>
-                <i class="fas fa-chevron-down text-slate-400 text-[10px] transition-transform group-hover:rotate-180"></i>
+                <i class="fas fa-chevron-down text-slate-400 text-[10px] transition-transform" :class="open ? 'rotate-180' : ''"></i>
             </div>
             
             <!-- Dropdown Menu -->
-            <div class="absolute right-0 top-full mt-3 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 z-50 overflow-hidden">
+            <div x-show="open" @click.outside="open = false"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 scale-95 translate-y-2"
+                 class="absolute right-0 top-full mt-3 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden"
+                 x-cloak>
                 <div class="p-2">
                     <!-- My Profile -->
                     <a href="{% url 'accounts:profile' %}" class="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group/item">

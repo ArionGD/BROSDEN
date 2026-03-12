@@ -1,93 +1,111 @@
 <aside id="sidebar"
-    class="w-72 h-full bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 transition-all duration-300 relative overflow-hidden group/sidebar">
-    <div class="py-6 overflow-y-auto overflow-x-hidden flex-1 no-scrollbar flex flex-col px-4 transition-all duration-300 [.sidebar-collapsed_&]:px-2">
+    class="h-full bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 transition-all duration-300 relative overflow-hidden group/sidebar"
+    :class="sidebarCollapsed ? 'w-16' : 'w-72'">
+    <div class="py-6 overflow-y-auto overflow-x-hidden flex-1 no-scrollbar flex flex-col px-4 transition-all duration-300"
+         :class="sidebarCollapsed ? 'px-2' : 'px-4'">
         <!-- Section 1: Core -->
-        <h2 class="sidebar-text text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1 transition-all duration-200">
+        <h2 x-show="!sidebarCollapsed" x-transition:enter="transition-opacity duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            class="sidebar-text text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">
             Core Workspace</h2>
         <nav class="space-y-1.5 mb-8">
             <a href="{% url 'analytics:owner_dashboard' %}"
-                class="flex items-center px-4 py-2 bg-blue-50 text-arion-blue rounded-xl font-bold transition-all shadow-sm border-l-4 border-arion-blue group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                class="flex items-center bg-blue-50 text-arion-blue rounded-xl font-bold transition-all shadow-sm group/nav"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-arion-blue'">
                 <i class="fas fa-chart-pie w-6 text-center text-base group-hover/nav:scale-110 transition-transform"></i> 
-                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Dashboard</span>
+                <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Dashboard</span>
             </a>
             <a href="{% url 'property:owner_list' %}"
-                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
                 <i class="fas fa-city w-6 text-center text-base text-blue-500 group-hover/nav:scale-110 transition-transform"></i> 
-                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">My Properties</span>
+                <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">My Properties</span>
             </a>
             <a href="{% url 'map:explore' %}"
-                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
                 <i class="fas fa-map-location-dot w-6 text-center text-base text-blue-500 group-hover/nav:scale-110 transition-transform"></i> 
-                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Map Explore</span>
+                <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Map Explore</span>
             </a>
         </nav>
 
         <!-- Section 2: Management -->
-        <h2 class="sidebar-text text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1 transition-all duration-200">
+        <h2 x-show="!sidebarCollapsed" x-transition:enter="transition-opacity duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            class="sidebar-text text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1">
             Operations Center</h2>
         <nav class="space-y-1.5 mb-8">
             <a href="{% url 'booking:owner_bookings' %}"
-                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
                 <i class="fas fa-bell w-6 text-center text-base text-amber-500 group-hover/nav:scale-110 transition-transform"></i> 
-                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Requests</span>
+                <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Requests</span>
             </a>
             <a href="{% url 'contract:rent_dashboard' %}"
-                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
                 <i class="fas fa-hand-holding-dollar w-6 text-center text-base text-indigo-500 group-hover/nav:scale-110 transition-transform"></i> 
-                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Rent Ledger</span>
+                <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Rent Ledger</span>
             </a>
             <a href="{% url 'reviews:owner_list' %}"
-                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
                 <i class="fas fa-star w-6 text-center text-base text-amber-500 group-hover/nav:scale-110 transition-transform"></i> 
-                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Reviews</span>
+                <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Reviews</span>
             </a>
             <a href="{% url 'chat:chat_list' %}"
-                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
                 <i class="fas fa-comments w-6 text-center text-base text-arion-blue group-hover/nav:scale-110 transition-transform"></i> 
-                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Messages</span>
+                <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Messages</span>
             </a>
             <a href="{% url 'payment:history' %}"
-                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
                 <i class="fas fa-file-invoice-dollar w-6 text-center text-base text-green-500 group-hover/nav:scale-110 transition-transform"></i> 
-                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Payments</span>
+                <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Payments</span>
             </a>
             <a href="{% url 'accounts:owner_kyc' %}"
-                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
                 <i class="fas fa-shield-halved w-6 text-center text-base group-hover/nav:scale-110 transition-transform"></i> 
-                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">KYC Status</span>
+                <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">KYC Status</span>
             </a>
         </nav>
 
         <!-- High-Impact Upgrade Block -->
         <a href="{% url 'accounts:premium_landing' %}"
-            class="flex items-center px-8 h-32 bg-slate-900 text-white rounded-[2.5rem] font-black transition-all shadow-2xl hover:bg-slate-800 active:scale-95 group/pro mb-12 [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:h-24 [.sidebar-collapsed_&]:justify-center">
+            class="flex items-center bg-slate-900 text-white rounded-[2.5rem] font-black transition-all shadow-2xl hover:bg-slate-800 active:scale-95 group/pro mb-12 overflow-hidden"
+            :class="sidebarCollapsed ? 'px-2 h-24 justify-center' : 'px-8 h-32'">
             <i class="fas fa-bolt text-arion-orange text-4xl group-hover/pro:rotate-12 transition-transform drop-shadow-[0_0_15px_rgba(249,115,22,0.6)]"></i>
-            <span class="sidebar-text text-[22px] ml-6 whitespace-nowrap tracking-tighter">Upgrade to Pro</span>
+            <span x-show="!sidebarCollapsed" class="sidebar-text text-[22px] ml-6 whitespace-nowrap tracking-tighter">Upgrade to Pro</span>
         </a>
     </div>
 
-    <div class="mt-auto px-4 py-5 border-t border-slate-100 overflow-hidden flex flex-col transition-all duration-300 [.sidebar-collapsed_&]:px-2">
-        <h2 class="sidebar-text text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1 transition-all duration-200 whitespace-nowrap overflow-hidden">
+    <div class="mt-auto py-5 border-t border-slate-100 overflow-hidden flex flex-col transition-all duration-300"
+         :class="sidebarCollapsed ? 'px-2' : 'px-4'">
+        <h2 x-show="!sidebarCollapsed" class="sidebar-text text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1 whitespace-nowrap overflow-hidden">
             Account Management</h2>
             
         <div class="space-y-2">
             <a href="{% url 'accounts:account_settings' %}"
-                class="flex items-center px-4 py-2 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
                 <i class="fas fa-gear w-6 text-center text-base group-hover/nav:rotate-90 transition-transform duration-500"></i> 
-                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Settings</span>
+                <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap overflow-hidden">Settings</span>
             </a>
             <a href="{% url 'accounts:logout' %}"
-                class="flex items-center px-4 py-2 text-red-500 hover:bg-red-50 rounded-xl font-bold transition-all border-l-4 border-transparent hover:border-red-500 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                class="flex items-center text-red-500 hover:bg-red-50 rounded-xl font-bold transition-all group/nav"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-red-500'">
                 <i class="fas fa-right-from-bracket w-6 text-center text-base fa-flip-horizontal group-hover/nav:translate-x-1 transition-transform"></i> 
-                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Logout</span>
+                <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap overflow-hidden">Logout</span>
             </a>
         </div>
 
         <!-- Toggle Button -->
         <div class="mt-4">
-            <button id="sidebarToggle"
+            <button @click="sidebarCollapsed = !sidebarCollapsed"
                 class="w-full h-12 bg-slate-900 hover:bg-blue-700 text-white rounded-xl flex items-center justify-center shadow-lg shadow-slate-200 transition-all active:scale-95 group overflow-hidden border border-slate-800">
-                <i id="toggleIcon" class="fas fa-chevron-left text-base font-black transition-colors text-white"></i>
+                <i class="fas font-black transition-colors text-white"
+                   :class="sidebarCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
             </button>
         </div>
     </div>

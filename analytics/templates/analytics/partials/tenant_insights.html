@@ -27,7 +27,9 @@
             <p class="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-2">Success Rate</p>
             <h3 class="text-4xl font-black text-white">{{ success_rate }}%</h3>
             <div class="w-full bg-slate-800 h-2.5 rounded-full mt-5 overflow-hidden border border-slate-700">
-                <div id="success-rate-bar" class="bg-gradient-to-r from-emerald-600 to-emerald-400 h-full rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(16,185,129,0.3)]"></div>
+                <div id="success-rate-bar" 
+                    :style="`width: ${ {{ success_rate|floatformat:0 }} }%`" 
+                    class="bg-gradient-to-r from-emerald-600 to-emerald-400 h-full rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(16,185,129,0.3)]"></div>
             </div>
         </div>
     </div>

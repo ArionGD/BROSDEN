@@ -1,4 +1,7 @@
-<!-- Data for Charts -->
+<!-- ApexCharts Script -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<!-- Data for Charts (JSON safely injected by Django) -->
 {{ income_values|json_script:"income-values" }}
 {{ income_labels|json_script:"income-labels" }}
 {{ occupied_count|json_script:"occupied-count" }}
@@ -10,240 +13,193 @@
 {{ view_labels|json_script:"view-labels" }}
 {{ view_counts|json_script:"view-counts" }}
 
-<div class="mb-12">
+<div class="mb-12" x-data="{
+    metrics: {},
+    init() {
+        // Load metric data from scripts
+        const getVal = (id) => {
+            const el = document.getElementById(id);
+            return el ? JSON.parse(el.textContent) : null;
+        };
+
+        this.metrics = {
+            incomeValues: getVal('income-values') || [],
+            incomeLabels: getVal('income-labels') || [],
+            occupiedCount: Number(getVal('occupied-count') || 0),
+            vacantCount: Number(getVal('vacant-count') || 0),
+            totalProperties: Number(getVal('total-properties-count') || 0),
+            approvedCount: Number(getVal('approved-count') || 0),
+            pendingCount: Number(getVal('pending-count') || 0),
+            rejectedCount: Number(getVal('rejected-count') || 0),
+            viewLabels: getVal('view-labels') || [],
+            viewCounts: getVal('view-counts') || [],
+        };
+        console.log('Processed Dashboard Metrics:', this.metrics);
+    }
+}">
     <h2 class="text-4xl font-black text-slate-800 tracking-tight">Business Insights</h2>
     <p class="text-slate-500 font-medium mt-2">Quantitative overview of your real estate portfolio.</p>
-</div>
 
-<!-- Stats Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-    <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
-            <i class="fas fa-building text-xl"></i>
-        </div>
-        <p class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Total Properties</p>
-        <h3 class="text-3xl font-black text-slate-900">{{ total_properties }}</h3>
-    </div>
-
-    <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-6">
-            <i class="fas fa-paper-plane text-xl"></i>
-        </div>
-        <p class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Incoming Requests</p>
-        <h3 class="text-3xl font-black text-slate-900">{{ total_requests }}</h3>
-    </div>
-
-    <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6">
-            <i class="fas fa-hand-holding-dollar text-xl"></i>
-        </div>
-        <p class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Total Rent Collected</p>
-        <h3 class="text-3xl font-black text-slate-900">₹{{ total_rent_collected }}</h3>
-    </div>
-
-    <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-        <div class="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center mb-6">
-            <i class="fas fa-wallet text-xl"></i>
-        </div>
-        <p class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Active Revenue</p>
-        <h3 class="text-3xl font-black text-blue-600">₹{{ actual_revenue }}</h3>
-    </div>
-</div>
-
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-    <!-- Vertical Bar Chart: Revenue -->
-    <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
-        <div class="flex items-center justify-between mb-8">
-            <h3 class="text-xl font-black text-slate-900">Rental Income Trends</h3>
-            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Last 6 Months</span>
-        </div>
-        <div id="revenueChart" style="min-height: 350px;"></div>
-    </div>
-
-    <!-- 360 Degree / Radial Bar Chart: Occupancy -->
-    <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
-        <h3 class="text-xl font-black text-slate-900 mb-8">Portfolio Occupancy</h3>
-        <div id="occupancyChart" style="min-height: 350px;"></div>
-        <div class="grid grid-cols-2 gap-4 mt-8 border-t border-slate-50 pt-8">
-            <div class="text-center">
-                <p class="text-3xl font-black text-slate-900">{{ occupied_count }}</p>
-                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Occupied Units</p>
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-12">
+        <!-- Total Properties -->
+        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                <i class="fas fa-building text-xl"></i>
             </div>
-            <div class="text-center">
-                <p class="text-3xl font-black text-slate-900">{{ vacant_count }}</p>
-                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Vacant Units</p>
+            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Total Properties</p>
+            <h3 class="text-3xl font-black text-slate-900">{{ total_properties }}</h3>
+        </div>
+
+        <!-- Incoming Requests -->
+        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-6">
+                <i class="fas fa-paper-plane text-xl"></i>
             </div>
+            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Incoming Requests</p>
+            <h3 class="text-3xl font-black text-slate-900">{{ total_requests }}</h3>
+        </div>
+
+        <!-- Rent Collected -->
+        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6">
+                <i class="fas fa-hand-holding-dollar text-xl"></i>
+            </div>
+            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Total Rent Collected</p>
+            <h3 class="text-3xl font-black text-slate-900">₹{{ total_rent_collected }}</h3>
+        </div>
+
+        <!-- Active Revenue -->
+        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-6">
+                <i class="fas fa-wallet text-xl"></i>
+            </div>
+            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Active Revenue</p>
+            <h3 class="text-3xl font-black text-indigo-600">₹{{ actual_revenue }}</h3>
         </div>
     </div>
-</div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    <!-- Chart: Booking Funnel (Old Doughnut improved) -->
-    <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
-        <h3 class="text-xl font-black text-slate-900 mb-8">Booking Funnel</h3>
-        <div id="funnelChart" style="min-height: 300px;"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <!-- Revenue Trends Chart -->
+        <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between mb-8">
+                <h3 class="text-xl font-black text-slate-900">Rental Income Trends</h3>
+                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Last 6 Months</span>
+            </div>
+            <div class="min-h-[350px] w-full"
+                 x-init="$nextTick(() => {
+                    new ApexCharts($el, {
+                        series: [{ name: 'Income', data: metrics.incomeValues.length ? metrics.incomeValues : [0] }],
+                        chart: { type: 'bar', height: 350, toolbar: { show: false }, fontFamily: 'Inter, sans-serif' },
+                        plotOptions: { bar: { borderRadius: 10, columnWidth: '40%' } },
+                        colors: ['#3b82f6'],
+                        xaxis: { categories: metrics.incomeLabels.length ? metrics.incomeLabels : ['Jan'], labels: { style: { colors: '#94a3b8', fontWeight: 600 } } },
+                        yaxis: { 
+                            min: 0, 
+                            forceNiceScale: true,
+                            labels: { 
+                                style: { colors: '#94a3b8', fontWeight: 600 }, 
+                                formatter: (v) => {
+                                    if (v >= 1000) return '₹' + (v/1000).toFixed(1) + 'k';
+                                    return '₹' + Math.round(v);
+                                }
+                            } 
+                        },
+                        grid: { borderColor: '#f1f5f9', strokeDashArray: 4 },
+                        tooltip: { theme: 'dark' }
+                    }).render();
+                 })"></div>
+        </div>
+
+        <!-- Occupancy Radial Chart -->
+        <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
+            <h3 class="text-xl font-black text-slate-900 mb-8">Portfolio Occupancy</h3>
+            <div class="min-h-[350px] w-full"
+                 x-init="$nextTick(() => {
+                    new ApexCharts($el, {
+                        series: [Math.round((metrics.occupiedCount / (metrics.totalProperties || 1)) * 100) || 0],
+                        chart: { type: 'radialBar', height: 350 },
+                        plotOptions: {
+                            radialBar: {
+                                hollow: { size: '70%' },
+                                track: { background: '#f8fafc' },
+                                dataLabels: { 
+                                    name: { show: false },
+                                    value: { fontSize: '42px', fontWeight: '900', color: '#0f172a', offsetY: 15, formatter: (val) => val + '%' } 
+                                }
+                            }
+                        },
+                        fill: { type: 'gradient', gradient: { shade: 'dark', type: 'vertical', gradientToColors: ['#10b981'], stops: [0, 100] } },
+                        stroke: { lineCap: 'round' }
+                    }).render();
+                 })"></div>
+        </div>
     </div>
 
-    <!-- Chart: Property Views (Horizontal Bar Chart) -->
-    <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
-        <h3 class="text-xl font-black text-slate-900 mb-8">Top Properties (by Views)</h3>
-        <div id="viewsChart" style="min-height: 300px;"></div>
-    </div>
-</div>
-
-<!-- ApexCharts Script -->
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Fetch data from json_script tags to avoid JS linting errors in template
-        const incomeValues = JSON.parse(document.getElementById('income-values').textContent);
-        const incomeLabels = JSON.parse(document.getElementById('income-labels').textContent);
-        const occupiedCount = JSON.parse(document.getElementById('occupied-count').textContent);
-        const vacantCount = JSON.parse(document.getElementById('vacant-count').textContent);
-        const totalProperties = JSON.parse(document.getElementById('total-properties-count').textContent);
-        const approvedCount = JSON.parse(document.getElementById('approved-count').textContent);
-        const pendingCount = JSON.parse(document.getElementById('pending-count').textContent);
-        const rejectedCount = JSON.parse(document.getElementById('rejected-count').textContent);
-        const viewLabels = JSON.parse(document.getElementById('view-labels').textContent);
-        const viewCounts = JSON.parse(document.getElementById('view-counts').textContent);
-
-        // 1. Revenue Trends (Vertical Bar Chart)
-        var revenueOptions = {
-            series: [{
-                name: 'Rent Income',
-                data: incomeValues
-            }],
-            chart: {
-                type: 'bar',
-                height: 350,
-                toolbar: { show: false },
-                fontFamily: 'Inter, sans-serif'
-            },
-            plotOptions: {
-                bar: {
-                    borderRadius: 10,
-                    columnWidth: '40%',
-                    distributed: true,
-                }
-            },
-            colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'],
-            dataLabels: { enabled: false },
-            legend: { show: false },
-            xaxis: {
-                categories: incomeLabels,
-                labels: { style: { colors: '#94a3b8', fontWeight: 600 } }
-            },
-            yaxis: {
-                labels: { 
-                    style: { colors: '#94a3b8', fontWeight: 600 },
-                    formatter: (value) => '₹' + (value/1000) + 'k'
-                }
-            },
-            grid: { borderColor: '#f1f5f9' },
-            tooltip: { theme: 'dark' }
-        };
-        new ApexCharts(document.querySelector("#revenueChart"), revenueOptions).render();
-
-        // 2. Occupancy (360 Degree Radial Chart)
-        var occupancyOptions = {
-            series: [Math.round((occupiedCount / (totalProperties || 1)) * 100)],
-            chart: {
-                height: 350,
-                type: 'radialBar',
-            },
-            plotOptions: {
-                radialBar: {
-                    hollow: { size: '70%', },
-                    track: { background: '#f1f5f9' },
-                    dataLabels: {
-                        name: { show: false },
-                        value: {
-                            fontSize: '40px',
-                            fontWeight: '900',
-                            color: '#0f172a',
-                            offsetY: 15,
-                            formatter: (val) => val + '%'
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Booking Funnel Chart (Vertical Bar) -->
+        <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
+            <h3 class="text-xl font-black text-slate-900 mb-8">Booking Funnel</h3>
+            <div class="min-h-[300px] w-full"
+                 x-init="$nextTick(() => {
+                    new ApexCharts($el, {
+                        series: [{ 
+                            name: 'Count', 
+                            data: [metrics.approvedCount, metrics.pendingCount, metrics.rejectedCount] 
+                        }],
+                        chart: { type: 'bar', height: 300, toolbar: { show: false } },
+                        plotOptions: { 
+                            bar: { 
+                                borderRadius: 8, 
+                                columnWidth: '50%',
+                                distributed: true // This ensures each bar gets its own color
+                            } 
+                        },
+                        colors: ['#10b981', '#f59e0b', '#ef4444'],
+                        xaxis: { 
+                            categories: ['Approved', 'Pending', 'Rejected'],
+                            labels: { style: { colors: '#94a3b8', fontWeight: 600 } } 
+                        },
+                        yaxis: { 
+                            min: 0,
+                            forceNiceScale: true,
+                            labels: { 
+                                style: { colors: '#94a3b8', fontWeight: 600 },
+                                formatter: (v) => Math.round(v)
+                            } 
+                        },
+                        grid: { borderColor: '#f1f5f9' },
+                        dataLabels: { 
+                            enabled: true, 
+                            style: { fontWeight: 900 },
+                            formatter: (val) => Math.round(val)
                         }
-                    }
-                }
-            },
-            fill: {
-                type: 'gradient',
-                gradient: {
-                    shade: 'dark',
-                    type: 'horizontal',
-                    gradientToColors: ['#10b981'],
-                    stops: [0, 100]
-                }
-            },
-            stroke: { lineCap: 'round' },
-            labels: ['Occupancy'],
-        };
-        new ApexCharts(document.querySelector("#occupancyChart"), occupancyOptions).render();
+                    }).render();
+                 })"></div>
+        </div>
 
-        // 3. Funnel Chart (Vertical Bar Chart)
-        var funnelOptions = {
-            series: [{
-                name: 'Requests',
-                data: [approvedCount, pendingCount, rejectedCount]
-            }],
-            chart: {
-                type: 'bar',
-                height: 300,
-                toolbar: { show: false }
-            },
-            plotOptions: {
-                bar: {
-                    borderRadius: 8,
-                    columnWidth: '50%',
-                    distributed: true,
-                }
-            },
-            colors: ['#10b981', '#f59e0b', '#ef4444'],
-            dataLabels: { enabled: false },
-            legend: { show: false },
-            xaxis: {
-                categories: ['Approved', 'Pending', 'Rejected'],
-                labels: { style: { colors: '#94a3b8', fontWeight: 600 } }
-            },
-            yaxis: {
-                labels: { style: { colors: '#94a3b8', fontWeight: 600 } }
-            },
-            grid: { borderColor: '#f1f5f9' },
-            tooltip: { theme: 'dark' }
-        };
-        new ApexCharts(document.querySelector("#funnelChart"), funnelOptions).render();
-
-        // 4. Property Views (Horizontal Bar Chart)
-        var viewsOptions = {
-            series: [{
-                name: 'Views',
-                data: viewCounts
-            }],
-            chart: {
-                type: 'bar',
-                height: 300,
-                toolbar: { show: false }
-            },
-            plotOptions: {
-                bar: {
-                    borderRadius: 6,
-                    horizontal: true,
-                    barHeight: '35%',
-                }
-            },
-            colors: ['#3b82f6'],
-            dataLabels: { enabled: false },
-            xaxis: {
-                categories: viewLabels,
-                labels: { style: { colors: '#94a3b8', fontWeight: 600 } }
-            },
-            yaxis: {
-                labels: { style: { colors: '#94a3b8', fontWeight: 600 } }
-            },
-            grid: { borderColor: '#f1f5f9' },
-            tooltip: { theme: 'dark' }
-        };
-        new ApexCharts(document.querySelector("#viewsChart"), viewsOptions).render();
-    });
-</script>
+        <!-- Property Views Chart (Horizontal Bar) -->
+        <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
+            <h3 class="text-xl font-black text-slate-900 mb-8">Top Properties (by Views)</h3>
+            <div class="min-h-[300px] w-full"
+                 x-init="$nextTick(() => {
+                    new ApexCharts($el, {
+                        series: [{ name: 'Views', data: metrics.viewCounts.length ? metrics.viewCounts : [0] }],
+                        chart: { type: 'bar', height: 300, toolbar: { show: false } },
+                        plotOptions: { bar: { borderRadius: 4, horizontal: true, barHeight: '40%' } },
+                        colors: ['#6366f1'],
+                        xaxis: { 
+                            categories: metrics.viewLabels.length ? metrics.viewLabels : ['No Properties'], 
+                            labels: { 
+                                style: { colors: '#94a3b8', fontWeight: 600 },
+                                formatter: (v) => Math.round(v)
+                            },
+                            min: 0,
+                            forceNiceScale: true
+                        },
+                        grid: { borderColor: '#f1f5f9' }
+                    }).render();
+                 })"></div>
+        </div>
+    </div>
+</div>

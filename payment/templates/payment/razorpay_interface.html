@@ -7,6 +7,7 @@
     <title>Razorpay Payment Checkout</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -75,93 +76,80 @@
         {% endif %}
 
         <!-- Body -->
-        <div class="p-4 space-y-4">
-            <div
-                class="flex justify-between items-center text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50 pb-2 px-1">
+        <div class="p-4 space-y-4" x-data="{ method: 'upi' }">
+            <div class="flex justify-between items-center text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50 pb-2 px-1">
                 <span>Preferred Method</span>
                 <i class="fas fa-chevron-right text-[10px]"></i>
             </div>
 
             <!-- Methods -->
-            <div class="space-y-1" id="payment-methods">
-                <div onclick="selectMethod(this)"
-                    class="payment-method flex items-center justify-between p-4 hover:bg-slate-50 rounded-lg cursor-pointer transition-colors group">
+            <div class="space-y-2" id="payment-methods">
+                
+                <!-- Google Pay -->
+                <div @click="method = 'gpay'"
+                    :class="{'bg-blue-50/50 border border-blue-100': method === 'gpay', 'hover:bg-slate-50 border border-transparent': method !== 'gpay'}"
+                    class="payment-method flex items-center justify-between p-4 rounded-lg cursor-pointer transition-colors group">
                     <div class="flex items-center gap-4">
                         <div class="w-8 flex justify-center text-[#3395ff] text-xl">
                             <i class="fa-brands fa-google-pay"></i>
                         </div>
                         <div>
-                            <p class="text-sm font-semibold text-slate-800">Google Pay</p>
+                            <p class="text-sm transition-all" :class="{'font-bold text-slate-900': method === 'gpay', 'font-semibold text-slate-800': method !== 'gpay'}">Google Pay</p>
                             <p class="text-[10px] text-slate-400">Pay via Google Pay</p>
                         </div>
                     </div>
-                    <div class="selected-badge hidden text-[#3395ff] font-black text-xs">Selected</div>
+                    <div x-show="method === 'gpay'" class="selected-badge text-[#3395ff] font-black text-xs" style="display: none;">Selected</div>
                 </div>
 
-                <div onclick="selectMethod(this)"
-                    class="payment-method flex items-center justify-between p-4 bg-blue-50/50 border border-blue-100 rounded-lg cursor-pointer group active-method">
+                <!-- UPI -->
+                <div @click="method = 'upi'"
+                    :class="{'bg-blue-50/50 border border-blue-100': method === 'upi', 'hover:bg-slate-50 border border-transparent': method !== 'upi'}"
+                    class="payment-method flex items-center justify-between p-4 rounded-lg cursor-pointer transition-colors group">
                     <div class="flex items-center gap-4">
                         <div class="w-8 flex justify-center text-[#3395ff] text-xl">
                             <i class="fas fa-money-bill-transfer"></i>
                         </div>
                         <div>
-                            <p class="text-sm font-bold text-slate-900">UPI</p>
+                            <p class="text-sm transition-all" :class="{'font-bold text-slate-900': method === 'upi', 'font-semibold text-slate-800': method !== 'upi'}">UPI</p>
                             <p class="text-[10px] text-slate-400">PhonePe, Paytm, etc.</p>
                         </div>
                     </div>
-                    <div class="selected-badge text-[#3395ff] font-black text-xs">Selected</div>
+                    <div x-show="method === 'upi'" class="selected-badge text-[#3395ff] font-black text-xs" style="display: none;">Selected</div>
                 </div>
 
-                <div onclick="selectMethod(this)"
-                    class="payment-method flex items-center justify-between p-4 hover:bg-slate-50 rounded-lg cursor-pointer transition-colors group">
+                <!-- Card -->
+                <div @click="method = 'card'"
+                    :class="{'bg-blue-50/50 border border-blue-100': method === 'card', 'hover:bg-slate-50 border border-transparent': method !== 'card'}"
+                    class="payment-method flex items-center justify-between p-4 rounded-lg cursor-pointer transition-colors group">
                     <div class="flex items-center gap-4">
                         <div class="w-8 flex justify-center text-[#3395ff] text-xl">
                             <i class="fas fa-credit-card"></i>
                         </div>
                         <div>
-                            <p class="text-sm font-semibold text-slate-800">Card</p>
+                            <p class="text-sm transition-all" :class="{'font-bold text-slate-900': method === 'card', 'font-semibold text-slate-800': method !== 'card'}">Card</p>
                             <p class="text-[10px] text-slate-400">Visa, Mastercard, RuPay & More</p>
                         </div>
                     </div>
-                    <div class="selected-badge hidden text-[#3395ff] font-black text-xs">Selected</div>
+                    <div x-show="method === 'card'" class="selected-badge text-[#3395ff] font-black text-xs" style="display: none;">Selected</div>
                 </div>
 
-                <div onclick="selectMethod(this)"
-                    class="payment-method flex items-center justify-between p-4 hover:bg-slate-50 rounded-lg cursor-pointer transition-colors group">
+                <!-- Netbanking -->
+                <div @click="method = 'netbanking'"
+                    :class="{'bg-blue-50/50 border border-blue-100': method === 'netbanking', 'hover:bg-slate-50 border border-transparent': method !== 'netbanking'}"
+                    class="payment-method flex items-center justify-between p-4 rounded-lg cursor-pointer transition-colors group">
                     <div class="flex items-center gap-4">
                         <div class="w-8 flex justify-center text-[#3395ff] text-xl">
                             <i class="fas fa-building-columns"></i>
                         </div>
                         <div>
-                            <p class="text-sm font-semibold text-slate-800">Netbanking</p>
+                            <p class="text-sm transition-all" :class="{'font-bold text-slate-900': method === 'netbanking', 'font-semibold text-slate-800': method !== 'netbanking'}">Netbanking</p>
                             <p class="text-[10px] text-slate-400">All Indian Banks</p>
                         </div>
                     </div>
-                    <div class="selected-badge hidden text-[#3395ff] font-black text-xs">Selected</div>
+                    <div x-show="method === 'netbanking'" class="selected-badge text-[#3395ff] font-black text-xs" style="display: none;">Selected</div>
                 </div>
             </div>
         </div>
-
-        <script>
-            function selectMethod(el) {
-                // Remove active state from all
-                document.querySelectorAll('.payment-method').forEach(m => {
-                    m.classList.remove('bg-blue-50/50', 'border', 'border-blue-100', 'active-method');
-                    m.querySelector('.selected-badge').classList.add('hidden');
-                    m.querySelector('p.font-bold')?.classList.replace('font-bold', 'font-semibold');
-                    m.querySelector('p.text-slate-900')?.classList.replace('text-slate-900', 'text-slate-800');
-                });
-
-                // Add active state to clicked
-                el.classList.add('bg-blue-50/50', 'border', 'border-blue-100', 'active-method');
-                el.querySelector('.selected-badge').classList.remove('hidden');
-
-                // Update text boldness
-                const title = el.querySelector('p');
-                title.classList.replace('font-semibold', 'font-bold');
-                title.classList.replace('text-slate-800', 'text-slate-900');
-            }
-        </script>
 
         <!-- Footer Button -->
         <div class="p-4 bg-slate-50">

@@ -19,102 +19,105 @@
 </script>
 
 <script>
-    let favoredLocations = [];
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('mapApp', () => ({
+            isMapOpen: localStorage.getItem('mapExplorerOpen') === 'true',
+            isPickerOpen: false,
+            activeCardId: null,
+
+            init() {
+                this.$watch('isMapOpen', val => {
+                    localStorage.setItem('mapExplorerOpen', val);
+                    if (val) {
+                        setTimeout(() => window.dispatchEvent(new Event('resize-map')), 50);
+                    }
+                });
+            },
+            toggleMap() {
+                this.isMapOpen = !this.isMapOpen;
+            },
+            openPicker() {
+                this.isPickerOpen = true;
+                setTimeout(() => { window.dispatchEvent(new Event('init-picker-map')); }, 100);
+            },
+            closePicker() {
+                this.isPickerOpen = false;
+            },
+            highlightCard(id) {
+                this.activeCardId = id;
+            }
+        }));
+
+        Alpine.data('mapFilter', () => ({
+            showAdvanced: false,
+            showSmartMatch: false,
+            distWeight: 33,
+            costWeight: 33,
+            favoredLocations: [],
+            preset: '',
+
+            addPreset() {
+                if (this.preset) {
+                    let [coords, label] = this.preset.split('|');
+                    let [lat, lng] = coords.split(',').map(Number);
+                    this.favoredLocations.push({lat, lng, label});
+                    this.preset = '';
+                }
+            },
+            removeLocation(index) {
+                this.favoredLocations.splice(index, 1);
+            },
+            addLocation(detail) {
+                this.favoredLocations.push(detail);
+            }
+        }));
+    });
+
     let pickerMap = null;
     let pickerMarker = null;
     let selectedLatLng = null;
 
-    function renderLocations() {
-        const list = document.getElementById('target-locations-list');
-        const hint = document.getElementById('no-locations-hint');
-        const count = document.getElementById('location-count');
-        if (!list) return;
-
-        list.innerHTML = '';
-        if (favoredLocations.length === 0) {
-            hint.classList.remove('hidden');
-            list.appendChild(hint);
-            count.innerText = "0 Added";
-        } else {
-            hint.classList.add('hidden');
-            count.innerText = `${favoredLocations.length} Added`;
-            favoredLocations.forEach((loc, index) => {
-                const item = document.createElement('div');
-                item.className = 'flex items-center justify-between bg-white px-4 py-3 rounded-xl border border-slate-100 shadow-sm animate-in slide-in-from-right-2 duration-300';
-                item.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-                        <span class="text-[10px] font-black text-slate-800 uppercase tracking-tight">${loc.label}</span>
-                    </div>
-                    <button type="button" onclick="removeLocation(${index})" class="text-slate-300 hover:text-red-500 transition-colors">
-                        <i class="fas fa-trash-alt text-[10px]"></i>
-                    </button>
-                `;
-                list.appendChild(item);
-            });
-        }
-    }
-
-    function addLocation(lat, lng, label) {
-        favoredLocations.push({ lat, lng, label });
-        renderLocations();
-    }
-
-    function removeLocation(index) {
-        favoredLocations.splice(index, 1);
-        renderLocations();
-    }
-
-    function addLocationFromPreset() {
-        const select = document.getElementById('target-preset');
-        if (!select || !select.value) return;
-        
-        const option = select.options[select.selectedIndex];
-        const label = option.getAttribute('data-label');
-        const [lat, lng] = select.value.split(',').map(Number);
-        
-        addLocation(lat, lng, label);
-        select.value = ''; // Reset select
-    }
-
     // Map Picker Integration
-    function openMapPicker() {
-        const modal = document.getElementById('map-picker-modal');
-        const content = document.getElementById('map-modal-content');
-        if(!modal || !content) return;
-        modal.classList.remove('hidden');
+    window.addEventListener('init-picker-map', () => {
         setTimeout(() => {
-            content.classList.remove('scale-95', 'opacity-0', 'translate-y-4');
-            content.classList.add('scale-100', 'opacity-100', 'translate-y-0');
-        }, 10);
-
-        if (!pickerMap) {
-            pickerMap = L.map('picker-map').setView([23.0225, 72.5714], 12);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(pickerMap);
-            pickerMap.on('click', function(e) {
-                if (pickerMarker) pickerMap.removeLayer(pickerMarker);
-                pickerMarker = L.marker(e.latlng).addTo(pickerMap);
-                selectedLatLng = e.latlng;
-            });
-        } else {
-            setTimeout(() => pickerMap.invalidateSize(), 500);
-        }
-    }
-
-    function closeMapPicker() {
-        const modal = document.getElementById('map-picker-modal');
-        const content = document.getElementById('map-modal-content');
-        if(!content) return;
-        content.classList.add('scale-95', 'opacity-0', 'translate-y-4');
-        setTimeout(() => modal.classList.add('hidden'), 500);
-    }
+            if (!pickerMap) {
+                // Initialize map on first open
+                pickerMap = new maplibregl.Map({
+                    container: 'picker-map',
+                    style: 'https://tiles.openfreemap.org/styles/bright',
+                    center: [72.5714, 23.0225], // Default Ahmedabad
+                    zoom: 12
+                });
+                
+                pickerMap.on('click', function(e) {
+                    if (pickerMarker) pickerMarker.remove();
+                    
+                    const el = document.createElement('div');
+                    el.className = 'search-marker';
+                    el.innerHTML = `<div class="w-6 h-6 bg-red-500 rounded-full border-2 border-white shadow-xl flex items-center justify-center animate-bounce">
+                        <i class="fas fa-location-dot text-white text-[10px]"></i>
+                    </div>`;
+                    
+                    pickerMarker = new maplibregl.Marker({ element: el })
+                        .setLngLat(e.lngLat)
+                        .addTo(pickerMap);
+                        
+                    selectedLatLng = e.lngLat;
+                });
+            }
+            pickerMap.resize();
+        }, 100);
+    });
 
     function confirmMapLocation() {
         if (!selectedLatLng) return alert("Please select a point on the map!");
         const label = prompt("Enter a label for this location (e.g., Office, Home):", "Custom Point");
         if (label) {
-            addLocation(selectedLatLng.lat, selectedLatLng.lng, label);
-            closeMapPicker();
+            window.dispatchEvent(new CustomEvent('add-location', { 
+                detail: { lat: selectedLatLng.lat, lng: selectedLatLng.lng, label: label } 
+            }));
+            // Dispatch Alpine close event
+            window.dispatchEvent(new Event('close-picker'));
         }
     }
 
@@ -122,78 +125,40 @@
     let initialBounds = null;
     let initialFocusId = null;
 
-    function toggleMapExplorer() {
-        const block = document.getElementById('spatial-map-block');
-        const btn = document.getElementById('map-explorer-toggle');
-        if (!block || !btn) return;
-
-        block.classList.toggle('hidden');
-        
-        const isHidden = block.classList.contains('hidden');
-        if (!isHidden) {
-            // Allow the browser to paint the unhidden container before recalculating
-            setTimeout(() => {
-                if (mainMap) {
-                    mainMap.resize();
-                    
-                    // First time we show the map, we apply bounds/focus so it calculates correctly
-                    if (mapNeedsGeometryUpdate) {
-                        if (initialFocusId) {
-                            const focusProp = window.mapProperties ? window.mapProperties.find(p => p.id == initialFocusId) : null;
-                            if (focusProp) {
-                                mainMap.setCenter([focusProp.lng, focusProp.lat]);
-                                mainMap.setZoom(16);
-                            }
-                        } else if (initialBounds) {
-                            mainMap.fitBounds(initialBounds, {
-                                padding: {top: 80, bottom: 80, left: 80, right: 80},
-                                maxZoom: 15,
-                                animate: false
-                            });
-                        }
-                        mapNeedsGeometryUpdate = false;
+    window.addEventListener('resize-map', () => {
+        if (mainMap) {
+            mainMap.resize();
+            // First time we show the map, we apply bounds/focus so it calculates correctly
+            if (mapNeedsGeometryUpdate) {
+                if (initialFocusId) {
+                    const focusProp = window.mapProperties ? window.mapProperties.find(p => p.id == initialFocusId) : null;
+                    if (focusProp) {
+                        mainMap.setCenter([focusProp.lng, focusProp.lat]);
+                        mainMap.setZoom(16);
                     }
+                } else if (initialBounds) {
+                    mainMap.fitBounds(initialBounds, {
+                        padding: {top: 80, bottom: 80, left: 80, right: 80},
+                        maxZoom: 15,
+                        animate: false
+                    });
                 }
-            }, 50);
+                mapNeedsGeometryUpdate = false;
+            }
         }
+    });
+
+    async function runSmartMatch(w_dist, w_price, locs, btn) {
+        if (locs.length === 0) return alert("Please add at least one favored location!");
         
-        // Persist the state so it survives filter reloads
-        localStorage.setItem('mapExplorerOpen', !isHidden);
-    }
-
-    function toggleSmartMatch() {
-        const panel = document.getElementById('smart-match-panel');
-        if(panel) panel.classList.toggle('hidden');
-    }
-
-    function toggleAdvancedFilters() {
-        const panel = document.getElementById('advanced-filters-panel');
-        if(panel) panel.classList.toggle('hidden');
-        const icon = document.getElementById('adv-filter-icon');
-        if(icon) icon.classList.toggle('rotate-180');
-    }
-
-    function updateWeightLabels() {
-        const dist = document.getElementById('w-dist');
-        const cost = document.getElementById('w-cost');
-        if(dist) document.getElementById('w-dist-val').innerText = dist.value + '%';
-        if(cost) document.getElementById('w-cost-val').innerText = cost.value + '%';
-    }
-
-    async function runSmartMatch() {
-        if (favoredLocations.length === 0) return alert("Please add at least one favored location!");
-        
-        const btn = document.getElementById('run-match-btn');
         const originalText = btn.innerHTML;
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> CALCULATING CENTER...';
 
         // Calculate Average Centroid
-        const avgLat = favoredLocations.reduce((sum, loc) => sum + loc.lat, 0) / favoredLocations.length;
-        const avgLng = favoredLocations.reduce((sum, loc) => sum + loc.lng, 0) / favoredLocations.length;
+        const avgLat = locs.reduce((sum, loc) => sum + loc.lat, 0) / locs.length;
+        const avgLng = locs.reduce((sum, loc) => sum + loc.lng, 0) / locs.length;
 
-        const w_dist = document.getElementById('w-dist')?.value || 33;
-        const w_price = document.getElementById('w-cost')?.value || 33;
         const w_rating = 100 - (parseInt(w_dist) + parseInt(w_price));
 
         try {
@@ -214,12 +179,9 @@
     function focusOnMap(id, lat, lng) {
         if (!mainMap) return;
         
-        // Show map block and scroll to it
-        const mapBlock = document.getElementById('spatial-map-block');
-        if (mapBlock && mapBlock.classList.contains('hidden')) {
-            toggleMapExplorer();
-        }
-        mapNeedsGeometryUpdate = false; // Override since we are manually setting position now
+        // Ensure map is open using alpine event
+        window.dispatchEvent(new Event('toggle-map'));
+        mapNeedsGeometryUpdate = false;
 
         // Scroll to map — works for both portal and public pages
         setTimeout(() => {
@@ -233,10 +195,8 @@
             }
         }, 120);
 
-        // Visual feedback on card
-        document.querySelectorAll('.hybrid-card').forEach(c => c.classList.remove('active-hybrid-card'));
-        const card = document.getElementById(`hybrid-card-${id}`);
-        if(card) card.classList.add('active-hybrid-card');
+        // Visual feedback on card via Alpine
+        window.dispatchEvent(new CustomEvent('highlight-card', { detail: id }));
 
         mainMap.flyTo({
             center: [lng, lat],
@@ -384,11 +344,10 @@
 
             // Side-panel sync
             marker.getElement().addEventListener('click', () => {
+                window.dispatchEvent(new CustomEvent('highlight-card', { detail: prop.id }));
                 const card = document.getElementById(`hybrid-card-${prop.id}`);
                 if (card) {
                     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    document.querySelectorAll('.hybrid-card').forEach(c => c.classList.remove('active-hybrid-card'));
-                    card.classList.add('active-hybrid-card');
                 }
             });
 
@@ -447,14 +406,6 @@
                 }
             }
         });
-
-        // Restore map state from previous session/reload
-        if (localStorage.getItem('mapExplorerOpen') === 'true') {
-            const block = document.getElementById('spatial-map-block');
-            if (block && block.classList.contains('hidden')) {
-                toggleMapExplorer();
-            }
-        }
     });
 </script>
 

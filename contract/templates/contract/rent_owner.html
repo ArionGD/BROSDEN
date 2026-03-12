@@ -52,15 +52,7 @@
                          <span class="text-slate-900 font-black">₹{{ item.amount }}</span>
                     </td>
                     <td class="px-8 py-6">
-                        {% if item.status == 'PAID' %}
-                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-600 text-[10px] font-black uppercase tracking-tighter">
-                                Collected
-                            </span>
-                        {% else %}
-                             <span class="inline-flex items-center px-3 py-1 rounded-full bg-amber-100 text-amber-600 text-[10px] font-black uppercase tracking-tighter">
-                                Pending
-                            </span>
-                        {% endif %}
+                        {% include "contract/snippets/rent_status_badge.html" with item=item role="owner" %}
                     </td>
                     <td class="px-8 py-6 text-right">
                         {% if item.status != 'PAID' %}

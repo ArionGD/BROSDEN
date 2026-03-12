@@ -1,33 +1,95 @@
 <!-- Vibe Check Widget -->
-<div class="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-2xl mb-8" id="vibe-container"
+<div class="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-2xl mb-8"
+    x-data="{
+        loading: true,
+        error: false,
+        results: null,
+        topVibeIcon: 'fa-star',
+        topVibeColor: 'text-blue-600',
+        fetchVibe() {
+            const lat = '{{ property.latitude|default:"" }}';
+            const lng = '{{ property.longitude|default:"" }}';
+            
+            if (!lat || !lng || lat === 'None' || lng === 'None') {
+                this.error = true;
+                this.loading = false;
+                return;
+            }
+
+            fetch('{% url \'vibe:calculate_vibe\' property.id %}')
+                .then(res => res.json())
+                .then(data => {
+                    this.loading = false;
+                    if (data.success) {
+                        this.results = data;
+                        
+                        const iconMap = {
+                            'Party': 'fa-martini-glass-citrus',
+                            'Residential': 'fa-house-chimney',
+                            'Study': 'fa-book-open',
+                            'Shopping': 'fa-bag-shopping',
+                            'Neutral': 'fa-minus'
+                        };
+                        const colorMap = {
+                            'Party': 'text-fuchsia-500',
+                            'Residential': 'text-emerald-500',
+                            'Study': 'text-blue-500',
+                            'Shopping': 'text-orange-500',
+                            'Neutral': 'text-slate-400'
+                        };
+                        
+                        this.topVibeIcon = iconMap[data.top_vibe] || 'fa-star';
+                        this.topVibeColor = colorMap[data.top_vibe] || 'text-blue-600';
+                        
+                        // Small delay for bar animation to trigger
+                        setTimeout(() => {
+                            this.$refs.partyBar.style.width = data.scores.party + '%';
+                            this.$refs.residentialBar.style.width = data.scores.residential + '%';
+                            this.$refs.studyBar.style.width = data.scores.study + '%';
+                            this.$refs.shoppingBar.style.width = data.scores.shopping + '%';
+                        }, 100);
+                        
+                    } else {
+                        this.error = true;
+                    }
+                })
+                .catch(err => {
+                    this.loading = false;
+                    this.error = true;
+                    console.error('Vibe check failed:', err);
+                });
+        }
+    }"
+    x-init="fetchVibe()"
+    x-show="!(!'{{ property.latitude }}' || '{{ property.latitude }}' === 'None')"
     style="display: none;">
+    
     <h3 class="text-xl font-black text-slate-900 mb-2 flex items-center gap-2">
         <i class="fas fa-bolt text-amber-400"></i> Local Vibe Check
     </h3>
     <p class="text-sm text-slate-500 mb-6">Analyzing the 1.5km radius for the surrounding atmosphere.</p>
 
     <!-- Loading State -->
-    <div id="vibe-loading" class="flex flex-col items-center justify-center py-8">
+    <div x-show="loading" class="flex flex-col items-center justify-center py-8">
         <i class="fas fa-circle-notch fa-spin text-3xl text-blue-500 mb-3"></i>
         <p class="text-xs font-bold text-slate-400 uppercase tracking-widest animate-pulse">Scanning Location...</p>
     </div>
 
     <!-- Error State -->
-    <div id="vibe-error" class="hidden bg-red-50 text-red-600 p-4 rounded-xl text-center text-sm font-bold">
+    <div x-show="!loading && error" class="bg-red-50 text-red-600 p-4 rounded-xl text-center text-sm font-bold" style="display: none;">
         Unable to calculate vibe for this location.
     </div>
 
     <!-- Results State -->
-    <div id="vibe-results" class="hidden">
+    <div x-show="!loading && !error && results" style="display: none;">
         <!-- Top Vibe Badge -->
         <div class="mb-6 flex justify-between items-center bg-slate-50 p-4 rounded-2xl border border-slate-100">
             <div>
                 <span class="text-[10px] font-black uppercase text-slate-400 block mb-1">Dominant Vibe</span>
-                <span id="top-vibe-text" class="text-lg font-black text-slate-800">Calculating...</span>
+                <span class="text-lg font-black text-slate-800" x-text="results ? results.top_vibe : 'Calculating...'"></span>
             </div>
-            <div id="top-vibe-icon"
-                class="w-12 h-12 bg-white rounded-full shadow-md flex items-center justify-center text-xl text-blue-600">
-                <i class="fas fa-star"></i>
+            <div class="w-12 h-12 bg-white rounded-full shadow-md flex items-center justify-center text-xl" :class="topVibeColor">
+                <i class="fas" :class="topVibeIcon"></i>
             </div>
         </div>
 
@@ -38,10 +100,10 @@
                 <div class="flex justify-between items-end mb-1">
                     <span class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2"><i
                             class="fas fa-martini-glass-citrus text-fuchsia-500 w-4"></i> Party/Nightlife</span>
-                    <span id="score-party-text" class="text-xs font-black text-slate-500">0%</span>
+                    <span class="text-xs font-black text-slate-500" x-text="results ? Math.round(results.scores.party) + '%' : '0%'"></span>
                 </div>
                 <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                    <div id="score-party-bar"
+                    <div x-ref="partyBar"
                         class="bg-fuchsia-500 h-2.5 rounded-full transition-all duration-1000 ease-out"
                         style="width: 0%"></div>
                 </div>
@@ -52,10 +114,10 @@
                 <div class="flex justify-between items-end mb-1">
                     <span class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2"><i
                             class="fas fa-house-chimney text-emerald-500 w-4"></i> Residential Focus</span>
-                    <span id="score-residential-text" class="text-xs font-black text-slate-500">0%</span>
+                    <span class="text-xs font-black text-slate-500" x-text="results ? Math.round(results.scores.residential) + '%' : '0%'"></span>
                 </div>
                 <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                    <div id="score-residential-bar"
+                    <div x-ref="residentialBar"
                         class="bg-emerald-500 h-2.5 rounded-full transition-all duration-1000 ease-out"
                         style="width: 0%"></div>
                 </div>
@@ -66,10 +128,10 @@
                 <div class="flex justify-between items-end mb-1">
                     <span class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2"><i
                             class="fas fa-book-open text-blue-500 w-4"></i> Study/Academic</span>
-                    <span id="score-study-text" class="text-xs font-black text-slate-500">0%</span>
+                    <span class="text-xs font-black text-slate-500" x-text="results ? Math.round(results.scores.study) + '%' : '0%'"></span>
                 </div>
                 <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                    <div id="score-study-bar"
+                    <div x-ref="studyBar"
                         class="bg-blue-500 h-2.5 rounded-full transition-all duration-1000 ease-out" style="width: 0%">
                     </div>
                 </div>
@@ -80,10 +142,10 @@
                 <div class="flex justify-between items-end mb-1">
                     <span class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2"><i
                             class="fas fa-bag-shopping text-orange-500 w-4"></i> Shopping & Retail</span>
-                    <span id="score-shopping-text" class="text-xs font-black text-slate-500">0%</span>
+                    <span class="text-xs font-black text-slate-500" x-text="results ? Math.round(results.scores.shopping) + '%' : '0%'"></span>
                 </div>
                 <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                    <div id="score-shopping-bar"
+                    <div x-ref="shoppingBar"
                         class="bg-orange-500 h-2.5 rounded-full transition-all duration-1000 ease-out"
                         style="width: 0%"></div>
                 </div>
@@ -91,72 +153,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const lat = "{{ property.latitude|default:'' }}";
-        const lng = "{{ property.longitude|default:'' }}";
-
-        // Only load if coordinates exist
-        if (lat && lng && lat !== 'None' && lng !== 'None') {
-            document.getElementById('vibe-container').style.display = 'block';
-            document.getElementById('vibe-error').style.display = 'none';
-            document.getElementById('vibe-results').style.display = 'none';
-
-            // Fetch Vibe Data
-            fetch("{% url 'vibe:calculate_vibe' property.id %}")
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('vibe-loading').style.display = 'none';
-                    if (data.success) {
-                        document.getElementById('vibe-error').style.display = 'none';
-                        document.getElementById('vibe-results').style.display = 'block';
-
-                        // Set text scores
-                        document.getElementById('score-party-text').innerText = Math.round(data.scores.party) + '%';
-                        document.getElementById('score-residential-text').innerText = Math.round(data.scores.residential) + '%';
-                        document.getElementById('score-study-text').innerText = Math.round(data.scores.study) + '%';
-                        document.getElementById('score-shopping-text').innerText = Math.round(data.scores.shopping) + '%';
-
-                        // Animate bars (add slight delay for effect)
-                        setTimeout(() => {
-                            document.getElementById('score-party-bar').style.width = data.scores.party + '%';
-                            document.getElementById('score-residential-bar').style.width = data.scores.residential + '%';
-                            document.getElementById('score-study-bar').style.width = data.scores.study + '%';
-                            document.getElementById('score-shopping-bar').style.width = data.scores.shopping + '%';
-                        }, 100);
-
-                        // Top Vibe text and icon
-                        document.getElementById('top-vibe-text').innerText = data.top_vibe;
-                        const iconMap = {
-                            'Party': 'fa-martini-glass-citrus',
-                            'Residential': 'fa-house-chimney',
-                            'Study': 'fa-book-open',
-                            'Shopping': 'fa-bag-shopping',
-                            'Neutral': 'fa-minus'
-                        };
-                        const iconColorMap = {
-                            'Party': 'text-fuchsia-500',
-                            'Residential': 'text-emerald-500',
-                            'Study': 'text-blue-500',
-                            'Shopping': 'text-orange-500',
-                            'Neutral': 'text-slate-400'
-                        };
-                        const iClass = iconMap[data.top_vibe] || 'fa-star';
-                        const colorClass = iconColorMap[data.top_vibe] || 'text-blue-600';
-                        document.getElementById('top-vibe-icon').innerHTML = `<i class="fas ${iClass} ${colorClass}"></i>`;
-                    } else {
-                        document.getElementById('vibe-results').style.display = 'none';
-                        document.getElementById('vibe-error').style.display = 'block';
-                    }
-                })
-                .catch(err => {
-                    console.error('Vibe check failed:', err);
-                    document.getElementById('vibe-loading').style.display = 'none';
-                    document.getElementById('vibe-results').style.display = 'none';
-                    document.getElementById('vibe-error').style.display = 'block';
-                });
-        }
-
-    });
-</script>

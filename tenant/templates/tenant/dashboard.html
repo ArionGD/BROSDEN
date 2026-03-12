@@ -80,12 +80,4 @@
 
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const bar = document.getElementById('success-rate-bar');
-        if (bar) {
-            bar.style.width = "{{ success_rate|floatformat:0 }}%";
-        }
-    });
-</script>
 {% endblock %}

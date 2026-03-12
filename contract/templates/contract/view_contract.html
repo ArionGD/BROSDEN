@@ -3,14 +3,14 @@
 {% block title %}Rental Contract | BrosDen-AV{% endblock %}
 
 {% block portal_content %}
-<div class="max-w-4xl mx-auto pb-20">
+<div class="max-w-4xl mx-auto pb-20" x-data>
     <div class="mb-10 flex justify-between items-end">
         <div>
             <h2 class="text-4xl font-black text-slate-900 tracking-tight">Rental Agreement</h2>
             <p class="text-slate-500 font-medium mt-2">Legally binding digital contract generated via BrosDen-AV.</p>
         </div>
         <div class="flex gap-4">
-            <button onclick="window.print()"
+            <button @click="window.print()"
                 class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 px-6 py-3 rounded-xl font-bold transition-all shadow-sm flex items-center gap-2">
                 <i class="fas fa-print"></i> Print PDF
             </button>

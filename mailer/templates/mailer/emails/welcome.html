@@ -23,27 +23,14 @@
 
     <!-- Credential Card -->
     <div class="bg-slate-50 border border-slate-200 rounded-xl px-6 py-5 my-6">
-        <div class="flex justify-between items-center py-2 border-b border-slate-200 text-xs">
-            <span class="text-slate-500 font-semibold">Website Details</span>
-            <span class="text-slate-900 font-bold"><a href="{{ website_link }}" class="text-blue-600 no-underline">{{
-                    website_link }}</a></span>
+        <div class="flex justify-between items-center py-2 border-b border-slate-200 text-xs text-slate-500">
+            <span class="font-semibold">Website Details</span>
+            <span class="text-slate-900 font-bold"><a href="{{ website_link }}" class="text-blue-600 no-underline">{{ website_link }}</a></span>
         </div>
-        <div class="flex justify-between items-center py-2 border-b border-slate-200 text-xs">
-            <span class="text-slate-500 font-semibold">Username</span>
-            <span class="text-slate-900 font-bold">{{ user.username }}</span>
-        </div>
-        <div class="flex justify-between items-center py-2 border-b border-slate-200 text-xs">
-            <span class="text-slate-500 font-semibold">Email</span>
-            <span class="text-slate-900 font-bold">{{ user.email }}</span>
-        </div>
-        <div class="flex justify-between items-center py-2 border-b border-slate-200 text-xs">
-            <span class="text-slate-500 font-semibold">Password</span>
-            <span class="text-slate-900 font-bold">{{ password }}</span>
-        </div>
-        <div class="flex justify-between items-center py-2 text-xs">
-            <span class="text-slate-500 font-semibold">Role</span>
-            <span class="text-slate-900 font-bold">{{ user.get_role_display }}</span>
-        </div>
+        {% include "mailer/emails/snippets/info_row.html" with label="Username" value=user.username %}
+        {% include "mailer/emails/snippets/info_row.html" with label="Email" value=user.email %}
+        {% include "mailer/emails/snippets/info_row.html" with label="Password" value=password %}
+        {% include "mailer/emails/snippets/info_row.html" with label="Role" value=user.get_role_display last=True %}
     </div>
 
     <!-- CTA Area -->

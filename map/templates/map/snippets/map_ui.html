@@ -1,5 +1,10 @@
 {% comment %}Block 1: Filter strip — sticks to top of #portal-main scroll area{% endcomment %}
-<div class="w-full">
+<div class="w-full" 
+     x-data="mapApp()"
+     @toggle-map.window="toggleMap()"
+     @open-picker.window="openPicker()"
+     @close-picker.window="closePicker()"
+     @highlight-card.window="highlightCard($event.detail)">
 
     <!-- ════════════════════════════════════════════════════════
          BLOCK 1 — FILTER SUITE (Floating Island)
@@ -13,7 +18,7 @@
     <!-- ════════════════════════════════════════════════════════
          BLOCK 2 — SPATIAL MAP (toggled hidden by default)
     ════════════════════════════════════════════════════════ -->
-    <div id="spatial-map-block" class="hidden w-full px-8 pt-8">
+    <div id="spatial-map-block" class="w-full px-8 pt-8" x-show="isMapOpen" x-transition style="display: none;">
         <div class="relative bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-xl">
             <!-- Map sub-header -->
             <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
@@ -58,7 +63,8 @@
                  id="hybrid-card-{{ prop.id }}"
                  data-id="{{ prop.id }}"
                  data-lat="{{ prop.latitude|default:0 }}"
-                 data-lng="{{ prop.longitude|default:0 }}">
+                 data-lng="{{ prop.longitude|default:0 }}"
+                 :class="activeCardId == '{{ prop.id }}' ? 'active-hybrid-card' : ''">
 
                 <!-- Image -->
                 <div class="relative h-52 overflow-hidden">
@@ -140,29 +146,7 @@
     </div>
 </div>
 
-<!-- Location Picker Modal -->
-<div id="map-picker-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] hidden items-center justify-center p-4" style="display:none">
-    <div class="bg-white rounded-3xl w-full max-w-3xl overflow-hidden shadow-2xl" id="map-modal-content">
-        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-            <h3 class="text-lg font-black text-slate-900 flex items-center gap-3">
-                <i class="fas fa-location-dot text-blue-600"></i> Pin Custom Location
-            </h3>
-            <button onclick="closeMapPicker()" class="w-9 h-9 rounded-xl bg-slate-100 text-slate-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-all">
-                <i class="fas fa-xmark"></i>
-            </button>
-        </div>
-        <div id="picker-map" style="height:420px;width:100%;"></div>
-        <div class="p-5 border-t border-slate-100 flex justify-between items-center">
-            <p class="text-xs text-slate-400 font-bold"><i class="fas fa-hand-pointer mr-2 text-blue-400"></i>Click to drop a pin</p>
-            <div class="flex gap-3">
-                <button type="button" onclick="closeMapPicker()" class="px-5 py-3 text-xs font-black text-slate-400 hover:text-slate-800 uppercase tracking-widest transition-colors">Cancel</button>
-                <button type="button" onclick="confirmMapLocation()" class="px-8 py-3 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all">
-                    Set Location <i class="fas fa-chevron-right text-[9px] ml-1"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+    {% include "map/snippets/map_picker_modal.html" %}
 
 <style>
     .hybrid-card { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }

@@ -8,8 +8,22 @@ from accounts.models import User
 @login_required
 def chat_list(request):
     """List all conversations for the current user."""
-    conversations = request.user.conversations.all()
-    return render(request, 'chat/chat_list.html', {'conversations': conversations})
+    conversations = request.user.conversations.all().order_by('-updated_at')
+    
+    unread_conversations = []
+    read_conversations = []
+    
+    for convo in conversations:
+        last_msg = convo.messages.last()
+        if last_msg and not last_msg.is_read and last_msg.sender != request.user:
+            unread_conversations.append(convo)
+        else:
+            read_conversations.append(convo)
+            
+    return render(request, 'chat/chat_list.html', {
+        'unread_conversations': unread_conversations,
+        'read_conversations': read_conversations,
+    })
 
 
 @login_required

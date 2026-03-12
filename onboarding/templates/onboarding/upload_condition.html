@@ -1,44 +1,75 @@
 {% extends process.booking.property.owner.portal_base|default:"core/base.html" %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-    <div class="bg-gray-800/60 backdrop-blur-2xl border border-gray-700 rounded-3xl shadow-2xl overflow-hidden p-8">
+<div class="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8" x-data="{ imagePreview: null }">
+    <!-- Premium Glassmorphic Card -->
+    <div class="bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden relative">
+        
+        <!-- Header -->
+        <div class="p-10 border-b border-white/10 bg-white/5 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl"></div>
+            <h2 class="text-3xl font-black tracking-tight text-white mb-2 relative z-10 flex items-center gap-3">
+                <i class="fas fa-camera text-indigo-400"></i> Upload Condition Report
+            </h2>
+            <p class="text-sm font-medium text-slate-400 relative z-10">
+                Document the current state of <strong class="text-white">{{ process.booking.property.title }}</strong> to ensure a safe transition.
+            </p>
+        </div>
 
-        <h2 class="text-2xl font-bold tracking-tight text-white mb-2">Upload Condition Report</h2>
-        <p class="text-sm text-gray-400 mb-6">Document the current state of {{ process.booking.property.title }} for the
-            tenant to verify.</p>
-
-        <form method="post" enctype="multipart/form-data" class="space-y-6">
+        <form method="post" enctype="multipart/form-data" class="p-10 space-y-8">
             {% csrf_token %}
 
-            <div>
-                <label for="item_name" class="block text-sm font-medium text-gray-300">Item or Area Name</label>
+            <div class="space-y-3">
+                <label for="item_name" class="text-xs font-black uppercase tracking-widest text-slate-300 flex items-center gap-2 ml-4">
+                    <i class="fas fa-tag text-slate-400"></i> Item or Area Name
+                </label>
                 <input type="text" name="item_name" id="item_name"
-                    class="mt-1 block w-full bg-gray-900 border border-gray-700 rounded-xl shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white"
+                    class="block w-full bg-slate-900 border border-slate-700 rounded-[2rem] shadow-inner py-4 px-6 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm font-medium text-white transition-all placeholder:text-slate-600"
                     placeholder="e.g. Living Room Walls, Kitchen Sink" required>
             </div>
 
-            <div>
-                <label for="description" class="block text-sm font-medium text-gray-300">Description of
-                    Condition</label>
+            <div class="space-y-3">
+                <label for="description" class="text-xs font-black uppercase tracking-widest text-slate-300 flex items-center gap-2 ml-4">
+                    <i class="fas fa-align-left text-slate-400"></i> Description of Condition
+                </label>
                 <textarea name="description" id="description" rows="3"
-                    class="mt-1 block w-full bg-gray-900 border border-gray-700 rounded-xl shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white"
+                    class="block w-full bg-slate-900 border border-slate-700 rounded-[2rem] shadow-inner py-5 px-6 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm font-medium text-white transition-all placeholder:text-slate-600"
                     placeholder="Minor scratch near window, otherwise clean." required></textarea>
             </div>
 
-            <div>
-                <label for="image" class="block text-sm font-medium text-gray-300">Photo Evidence (Optional but
-                    recommended)</label>
-                <input type="file" name="image" id="image"
-                    class="mt-1 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-gray-700 dark:file:text-indigo-400">
+            <div class="space-y-4">
+                <label class="text-xs font-black uppercase tracking-widest text-slate-300 flex items-center gap-2 ml-4">
+                    <i class="fas fa-image text-slate-400"></i> Photo Evidence
+                </label>
+                <div class="bg-white/5 border-2 border-dashed border-slate-600 rounded-[2rem] p-8 text-center hover:border-indigo-500/50 transition-colors relative overflow-hidden group">
+                    
+                    <input type="file" name="image" id="image" accept="image/*"
+                           @change="imagePreview = $event.target.files.length > 0 ? URL.createObjectURL($event.target.files[0]) : null"
+                           class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+                    
+                    <div x-show="!imagePreview" class="relative z-10 pointer-events-none">
+                        <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-indigo-500 transition-colors">
+                            <i class="fas fa-cloud-upload-alt text-2xl text-slate-400 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <p class="text-sm font-black text-white">Click or drag image to upload</p>
+                        <p class="text-xs text-slate-500 mt-1 font-medium">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                    </div>
+
+                    <div x-show="imagePreview" class="relative z-10" style="display: none;">
+                        <img :src="imagePreview" class="max-h-48 mx-auto rounded-xl shadow-lg border-2 border-indigo-500/50 object-cover" />
+                        <p class="text-[10px] font-black uppercase text-indigo-400 mt-4 tracking-widest"><i class="fas fa-exchange-alt mr-1"></i> Click to change image</p>
+                    </div>
+                </div>
             </div>
 
-            <div class="pt-4 flex items-center justify-end space-x-4 border-t border-gray-700">
+            <div class="pt-6 border-t border-white/10 flex items-center justify-end gap-4">
                 <a href="{% url 'onboarding:dashboard' process.id %}"
-                    class="text-sm font-medium text-gray-400 hover:text-white">Cancel</a>
+                    class="px-6 py-4 rounded-2xl text-sm font-black text-slate-400 hover:text-white hover:bg-white/5 transition-colors no-underline uppercase tracking-widest border border-transparent hover:border-white/10">
+                    Cancel
+                </a>
                 <button type="submit"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Upload Report
+                    class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black text-sm uppercase tracking-widest py-4 px-8 rounded-2xl shadow-[0_10px_30px_rgba(79,70,229,0.3)] hover:shadow-[0_15px_40px_rgba(79,70,229,0.5)] transform hover:-translate-y-1 transition-all flex items-center gap-3">
+                    Upload Report <i class="fas fa-upload"></i>
                 </button>
             </div>
         </form>

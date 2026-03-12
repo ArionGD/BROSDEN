@@ -30,9 +30,10 @@
         <div class="flex items-center">
             {% if user.is_authenticated %}
             <!-- User Profile Block with Dropdown -->
-            <div class="relative" id="userDropdownContainer">
-                <button id="userDropdownBtn"
-                    class="flex items-center gap-3 bg-slate-50 hover:bg-slate-100 p-1.5 pr-4 rounded-full transition-all border border-slate-100 group">
+            <div class="relative" x-data="{ open: false }">
+                <button @click="open = !open"
+                    class="flex items-center gap-3 bg-slate-50 hover:bg-slate-100 p-1.5 pr-4 rounded-full transition-all border border-slate-100 group"
+                    :class="{'bg-slate-100 ring-2 ring-arion-blue/10': open}">
                     <!-- Profile Icon Component -->
                     <div
                         class="w-10 h-10 bg-arion-blue-light rounded-full flex items-center justify-center text-white font-bold shadow-md shadow-blue-100">
@@ -48,8 +49,15 @@
                 </button>
 
                 <!-- Dropdown Menu -->
-                <div id="userDropdownMenu"
-                    class="hidden absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div x-show="open" @click.outside="open = false"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 scale-95 translate-y-2"
+                    class="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50"
+                    style="display: none;">
                     <div class="px-5 py-3 border-b border-slate-50 mb-2">
                         <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Signed in as</p>
                         <p class="text-sm font-bold text-slate-900 truncate">{{ user.email }}</p>
@@ -95,23 +103,3 @@
         </div>
     </div>
 </header>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const btn = document.getElementById('userDropdownBtn');
-        const menu = document.getElementById('userDropdownMenu');
-
-        if (btn && menu) {
-            btn.addEventListener('click', function (e) {
-                e.stopPropagation();
-                menu.classList.toggle('hidden');
-            });
-
-            document.addEventListener('click', function (e) {
-                if (!btn.contains(e.target) && !menu.contains(e.target)) {
-                    menu.classList.add('hidden');
-                }
-            });
-        }
-    });
-</script>

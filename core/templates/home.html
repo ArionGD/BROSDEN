@@ -3,31 +3,17 @@
 {% block title %}BrosDen-AV | Find Your Perfect Den{% endblock %}
 
 {% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Hero Slider Logic
-        const slider = document.getElementById('hero-slider');
-        let currentSlide = 0;
-        const totalSlides = 5;
-
-        function slideNext() {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            const offset = currentSlide * (100 / totalSlides);
-            slider.style.transform = `translateX(-${offset}%)`;
-        }
-
-        // Run every 5 seconds
-        setInterval(slideNext, 5000);
-    });
-</script>
 {% endblock %}
 
 {% block content %}
 {# --- BLOCK 1 — HERO --- #}
 <section class="relative min-h-[700px] flex items-center overflow-hidden bg-white border-b-[5px] border-slate-50 shadow-xl">
     <!-- Sliding Background System -->
-    <div class="absolute inset-0 z-0 overflow-hidden">
-        <div id="hero-slider" class="flex h-full w-[500%] transition-transform duration-[1500ms] ease-in-out">
+    <div class="absolute inset-0 z-0 overflow-hidden" 
+         x-data="{ currentSlide: 0, totalSlides: 5 }" 
+         x-init="setInterval(() => { currentSlide = (currentSlide + 1) % totalSlides }, 5000)">
+        <div id="hero-slider" class="flex h-full w-[500%] transition-transform duration-[1500ms] ease-in-out"
+             :style="'transform: translateX(-' + (currentSlide * (100 / totalSlides)) + '%)'">
             <!-- Slide 1 (Blue Accent) -->
             <div class="w-full h-full bg-white flex items-center justify-end">
                 <div class="w-[40%] flex justify-center">

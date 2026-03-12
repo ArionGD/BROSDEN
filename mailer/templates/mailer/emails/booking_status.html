@@ -33,18 +33,10 @@
 
     <!-- Info Card -->
     <div class="bg-slate-50 border border-slate-200 rounded-xl px-6 py-5 my-6">
-        <div class="flex justify-between items-center py-2 border-b border-slate-200 text-xs text-slate-500">
-            <span class="font-semibold">Property</span>
-            <span class="text-slate-900 font-bold">{{ booking.property.title }}</span>
-        </div>
-        <div class="flex justify-between items-center py-2 border-b border-slate-200 text-xs text-slate-500">
-            <span class="font-semibold">Move-in Date</span>
-            <span class="text-slate-900 font-bold">{{ booking.start_date }}</span>
-        </div>
-        <div class="flex justify-between items-center py-2 border-b border-slate-200 text-xs text-slate-500">
-            <span class="font-semibold">Booking ID</span>
-            <span class="text-slate-900 font-bold">#{{ booking.id }}</span>
-        </div>
+        {% include "mailer/emails/snippets/info_row.html" with label="Property" value=booking.property.title %}
+        {% include "mailer/emails/snippets/info_row.html" with label="Move-in Date" value=booking.start_date %}
+        {% include "mailer/emails/snippets/info_row.html" with label="Booking ID" value="#"|add:booking.id %}
+        
         <div class="flex justify-between items-center py-2 text-xs text-slate-500">
             <span class="font-semibold">Status</span>
             <span>
