@@ -1,3 +1,13 @@
+<!-- Data for Charts -->
+{{ income_values|json_script:"income-values" }}
+{{ income_labels|json_script:"income-labels" }}
+{{ occupied_count|json_script:"occupied-count" }}
+{{ vacant_count|json_script:"vacant-count" }}
+{{ total_properties|json_script:"total-properties-count" }}
+{{ approved_requests|json_script:"approved-count" }}
+{{ pending_requests|json_script:"pending-count" }}
+{{ rejected_requests|json_script:"rejected-count" }}
+
 <div class="mb-12">
     <h2 class="text-4xl font-black text-slate-800 tracking-tight">Business Insights</h2>
     <p class="text-slate-500 font-medium mt-2">Quantitative overview of your real estate portfolio.</p>
@@ -38,13 +48,38 @@
     </div>
 </div>
 
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+    <!-- Vertical Bar Chart: Revenue -->
+    <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="text-xl font-black text-slate-900">Rental Income Trends</h3>
+            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Last 6 Months</span>
+        </div>
+        <div id="revenueChart" style="min-height: 350px;"></div>
+    </div>
+
+    <!-- 360 Degree / Radial Bar Chart: Occupancy -->
+    <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
+        <h3 class="text-xl font-black text-slate-900 mb-8">Portfolio Occupancy</h3>
+        <div id="occupancyChart" style="min-height: 350px;"></div>
+        <div class="grid grid-cols-2 gap-4 mt-8 border-t border-slate-50 pt-8">
+            <div class="text-center">
+                <p class="text-3xl font-black text-slate-900">{{ occupied_count }}</p>
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Occupied Units</p>
+            </div>
+            <div class="text-center">
+                <p class="text-3xl font-black text-slate-900">{{ vacant_count }}</p>
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Vacant Units</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    <!-- Chart: Status Distribution -->
+    <!-- Chart: Booking Funnel (Old Doughnut improved) -->
     <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
         <h3 class="text-xl font-black text-slate-900 mb-8">Booking Funnel</h3>
-        <div class="h-64">
-            <canvas id="requestChart"></canvas>
-        </div>
+        <div id="funnelChart" style="min-height: 300px;"></div>
     </div>
 
     <!-- Chart: Property Views -->
@@ -58,7 +93,7 @@
                     <span class="text-xs font-black bg-blue-50 text-blue-600 px-3 py-1 rounded-full">{{ view.total_views }} views</span>
                 </div>
                 <div class="w-full bg-slate-50 h-2 rounded-full overflow-hidden">
-                    <div class="bg-blue-500 h-full rounded-full view-bar" data-width="{{ view.percentage|floatformat:0 }}"></div>
+                    <div class="bg-blue-500 h-full rounded-full view-bar" style="width: 0%" data-width="{{ view.percentage|floatformat:0 }}"></div>
                 </div>
             </div>
             {% empty %}
@@ -68,43 +103,119 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- ApexCharts Script -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
-    const ctx = document.getElementById('requestChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Approved', 'Pending', 'Rejected'],
-            datasets: [{
-                data: [
-                    Number('{{ approved_requests }}'),
-                    Number('{{ pending_requests }}'),
-                    Number('{{ rejected_requests }}')
-                ],
-                backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
-                borderWidth: 0,
-                hoverOffset: 10
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        usePointStyle: true,
-                        padding: 30,
-                        font: { weight: 'bold' }
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fetch data from json_script tags to avoid JS linting errors in template
+        const incomeValues = JSON.parse(document.getElementById('income-values').textContent);
+        const incomeLabels = JSON.parse(document.getElementById('income-labels').textContent);
+        const occupiedCount = JSON.parse(document.getElementById('occupied-count').textContent);
+        const vacantCount = JSON.parse(document.getElementById('vacant-count').textContent);
+        const totalProperties = JSON.parse(document.getElementById('total-properties-count').textContent);
+        const approvedCount = JSON.parse(document.getElementById('approved-count').textContent);
+        const pendingCount = JSON.parse(document.getElementById('pending-count').textContent);
+        const rejectedCount = JSON.parse(document.getElementById('rejected-count').textContent);
+
+        // 1. Revenue Trends (Vertical Bar Chart)
+        var revenueOptions = {
+            series: [{
+                name: 'Rent Income',
+                data: incomeValues
+            }],
+            chart: {
+                type: 'bar',
+                height: 350,
+                toolbar: { show: false },
+                fontFamily: 'Inter, sans-serif'
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 10,
+                    columnWidth: '40%',
+                    distributed: true,
+                }
+            },
+            colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'],
+            dataLabels: { enabled: false },
+            legend: { show: false },
+            xaxis: {
+                categories: incomeLabels,
+                labels: { style: { colors: '#94a3b8', fontWeight: 600 } }
+            },
+            yaxis: {
+                labels: { 
+                    style: { colors: '#94a3b8', fontWeight: 600 },
+                    formatter: (value) => '₹' + (value/1000) + 'k'
+                }
+            },
+            grid: { borderColor: '#f1f5f9' },
+            tooltip: { theme: 'dark' }
+        };
+        new ApexCharts(document.querySelector("#revenueChart"), revenueOptions).render();
+
+        // 2. Occupancy (360 Degree Radial Chart)
+        var occupancyOptions = {
+            series: [Math.round((occupiedCount / (totalProperties || 1)) * 100)],
+            chart: {
+                height: 350,
+                type: 'radialBar',
+            },
+            plotOptions: {
+                radialBar: {
+                    hollow: { size: '70%', },
+                    track: { background: '#f1f5f9' },
+                    dataLabels: {
+                        name: { show: false },
+                        value: {
+                            fontSize: '40px',
+                            fontWeight: '900',
+                            color: '#0f172a',
+                            offsetY: 15,
+                            formatter: (val) => val + '%'
+                        }
                     }
                 }
             },
-            cutout: '70%'
-        }
-    });
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'dark',
+                    type: 'horizontal',
+                    gradientToColors: ['#10b981'],
+                    stops: [0, 100]
+                }
+            },
+            stroke: { lineCap: 'round' },
+            labels: ['Occupancy'],
+        };
+        new ApexCharts(document.querySelector("#occupancyChart"), occupancyOptions).render();
 
-    // Animate Progress Bars
-    document.querySelectorAll('.view-bar').forEach(bar => {
-        bar.style.width = bar.getAttribute('data-width') + '%';
+        // 3. Funnel Chart
+        var funnelOptions = {
+            series: [approvedCount, pendingCount, rejectedCount],
+            chart: {
+                type: 'donut',
+                height: 300
+            },
+            labels: ['Approved', 'Pending', 'Rejected'],
+            colors: ['#10b981', '#f59e0b', '#ef4444'],
+            legend: { position: 'bottom', fontWeight: 700 },
+            plotOptions: {
+                pie: {
+                    donut: { size: '75%' }
+                }
+            },
+            stroke: { show: false },
+            dataLabels: { enabled: false }
+        };
+        new ApexCharts(document.querySelector("#funnelChart"), funnelOptions).render();
+
+        // Animate Progress Bars
+        setTimeout(() => {
+            document.querySelectorAll('.view-bar').forEach(bar => {
+                bar.style.width = bar.getAttribute('data-width') + '%';
+            });
+        }, 500);
     });
 </script>
