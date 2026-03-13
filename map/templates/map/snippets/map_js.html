@@ -6,9 +6,9 @@
     [
         {% for property in properties %}
         {
-            "id": {{ property.id }},
+            "id": {{ property.id|default:0 }},
             "title": "{{ property.title|escapejs }}",
-            "price": "{{ property.price }}",
+            "price": "{{ property.price|default:0 }}",
             "lat": {{ property.latitude|default:0 }},
             "lng": {{ property.longitude|default:0 }},
             "city": "{{ property.city|escapejs }}",
@@ -51,11 +51,30 @@
         Alpine.data('mapFilter', () => ({
             showAdvanced: false,
             showSmartMatch: false,
+            activeSections: ['basic', 'amenities', 'premium'],
             distWeight: 33,
             costWeight: 33,
+            maxPriceRange: parseInt("{{ request_params.max_price|default:25000 }}") || 25000,
+            genderFilter: "{{ request_params.gender|default:'ALL' }}",
+            sharingLevel: "{{ request_params.sharing_type|default:'' }}",
+            furnishFilter: "{{ request_params.furnishing|default:'' }}",
+            acOnly: "{{ request_params.ac|yesno:'true,false' }}" === "true",
+            mealsFilter: "{{ request_params.meals|yesno:'true,false' }}" === "true",
+            wifiFilter: "{{ request_params.wifi|yesno:'true,false' }}" === "true",
+            laundryFilter: "{{ request_params.laundry|yesno:'true,false' }}" === "true",
+            homeType: "{{ request_params.type|default:'' }}",
+            bhkType: "{{ request_params.bedrooms|default:'' }}",
             favoredLocations: [],
             preset: '',
+            isFiltered: window.location.search.length > 1,
 
+            toggleSection(section) {
+                if (this.activeSections.includes(section)) {
+                    this.activeSections = this.activeSections.filter(i => i !== section);
+                } else {
+                    this.activeSections.push(section);
+                }
+            },
             addPreset() {
                 if (this.preset) {
                     let [coords, label] = this.preset.split('|');
@@ -69,6 +88,9 @@
             },
             addLocation(detail) {
                 this.favoredLocations.push(detail);
+            },
+            clearFilters() {
+                window.location.href = window.location.pathname;
             }
         }));
     });
