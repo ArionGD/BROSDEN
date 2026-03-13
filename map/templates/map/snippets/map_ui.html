@@ -7,6 +7,39 @@
      @highlight-card.window="highlightCard($event.detail)">
 
     <!-- ════════════════════════════════════════════════════════
+         PAGE HEADER & BREADCRUMBS
+    ════════════════════════════════════════════════════════ -->
+    <div class="w-full max-w-7xl mx-auto px-6 pt-10 pb-6">
+        <nav class="flex items-center gap-3 mb-5">
+            <a href="/" class="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 hover:text-blue-600 transition-all">Home</a>
+            <i class="fas fa-chevron-right text-[7px] text-slate-300"></i>
+            <span class="text-[9px] font-black uppercase tracking-[0.4em] text-blue-600">Map Explorer</span>
+        </nav>
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div class="space-y-3">
+                <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">{{ map_title|default:"Map Explorer" }}</h1>
+                <div class="h-1.5 w-24 bg-blue-600 rounded-full"></div>
+                <p class="text-sm font-bold text-slate-400 leading-relaxed max-w-3xl">
+                    Discover premium verified suites through our interactive spatial discovery engine. 
+                    Real-time proximity analysis and intelligent neighborhood matching.
+                </p>
+            </div>
+            
+            <!-- Live Engine Indicator -->
+            <div class="hidden md:flex items-center gap-4 bg-white/80 backdrop-blur-md px-6 py-4 rounded-[1.5rem] border border-slate-100 shadow-sm transition-all hover:shadow-md">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                    <i class="fas fa-radar text-lg animate-pulse"></i>
+                </div>
+                <div>
+                    <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">System Status</span>
+                    <span class="block text-[10px] font-black text-slate-900 uppercase tracking-widest">Spatial Engine <span class="text-emerald-500">Live</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
          BLOCK 1 — FILTER SUITE (Floating Island)
     ════════════════════════════════════════════════════════ -->
     <div class="relative z-40 w-full pt-4 px-4 flex justify-center pointer-events-none">

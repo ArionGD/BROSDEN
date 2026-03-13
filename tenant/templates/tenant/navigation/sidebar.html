@@ -15,17 +15,11 @@
                 <i class="fas fa-chart-line w-6 text-center text-lg"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Dashboard</span>
             </a>
-            <a href="{% url 'property:browse' %}"
-                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300"
-                :class="sidebarCollapsed ? 'px-2 py-3 justify-center border-l-0' : 'px-5 py-3'">
-                <i class="fas fa-house-circle-check w-6 text-center text-lg"></i> 
-                <span x-show="!sidebarCollapsed" class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Explore</span>
-            </a>
             <a href="{% url 'map:explore' %}"
                 class="flex items-center text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300"
                 :class="sidebarCollapsed ? 'px-2 py-3 justify-center border-l-0' : 'px-5 py-3'">
                 <i class="fas fa-map-location-dot w-6 text-center text-lg text-blue-500"></i> 
-                <span x-show="!sidebarCollapsed" class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Map Explore</span>
+                <span x-show="!sidebarCollapsed" class="sidebar-text transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden">Explore Map</span>
             </a>
             <a href="{% url 'booking:tenant_bookings' %}"
                 class="flex items-center text-slate-500 hover:bg-slate-50 rounded-2xl font-bold transition-all border-l-4 border-transparent hover:border-slate-300"

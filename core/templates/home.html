@@ -64,7 +64,7 @@
 
             <!-- Search -->
             <div class="bg-white rounded-[2rem] border border-slate-200 p-2 shadow-2xl shadow-slate-200">
-                <form action="{% url 'property:browse' %}" method="GET" class="flex flex-col md:flex-row gap-2">
+                <form action="{% url 'map:explore' %}" method="GET" class="flex flex-col md:flex-row gap-2">
                     <div class="flex-1 bg-slate-50 rounded-[1.5rem] flex items-center px-5 py-3.5 gap-3 border border-slate-100">
                         <i class="fas fa-location-dot text-arion-blue text-lg"></i>
                         <input type="text" name="q" placeholder="Search Locality or College..."
@@ -131,7 +131,7 @@
 
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {% for cat in categories %}
-            <a href="{% url 'property:browse' %}"
+            <a href="{% url 'map:explore' %}"
                 class="group relative aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 bg-white">
                 <!-- Icon Placeholder Background -->
                 <div class="absolute inset-0 bg-slate-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
@@ -165,7 +165,7 @@
                 <h2 class="text-4xl font-black text-slate-900 tracking-tight">Featured <span
                         class="text-arion-orange">Collections</span></h2>
             </div>
-            <a href="{% url 'property:browse' %}"
+            <a href="{% url 'map:explore' %}"
                 class="flex items-center gap-2 border-2 border-slate-200 hover:border-arion-blue text-slate-600 hover:text-arion-blue px-6 py-2.5 rounded-2xl font-bold transition-all text-sm">
                 View All <i class="fas fa-arrow-right text-xs"></i>
             </a>
@@ -199,7 +199,7 @@
                             <span><i class="fas fa-bed mr-2 text-arion-blue"></i>{{ p.beds }}</span>
                             <span><i class="fas fa-maximize mr-2 text-arion-blue"></i>{{ p.size }}</span>
                         </div>
-                        <a href="{% url 'property:browse' %}"
+                        <a href="{% url 'map:explore' %}"
                             class="w-9 h-9 bg-slate-100 hover:bg-arion-blue text-slate-400 hover:text-white rounded-xl flex items-center justify-center transition-all">
                             <i class="fas fa-arrow-right text-xs"></i>
                         </a>
@@ -272,7 +272,7 @@
                     <span class="text-arion-blue font-black uppercase tracking-widest text-xs mb-5 block">For Tenants</span>
                     <h2 class="text-4xl font-black text-slate-900 mb-5 tracking-tight">Find Your <br>Sanctuary.</h2>
                     <p class="text-slate-500 font-medium mb-10 leading-relaxed max-w-sm">Zero brokerage, digital agreements, and automated rent payments. Moving made frictionless.</p>
-                    <a href="{% url 'property:browse' %}"
+                    <a href="{% url 'map:explore' %}"
                         class="inline-flex items-center gap-3 bg-arion-blue text-white font-black px-8 py-4 rounded-2xl shadow-xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all">
                         START BROWSING <i class="fas fa-compass text-sm"></i>
                     </a>
