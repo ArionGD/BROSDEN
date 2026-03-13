@@ -3,6 +3,9 @@
 {% block title %}Rental Contract | BrosDen-AV{% endblock %}
 
 {% block portal_content %}
+<!-- Google Fonts for Digital Signature -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
 <div class="max-w-4xl mx-auto pb-20" x-data>
     <div class="mb-10 flex justify-between items-end">
         <div>
@@ -31,57 +34,88 @@
     </div>
 
     <!-- Contract Sheet -->
-    <div class="bg-white rounded-[3rem] p-10 md:p-20 shadow-2xl border border-slate-100 relative overflow-hidden">
+    <div class="bg-white rounded-[1rem] p-10 md:p-20 shadow-2xl border-t-[12px] border-slate-900 relative overflow-hidden ring-1 ring-slate-200">
+        <!-- Digital Seal -->
+        <div class="absolute top-10 right-10 flex flex-col items-center opacity-20 transform rotate-12 pointer-events-none">
+            <div class="w-24 h-24 border-4 border-slate-900 rounded-full flex items-center justify-center text-center p-2">
+                <span class="text-[8px] font-black uppercase tracking-tighter leading-tight">Digital Execution Verified<br>BrosDen-AV</span>
+            </div>
+            <p class="text-[10px] font-black mt-1 uppercase text-slate-900">Sentinel Approved</p>
+        </div>
+
         <!-- Watermark -->
-        <div class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none">
-            <i class="fas fa-house-chimney text-[15rem]"></i>
+        <div class="absolute inset-0 flex items-center justify-center opacity-[0.02] pointer-events-none select-none">
+            <i class="fas fa-house-chimney text-[25rem]"></i>
         </div>
 
         <div class="relative z-10">
-            <div class="flex justify-between border-b border-slate-100 pb-10 mb-10">
+            <div class="flex justify-between border-b-2 border-slate-50 pb-10 mb-12">
                 <div>
-                    <img src="https://razorpay.com/favicon.png" class="h-8 mb-4 grayscale opacity-50">
-                    <p class="text-xs font-black uppercase tracking-widest text-slate-400">Transaction Hash</p>
-                    <p class="text-[10px] font-mono text-slate-500">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-handshake text-slate-900 text-2xl"></i>
+                        <span class="font-black text-slate-900 text-xl tracking-tighter">LEGAL <span class="text-slate-400 font-medium whitespace-nowrap">AGREEMENT</span></span>
+                    </div>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Transaction Certificate</p>
+                    <p class="text-[10px] font-mono text-slate-500 bg-slate-50 px-2 py-1 rounded-md mt-1 border border-slate-100 italic">
                         HASH_{{ contract.booking.id }}_{{ contract.created_at|date:"U" }}</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-xs font-black uppercase tracking-widest text-slate-400">Date Generated</p>
-                    <p class="text-sm font-bold text-slate-900">{{ contract.created_at|date:"d F, Y" }}</p>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Date of Issue</p>
+                    <p class="text-base font-black text-slate-900">{{ contract.created_at|date:"d F, Y" }}</p>
                 </div>
             </div>
 
             <!-- Content Area -->
-            <div
-                class="prose prose-slate max-w-none prose-p:text-slate-600 prose-p:leading-loose prose-h3:text-slate-900 prose-h3:font-black">
+            <div class="prose prose-slate max-w-none prose-p:text-slate-700 prose-p:leading-relaxed prose-h3:text-slate-900 prose-h3:font-black prose-strong:text-slate-900 font-serif text-[1.05rem]">
                 {{ contract.content|linebreaks }}
             </div>
 
             <!-- Signature Section -->
-            <div class="mt-20 pt-10 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div class="space-y-4">
-                    <p class="text-xs font-black uppercase tracking-widest text-slate-400">Tenant Signature</p>
-                    <div
-                        class="h-32 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex items-center justify-center italic text-slate-300">
-                        {% if contract.is_signed_by_tenant %}
-                        <span class="text-3xl font-serif text-slate-900">{{ contract.booking.tenant.username }}</span>
-                        {% else %}
-                        Pending Signature
-                        {% endif %}
+            <div class="mt-24 pt-12 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-16">
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Party 01: Tenant</p>
+                        <p class="text-sm font-black text-slate-900">{{ contract.booking.tenant.get_full_name|default:contract.booking.tenant.username }}</p>
+                    </div>
+                    <div class="relative">
+                        <div class="h-32 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center justify-center italic text-slate-300">
+                            {% if contract.is_signed_by_tenant %}
+                            <span class="text-4xl font-serif text-slate-900 opacity-80" style="font-family: 'Dancing Script', cursive;">{{ contract.booking.tenant.username }}</span>
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <i class="fas fa-check text-green-500/20 text-7xl"></i>
+                            </div>
+                            {% else %}
+                            <span class="text-[10px] font-black uppercase tracking-widest">Awaiting Digital Signature</span>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-                <div class="space-y-4 text-right">
-                    <p class="text-xs font-black uppercase tracking-widest text-slate-400">Owner Signature</p>
-                    <div
-                        class="h-32 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex items-center justify-center italic text-slate-300">
-                        {% if contract.is_signed_by_owner %}
-                        <span class="text-3xl font-serif text-slate-900">
-                            {{ contract.booking.property.owner.username }}</span>
-                        {% else %}
-                        Pending Signature
-                        {% endif %}
+                <div class="space-y-6 text-right">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Party 02: Landlord</p>
+                        <p class="text-sm font-black text-slate-900">{{ contract.booking.property.owner.get_full_name|default:contract.booking.property.owner.username }}</p>
+                    </div>
+                    <div class="relative">
+                        <div class="h-32 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center justify-center italic text-slate-300">
+                            {% if contract.is_signed_by_owner %}
+                            <span class="text-4xl font-serif text-slate-900 opacity-80" style="font-family: 'Dancing Script', cursive;">{{ contract.booking.property.owner.username }}</span>
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <i class="fas fa-check text-green-500/20 text-7xl"></i>
+                            </div>
+                            {% else %}
+                            <span class="text-[10px] font-black uppercase tracking-widest">Awaiting Digital Signature</span>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Legal Footer -->
+            <div class="mt-20 pt-10 border-t border-slate-50 text-center">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-loose">
+                    This document is a computer-generated certificate. No physical signature is required under Sec 2(1)(p) of IT Act, 2000.<br>
+                    Authenticated via BrosDen-AV Sentinel Engine.
+                </p>
             </div>
         </div>
     </div>
@@ -89,22 +123,76 @@
 
 <style>
     @media print {
-
-        header,
+        /* Hide everything except the contract content */
+        nav, 
+        aside, 
+        header, 
+        .sidebar-section,
+        .mb-10.flex, /* Hide the header buttons and title above the sheet */
         .toast-container,
-        button,
-        .sidebar-section {
+        button {
             display: none !important;
         }
 
-        .max-w-4xl {
-            max-width: 100% !important;
+        /* Essential Reset for Print */
+        body, html {
+            background: white !important;
             margin: 0 !important;
+            padding: 0 !important;
+            width: 100%;
         }
 
-        .bg-white {
-            box-shadow: none !important;
+        /* Remove portal/dashboard layout constraints */
+        main, .max-w-4xl {
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+
+        /* Reset the Contract Sheet for Paper */
+        .bg-white.rounded-\[1rem\] {
             border: none !important;
+            border-top: 8px solid #0f172a !important; /* Keep the professional top bar */
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        .shadow-2xl, .ring-1 {
+            box-shadow: none !important;
+            outline: none !important;
+        }
+
+        /* Optimize text for printing */
+        .prose {
+            font-size: 11pt !important;
+            color: black !important;
+        }
+
+        .prose p {
+            margin-bottom: 1em !important;
+        }
+
+        /* Ensure signatures are visible and spaced well */
+        .grid {
+            display: block !important;
+        }
+        
+        .grid > div {
+            width: 100% !important;
+            margin-top: 2rem !important;
+            page-break-inside: avoid;
+        }
+
+        .mt-24 {
+            margin-top: 3rem !important;
+        }
+
+        /* Hide the seal in print if it overlaps poorly, or keep it subtle */
+        .opacity-20 {
+            opacity: 0.1 !important;
         }
     }
 </style>
