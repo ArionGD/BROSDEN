@@ -25,24 +25,53 @@ def fullscreen_map(request):
 
     p_type = request.GET.get('type')
     if p_type:
-        properties = properties.filter(property_type=p_type)
+        # Map 'FLAT' from UI to 'APARTMENT' in Model
+        if p_type == 'FLAT':
+            properties = properties.filter(property_type='APARTMENT')
+        else:
+            properties = properties.filter(property_type=p_type)
 
     gender_pref = request.GET.get('gender')
-    if gender_pref:
+    if gender_pref and gender_pref != 'ALL':
         properties = properties.filter(gender_preference=gender_pref)
 
-    min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
-    if min_price:
-        properties = properties.filter(price__gte=min_price)
     if max_price:
-        properties = properties.filter(price__lte=max_price)
+        try:
+            properties = properties.filter(price__lte=float(max_price))
+        except ValueError:
+            pass
 
-    available_date = request.GET.get('available_from')
-    if available_date:
-        properties = properties.filter(available_from__lte=available_date)
+    # Specifics: BHK and Sharing
+    bhk = request.GET.get('bedrooms')
+    if bhk:
+        try:
+            # Map '0.5' (1 RK) to 0 bedrooms in IntegerField, others to int
+            val = float(bhk)
+            if val == 0.5:
+                properties = properties.filter(bedrooms=0)
+            else:
+                properties = properties.filter(bedrooms=int(val))
+        except ValueError:
+            pass
 
-    # Specifics
+    sharing = request.GET.get('sharing_type')
+    if sharing:
+        # Map UI numeric values to Model string choices
+        sharing_map = {'1': 'SINGLE', '2': 'DOUBLE', '3': 'TRIPLE'}
+        sharing_val = sharing_map.get(sharing, sharing)
+        properties = properties.filter(sharing_type=sharing_val)
+
+    # Specifics: AC, Meals, WiFi, Laundry
+    if request.GET.get('ac') == 'on':
+        properties = properties.filter(ac_available=True)
+    if request.GET.get('meals') == 'on':
+        properties = properties.filter(food_provided=True)
+    if request.GET.get('wifi') == 'on':
+        properties = properties.filter(wifi_available=True)
+    if request.GET.get('laundry') == 'on':
+        properties = properties.filter(laundry_service=True)
+
     if request.GET.get('verified') == 'on':
         properties = properties.filter(is_verified=True)
     if request.GET.get('pets') == 'on':

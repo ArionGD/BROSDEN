@@ -44,11 +44,18 @@
             Filter
         </button>
 
-        <!-- Dynamic Action Button (Apply/Clear) -->
-        <button type="submit" @click="isFiltered ? ($event.preventDefault(), clearFilters()) : null"
-            class="px-10 py-4 bg-slate-900 border border-slate-900 text-white rounded-[1.2rem] font-black shadow-xl shadow-slate-200 hover:bg-black transition-all text-xs uppercase tracking-[0.2em] transform active:scale-95">
-            <span x-text="isFiltered ? 'Clear' : 'Apply'"></span>
-        </button>
+        <!-- Action Buttons -->
+        <div class="flex items-center gap-3">
+            <button type="submit"
+                class="px-10 py-4 bg-slate-900 border border-slate-900 text-white rounded-[1.2rem] font-black shadow-xl shadow-slate-200 hover:bg-black transition-all text-xs uppercase tracking-[0.2em] transform active:scale-95">
+                Apply
+            </button>
+            
+            <button type="button" x-show="isFiltered" @click="clearFilters()"
+                class="px-4 py-4 bg-white border border-slate-200 text-slate-400 rounded-[1.2rem] font-black hover:text-red-500 hover:border-red-100 transition-all text-[10px] uppercase tracking-widest">
+                <i class="fas fa-rotate-left"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Advanced Filters Suite (Toggleable) -->
@@ -81,6 +88,9 @@
                         Preference</label>
                     <div class="flex p-1 bg-slate-50 rounded-2xl border border-slate-100">
                         <input type="hidden" name="gender" x-model="genderFilter">
+                        <button type="button" @click="genderFilter = 'ALL'"
+                            :class="genderFilter === 'ALL' || !genderFilter ? 'bg-white shadow-sm text-slate-900' : 'text-slate-400'"
+                            class="flex-1 py-2 text-[9px] font-black uppercase rounded-xl transition-all">Any</button>
                         <button type="button" @click="genderFilter = 'BOYS'"
                             :class="genderFilter === 'BOYS' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'"
                             class="flex-1 py-2 text-[9px] font-black uppercase rounded-xl transition-all">Boys</button>
