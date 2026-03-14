@@ -63,18 +63,18 @@ def fullscreen_map(request):
         properties = properties.filter(sharing_type=sharing_val)
 
     # Specifics: AC, Meals, WiFi, Laundry
-    if request.GET.get('ac') == 'on':
+    if request.GET.get('ac') in ['on', 'true']:
         properties = properties.filter(ac_available=True)
-    if request.GET.get('meals') == 'on':
+    if request.GET.get('meals') in ['on', 'true']:
         properties = properties.filter(food_provided=True)
-    if request.GET.get('wifi') == 'on':
+    if request.GET.get('wifi') in ['on', 'true']:
         properties = properties.filter(wifi_available=True)
-    if request.GET.get('laundry') == 'on':
+    if request.GET.get('laundry') in ['on', 'true']:
         properties = properties.filter(laundry_service=True)
 
-    if request.GET.get('verified') == 'on':
+    if request.GET.get('verified') in ['on', 'true']:
         properties = properties.filter(is_verified=True)
-    if request.GET.get('pets') == 'on':
+    if request.GET.get('pets') in ['on', 'true']:
         properties = properties.filter(pets_allowed=True)
 
     properties = properties.order_by('-created_at')
@@ -83,13 +83,13 @@ def fullscreen_map(request):
     cities = Property.objects.values_list('city', flat=True).distinct()
     focus_id = request.GET.get('focus')
     
-    # Select Template based on context
-    if request.user.is_authenticated and request.user.role == 'OWNER':
+    # Select Template based on context - use portal layout for authenticated members
+    if request.user.is_authenticated and request.user.role in ['OWNER', 'ADMIN', 'TENANT']:
         template_name = 'map/portal_map.html'
-        map_title = "My Property Portfolio"
+        map_title = "Property Governance" if request.user.role == 'ADMIN' else "Property Explorer"
     else:
         template_name = 'map/public_map.html'
-        map_title = "Global Explorer"
+        map_title = "Property Explorer"
     
     return render(request, template_name, {
         'properties': properties,
@@ -106,13 +106,13 @@ def smart_recommend_api(request):
         dest_lng = float(request.GET.get('lng', 0))
         
         # Weights (0-100)
-        w_dist = float(request.GET.get('w_dist', 33.3))
-        w_price = float(request.GET.get('w_price', 33.3))
-        w_rating = float(request.GET.get('w_rating', 33.4))
+        w_dist = float(request.GET.get('w_dist') or 33.3)
+        w_price = float(request.GET.get('w_price') or 33.3)
+        w_rating = float(request.GET.get('w_rating') or 33.4)
         
         # Total weight for normalization
         total_w = w_dist + w_price + w_rating
-        if total_w == 0: total_w = 1
+        if total_w == 0: total_w = 100 # Fallback to 100 if weights are zero
         
         properties = Property.objects.exclude(latitude__isnull=True).exclude(longitude__isnull=True)
         results = []
@@ -153,9 +153,9 @@ def smart_recommend_api(request):
             
             # Weighted Final Score
             final_score = (
-                (s_dist * w_dist) + 
-                (s_price * w_price) + 
-                (s_rating * w_rating)
+                (float(s_dist) * w_dist) + 
+                (float(s_price) * w_price) + 
+                (float(s_rating) * w_rating)
             ) / total_w
             
             results.append({

@@ -23,11 +23,7 @@ def index(request):
             {'name': 'Student Hostels', 'icon': 'fa-user-graduate'},
             {'name': 'Shared Living', 'icon': 'fa-users'}
         ],
-        'featured_properties': [
-            {'name': 'Skyview Premium', 'price': '₹ 85.5 L', 'loc': 'Jubilee Hills, Hyderabad', 'beds': '3 BHK', 'size': '1.8k sqft', 'icon': 'fa-building'},
-            {'name': 'Marine Luxury Villa', 'price': '₹ 1.2 Cr', 'loc': 'Banjara Hills, Hyderabad', 'beds': '4 BHK', 'size': '2.5k sqft', 'icon': 'fa-hotel'},
-            {'name': 'Suburban Family Home', 'price': '₹ 45.0 L', 'loc': 'Gachibowli, Hyderabad', 'beds': '2 BHK', 'size': '1.2k sqft', 'icon': 'fa-house-user'}
-        ],
+        'featured_properties': Property.objects.all().order_by('-created_at')[:3],
         'testimonials': [
             {
                 'name': 'anuj xxx',

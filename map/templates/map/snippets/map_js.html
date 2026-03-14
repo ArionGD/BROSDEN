@@ -48,51 +48,57 @@
             }
         }));
 
-        Alpine.data('mapFilter', () => ({
-            showAdvanced: false,
-            showSmartMatch: false,
-            activeSections: ['basic', 'amenities', 'premium'],
-            distWeight: 33,
-            costWeight: 33,
-            maxPriceRange: parseInt("{{ request_params.max_price|default:25000 }}") || 25000,
-            genderFilter: "{{ request_params.gender|default:'ALL' }}",
-            sharingLevel: "{{ request_params.sharing_type|default:'' }}",
-            furnishFilter: "{{ request_params.furnishing|default:'' }}",
-            acOnly: "{{ request_params.ac|yesno:'true,false' }}" === "true",
-            mealsFilter: "{{ request_params.meals|yesno:'true,false' }}" === "true",
-            wifiFilter: "{{ request_params.wifi|yesno:'true,false' }}" === "true",
-            laundryFilter: "{{ request_params.laundry|yesno:'true,false' }}" === "true",
-            homeType: "{{ request_params.type|default:'' }}",
-            bhkType: "{{ request_params.bedrooms|default:'' }}",
-            favoredLocations: [],
-            preset: '',
-            isFiltered: window.location.search.length > 1,
+        Alpine.data('mapFilter', () => {
+            const isFiltered = window.location.search.length > 1;
+            return {
+                showAdvanced: isFiltered, // Keep panel open if any filters are active
+                showSmartMatch: false,
+                activeSections: ['basic', 'amenities', 'premium'],
+                distWeight: 33,
+                costWeight: 33,
+                maxPriceRange: parseInt("{{ request_params.max_price|default:25000 }}") || 25000,
+                genderFilter: "{{ request_params.gender|default:'ALL' }}",
+                sharingLevel: "{{ request_params.sharing_type|default:'' }}",
+                furnishFilter: "{{ request_params.furnishing|default:'' }}",
+                acOnly: ["on", "true"].includes("{{ request_params.ac|default:'' }}"),
+                mealsFilter: ["on", "true"].includes("{{ request_params.meals|default:'' }}"),
+                wifiFilter: ["on", "true"].includes("{{ request_params.wifi|default:'' }}"),
+                laundryFilter: ["on", "true"].includes("{{ request_params.laundry|default:'' }}"),
+                verifiedOnly: ["on", "true"].includes("{{ request_params.verified|default:'' }}"),
+                petsOnly: ["on", "true"].includes("{{ request_params.pets|default:'' }}"),
+                homeType: "{{ request_params.type|default:'' }}",
+                bhkType: "{{ request_params.bedrooms|default:'' }}",
+                smartMode: 'BALANCED',
+                favoredLocations: [],
+                preset: '',
+                isFiltered: isFiltered,
 
-            toggleSection(section) {
-                if (this.activeSections.includes(section)) {
-                    this.activeSections = this.activeSections.filter(i => i !== section);
-                } else {
-                    this.activeSections.push(section);
+                toggleSection(section) {
+                    if (this.activeSections.includes(section)) {
+                        this.activeSections = this.activeSections.filter(i => i !== section);
+                    } else {
+                        this.activeSections.push(section);
+                    }
+                },
+                addPreset() {
+                    if (this.preset) {
+                        let [coords, label] = this.preset.split('|');
+                        let [lat, lng] = coords.split(',').map(Number);
+                        this.favoredLocations.push({lat, lng, label});
+                        this.preset = '';
+                    }
+                },
+                removeLocation(index) {
+                    this.favoredLocations.splice(index, 1);
+                },
+                addLocation(detail) {
+                    this.favoredLocations.push(detail);
+                },
+                clearFilters() {
+                    window.location.href = window.location.pathname;
                 }
-            },
-            addPreset() {
-                if (this.preset) {
-                    let [coords, label] = this.preset.split('|');
-                    let [lat, lng] = coords.split(',').map(Number);
-                    this.favoredLocations.push({lat, lng, label});
-                    this.preset = '';
-                }
-            },
-            removeLocation(index) {
-                this.favoredLocations.splice(index, 1);
-            },
-            addLocation(detail) {
-                this.favoredLocations.push(detail);
-            },
-            clearFilters() {
-                window.location.href = window.location.pathname;
-            }
-        }));
+            };
+        });
     });
 
     let pickerMap = null;
@@ -170,7 +176,7 @@
         }
     });
 
-    async function runSmartMatch(w_dist, w_price, locs, btn) {
+    async function runSmartMatch(mode, locs, btn) {
         if (locs.length === 0) return alert("Please add at least one favored location!");
         
         const originalText = btn.innerHTML;
@@ -181,7 +187,23 @@
         const avgLat = locs.reduce((sum, loc) => sum + loc.lat, 0) / locs.length;
         const avgLng = locs.reduce((sum, loc) => sum + loc.lng, 0) / locs.length;
 
-        const w_rating = 100 - (parseInt(w_dist) + parseInt(w_price));
+        // Map Modes to Weights
+        let w_dist = 50;
+        let w_price = 50;
+        let w_rating = 0;
+
+        if (mode === 'NEAREST') {
+            w_dist = 80;
+            w_price = 10;
+        } else if (mode === 'LOW_COST') {
+            w_dist = 10;
+            w_price = 80;
+        } else { // BALANCED
+            w_dist = 45;
+            w_price = 45;
+        }
+        
+        w_rating = 100 - (w_dist + w_price);
 
         try {
             const response = await fetch(`/map/smart-api/?lat=${avgLat}&lng=${avgLng}&w_dist=${w_dist}&w_price=${w_price}&w_rating=${w_rating}`);
@@ -233,17 +255,70 @@
     }
 
     function highlightMapMatches(results) {
+        // Map to quickly find score by ID
+        const scoreMap = {};
         results.forEach(res => {
+            scoreMap[res.id] = res.score;
+            
+            // 1. Update Map Markers
             const markerData = markers[res.id];
-            if (!markerData) return;
-
-            const { marker, element } = markerData;
-            const badge = element.querySelector('.smart-score-badge');
-            if(badge) {
-                badge.innerHTML = `<i class="fas fa-star text-yellow-300"></i> ${res.score}%`;
-                badge.classList.remove('hidden');
+            if (markerData) {
+                const { element } = markerData;
+                const badge = element.querySelector('.smart-score-badge');
+                if(badge) {
+                    badge.innerHTML = `<i class="fas fa-star text-yellow-300"></i> ${res.score}%`;
+                    badge.classList.remove('hidden');
+                }
             }
+
+            // 2. Update Property Cards UI
+            const cards = document.querySelectorAll(`.hybrid-card[data-id="${res.id}"]`);
+            cards.forEach(card => {
+                // Store score on element for sorting
+                card.dataset.score = res.score;
+                
+                // Add visual badge to card if it doesn't exist
+                let scoreBadge = card.querySelector('.card-smart-score');
+                if (!scoreBadge) {
+                    const badgeContainer = card.querySelector('.Details')?.previousElementSibling || card.querySelector('.relative');
+                    if (badgeContainer) {
+                        scoreBadge = document.createElement('div');
+                        scoreBadge.className = 'card-smart-score absolute bottom-3 right-3 px-3 py-1.5 bg-blue-600 text-white rounded-xl text-[10px] font-black shadow-lg flex items-center gap-2 z-20 border border-white/20 animate-in fade-in slide-in-from-bottom-2';
+                        scoreBadge.innerHTML = `<i class="fas fa-brain animate-pulse text-[8px]"></i> ${res.score}% Match`;
+                        badgeContainer.appendChild(scoreBadge);
+                    }
+                } else {
+                    scoreBadge.innerHTML = `<i class="fas fa-brain animate-pulse text-[8px]"></i> ${res.score}% Match`;
+                }
+            });
         });
+
+        // 3. Reorder Cards in Containers
+        const containers = [
+            document.querySelector('.portal-scroll.flex-col'), // Split view container
+            document.querySelector('.grid-cols-1.sm\\:grid-cols-2') // Grid view container
+        ];
+
+        containers.forEach(container => {
+            if (!container) return;
+            const cardElements = Array.from(container.querySelectorAll('.hybrid-card'));
+            
+            // Sort by data-score descending
+            cardElements.sort((a, b) => {
+                const scoreA = parseFloat(a.dataset.score || 0);
+                const scoreB = parseFloat(b.dataset.score || 0);
+                return scoreB - scoreA;
+            });
+
+            // Append in new order
+            cardElements.forEach(card => container.appendChild(card));
+        });
+
+        // 4. Update Header to show sorting is active
+        const resultsHeader = document.querySelector('h3.text-lg.font-black.tracking-tight');
+        if (resultsHeader && resultsHeader.innerText === 'Search Results') {
+            resultsHeader.innerHTML = 'AI Recommended <span class="text-blue-500 text-[10px] uppercase ml-2 tracking-widest border border-blue-500/30 px-2 py-0.5 rounded-md">Sorted by compatibility</span>';
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function () {

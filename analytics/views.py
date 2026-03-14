@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Q
 from property.models import Property
 from booking.models import BookingRequest
 from payment.models import PaymentReceipt
@@ -92,7 +92,11 @@ def owner_analytics(request):
 
 @tenant_required
 def tenant_analytics(request):
-    """Analytics for Tenants: Search history and booking success."""
+    """Analytics for Tenants: Financial standing, maintenance, and legal vault."""
+    from contract.models import RentSchedule, Contract
+    from helpdesk.models import Ticket
+    from payment.models import PaymentReceipt
+    
     my_bookings = BookingRequest.objects.filter(tenant=request.user)
     total_sent = my_bookings.count()
     approved = my_bookings.filter(status='APPROVED').count()
@@ -101,14 +105,78 @@ def tenant_analytics(request):
     # Success Rate
     success_rate = (approved / total_sent * 100) if total_sent > 0 else 0
     
+    # Financial Overview
+    rents = RentSchedule.objects.filter(contract__booking__tenant=request.user)
+    total_paid = rents.filter(status='PAID').aggregate(Sum('amount'))['amount__sum'] or 0
+    next_payment = rents.filter(status__in=['UNPAID', 'OVERDUE']).order_by('due_date').first()
+    last_payment = rents.filter(status='PAID').order_by('-paid_at').first()
+
+    # Timeline Logic
+    from django.utils import timezone
+    from datetime import date
+    today = date.today()
+    
+    # Get payments for timeline: Previous, Current, Next
+    timeline = {
+        'prev': rents.filter(due_date__month=(today.month-2)%12 or 12).first(),
+        'current': rents.filter(due_date__month=today.month, due_date__year=today.year).first(),
+        'next': rents.filter(due_date__month=(today.month)%12 + 1).first()
+    }
+
+    # Price Breakup for Next Payment
+    breakup = None
+    if next_payment:
+        breakup = {
+            'base': next_payment.amount,
+            'tax': float(next_payment.amount) * 0.05, # Example 5% GST/Service tax
+            'total': float(next_payment.amount) * 1.05
+        }
+    
+    # Maintenance & Ledger
+    active_tickets = Ticket.objects.filter(user=request.user, status__in=['OPEN', 'IN_PROGRESS'])
+    recent_tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')[:3]
+    payment_ledger = PaymentReceipt.objects.filter(user=request.user).order_by('-created_at')[:10]
+    
+    # Current Residence & KYC
+    active_contract = Contract.objects.filter(booking__tenant=request.user, is_signed_by_tenant=True, is_signed_by_owner=True).first()
+    kyc_profile = getattr(request.user, 'kyc', None)
+    latest_booking = my_bookings.first()
+
     # Search Activity
     recent_searches = SearchActivity.objects.filter(user=request.user).order_by('-searched_at')[:5]
+
+    # Recommendations (Based on last search city)
+    last_search = recent_searches.first()
+    recommendations = Property.objects.none()
+    if last_search and last_search.query:
+        # Try to match city from query
+        recommendations = Property.objects.filter(
+            Q(city__icontains=last_search.query) | 
+            Q(title__icontains=last_search.query)
+        ).exclude(id__in=my_bookings.values_list('property_id', flat=True))[:3]
 
     context = {
         'total_sent': total_sent,
         'approved': approved,
         'rejected': rejected,
+        'latest_booking': latest_booking,
         'success_rate': round(success_rate, 1),
+        'total_paid': total_paid,
+        'next_payment': next_payment,
+        'last_payment': last_payment,
+        'active_contract': active_contract,
         'recent_searches': recent_searches,
+        'recommendations': recommendations,
+        'timeline': timeline,
+        'breakup': breakup,
+        'active_tickets': active_tickets,
+        'recent_tickets': recent_tickets,
+        'payment_ledger': payment_ledger,
+        'kyc_profile': kyc_profile,
+        'auto_pay_enabled': False, # Simulation for now
+        'credit_reporting': False, # Simulation for now
     }
     return render(request, 'analytics/tenant_dashboard.html', context)
+
+
+

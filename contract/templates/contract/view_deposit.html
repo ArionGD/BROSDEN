@@ -118,18 +118,74 @@
 </div>
 
 <style>
-    @media print {
+    @page {
+        size: A4;
+        margin: 20mm;
+    }
 
-        header,
-        .sidebar-section,
-        .toast-container,
-        button {
+    @media print {
+        /* Hide all portal elements */
+        header, #sidebar, nav, footer, .sidebar-section, #toast-container, button, .mb-10 {
             display: none !important;
         }
 
+        /* Global Print Reset */
+        body, html {
+            background: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        #portal-main {
+            padding: 0 !important;
+            margin: 0 !important;
+            display: block !important;
+            width: 100% !important;
+            background: white !important;
+            overflow: visible !important;
+        }
+
+        /* Container forcing A4 Width */
         .max-w-4xl {
             max-width: 100% !important;
+            width: 100% !important;
             margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* The actual receipt card */
+        .bg-white {
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+
+        /* Prevent page breaks inside key sections */
+        .mb-10, .bg-white, .mt-16 {
+            page-break-inside: avoid;
+        }
+
+        /* Style Cleanups */
+        .rounded-\[3rem\], .rounded-2xl, .rounded-xl {
+            border-radius: 4px !important;
+        }
+
+        .shadow-2xl, .shadow-xl, .shadow-sm {
+            box-shadow: none !important;
+        }
+
+        .bg-slate-50 {
+            background-color: #f8fafc !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .text-arion-blue {
+            color: #1A73E8 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
     }
 </style>

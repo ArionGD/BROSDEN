@@ -75,17 +75,53 @@ def sign_contract(request, contract_id):
 
 @login_required
 def rent_dashboard(request):
-    """View for tenants/owners to manage rent payments."""
+    """View for tenants/owners to manage rent payments with timeline and history."""
+    from django.db.models import Q
+    from datetime import date
+    from dateutil.relativedelta import relativedelta
+    
+    today = date.today()
+    prev_date = today - relativedelta(months=1)
+    next_date = today + relativedelta(months=1)
+    
     if request.user.role == 'TENANT':
+        # Get all contracts first to ensure we see them even if schedules aren't generated
+        active_contracts = Contract.objects.filter(booking__tenant=request.user)
         # Get all rent schedules for this tenant's contracts
-        schedules = RentSchedule.objects.filter(contract__booking__tenant=request.user)
+        schedules = RentSchedule.objects.filter(contract__in=active_contracts).order_by('due_date')
+        transactions = PaymentReceipt.objects.filter(user=request.user).order_by('-created_at')[:5]
         template = 'contract/rent_tenant.html'
     else:
-        # Get all rent schedules for properties owned by this user
-        schedules = RentSchedule.objects.filter(contract__booking__property__owner=request.user)
+        active_contracts = Contract.objects.filter(booking__property__owner=request.user)
+        schedules = RentSchedule.objects.filter(contract__in=active_contracts).order_by('due_date')
+        transactions = PaymentReceipt.objects.filter(booking__property__owner=request.user).order_by('-created_at')[:5]
         template = 'contract/rent_owner.html'
         
+    # Calculate specific timeline: Prev, Current, Next
+    # Filter by both month AND year for accuracy
+    timeline = {
+        'prev': schedules.filter(due_date__month=prev_date.month, due_date__year=prev_date.year).first(),
+        'current': schedules.filter(due_date__month=today.month, due_date__year=today.year).first(),
+        'next': schedules.filter(due_date__month=next_date.month, due_date__year=next_date.year).first()
+    }
+
+    # Fallback: If current month doesn't have a schedule yet (e.g. contract not fully signed),
+    # but a contract exists, create a "virtual" entry for the UI to display.
+    if not timeline['current'] and active_contracts.exists():
+        first_contract = active_contracts.filter(is_signed_by_tenant=False).first() or active_contracts.first()
+        timeline['current'] = {
+            'amount': first_contract.booking.property.price,
+            'due_date': today, # Approximate
+            'status': 'PENDING_SIGNATURE',
+            'is_virtual': True,
+            'contract_id': first_contract.id
+        }
+
     return render(request, template, {
         'schedules': schedules,
+        'transactions': transactions,
+        'timeline': timeline,
+        'active_contracts': active_contracts,
+        'next_cycle_start': (today + relativedelta(months=1)).replace(day=1),
         'portal_base': request.user.portal_base
     })

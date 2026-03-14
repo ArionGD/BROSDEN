@@ -15,9 +15,9 @@
         <div class="relative">
             <select name="city"
                 class="appearance-none pl-6 pr-12 py-4 bg-white/50 rounded-[1.2rem] border border-slate-100 font-black text-slate-600 outline-none text-xs uppercase tracking-widest cursor-pointer hover:bg-white transition-colors">
-                <option value="All Cities">All Cities</option>
+                <option value="All Cities" {% if not request_params.city or request_params.city == 'All Cities' %}selected{% endif %}>All Cities</option>
                 {% for city in cities %}
-                <option value="{{ city }}" {% if city == request_params.city %}selected{% endif %}>{{ city }}</option>
+                <option value="{{ city }}" {% if city == request_params.city and city != 'All Cities' %}selected{% endif %}>{{ city }}</option>
                 {% endfor %}
             </select>
             <i
@@ -197,10 +197,21 @@
                                     :class="laundryFilter ? 'bg-white shadow-sm text-violet-600' : 'text-slate-400'"
                                     class="flex-1 py-3 text-[9px] font-black uppercase rounded-xl transition-all">Laundry</button>
                             </div>
+                            <!-- Row 3: Verified and Pets -->
+                            <div class="flex p-1 bg-slate-50 rounded-2xl border border-slate-100 h-fit">
+                                <button type="button" @click="verifiedOnly = !verifiedOnly"
+                                    :class="verifiedOnly ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'"
+                                    class="flex-1 py-3 text-[9px] font-black uppercase rounded-xl transition-all">Verified</button>
+                                <button type="button" @click="petsOnly = !petsOnly"
+                                    :class="petsOnly ? 'bg-white shadow-sm text-amber-600' : 'text-slate-400'"
+                                    class="flex-1 py-3 text-[9px] font-black uppercase rounded-xl transition-all">Pets</button>
+                            </div>
                             <input type="checkbox" name="ac" x-model="acOnly" class="hidden">
                             <input type="checkbox" name="meals" x-model="mealsFilter" class="hidden">
                             <input type="checkbox" name="wifi" x-model="wifiFilter" class="hidden">
                             <input type="checkbox" name="laundry" x-model="laundryFilter" class="hidden">
+                            <input type="checkbox" name="verified" x-model="verifiedOnly" class="hidden">
+                            <input type="checkbox" name="pets" x-model="petsOnly" class="hidden">
                         </div>
 
                         <!-- Furnishing Options Toggle -->
@@ -240,10 +251,9 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h5 class="text-white font-black text-lg uppercase tracking-widest flex items-center gap-3">
-                        <i class="fas fa-brain text-blue-400"></i> Smart Search Weights
+                        <i class="fas fa-brain text-blue-400"></i> AI Smart Recommendations
                     </h5>
-                    <p class="text-slate-400 text-[10px] font-bold mt-1 uppercase tracking-[0.2em]">Engineered proximity
-                        scanning for your lifestyle</p>
+                    <p class="text-slate-400 text-[10px] font-bold mt-1 uppercase tracking-[0.2em]">Add locations and select a mode to find your best matches</p>
                 </div>
                 <button type="button" @click="showSmartMatch = false"
                     class="text-slate-500 hover:text-white transition-colors">
@@ -255,17 +265,17 @@
                 <div class="space-y-6">
                     <label
                         class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 flex items-center justify-between">
-                        Active Destinations
+                        Your Desired Locations
                         <span
                             class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-[9px] font-black border border-blue-400/20"
-                            x-text="favoredLocations.length + ' Markers'">0 Markers</span>
+                            x-text="favoredLocations.length + ' Locations'">0 Locations</span>
                     </label>
 
                     <!-- Location Adder -->
                     <div class="flex gap-3">
                         <select x-model="preset"
                             class="flex-1 px-5 py-4 bg-slate-800/50 rounded-2xl border border-slate-700 text-white font-bold outline-none text-xs shadow-inner">
-                            <option value="">-- Quick Presets --</option>
+                            <option value="">-- Quick Select Landmarks --</option>
                             <option value="23.0371,72.5445|Gujarat University">Gujarat University</option>
                             <option value="23.0238,72.5273|Shivranjani Cross Roads">Shivranjani Cross Roads</option>
                             <option value="23.0225,72.5714|Lal Darwaja">Lal Darwaja</option>
@@ -308,29 +318,28 @@
 
                 <div class="flex flex-col justify-between">
                     <div class="space-y-10">
-                        <div class="space-y-4">
-                            <div
-                                class="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
-                                <span>Travel Distance Priority</span>
-                                <span x-text="distWeight + '%'"
-                                    class="text-blue-400 bg-blue-400/10 px-3 py-1 rounded-full">33%</span>
+                        <div class="space-y-6">
+                            <label class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Optimization Goal</label>
+                            <div class="flex p-1 bg-slate-800 rounded-2xl border border-slate-700">
+                                <button type="button" @click="smartMode = 'BALANCED'"
+                                    :class="smartMode === 'BALANCED' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'"
+                                    class="flex-1 py-3 text-[9px] font-black uppercase rounded-[1.2rem] transition-all">Balanced</button>
+                                <button type="button" @click="smartMode = 'LOW_COST'"
+                                    :class="smartMode === 'LOW_COST' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'"
+                                    class="flex-1 py-3 text-[9px] font-black uppercase rounded-[1.2rem] transition-all">Low Cost</button>
+                                <button type="button" @click="smartMode = 'NEAREST'"
+                                    :class="smartMode === 'NEAREST' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'"
+                                    class="flex-1 py-3 text-[9px] font-black uppercase rounded-[1.2rem] transition-all">Nearest</button>
                             </div>
-                            <input type="range" min="0" max="100" x-model="distWeight"
-                                class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500">
-                        </div>
-                        <div class="space-y-4">
-                            <div
-                                class="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
-                                <span>Rent Affordability Weight</span>
-                                <span x-text="costWeight + '%'"
-                                    class="text-emerald-400 bg-emerald-400/10 px-3 py-1 rounded-full">33%</span>
-                            </div>
-                            <input type="range" min="0" max="100" x-model="costWeight"
-                                class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                            <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-relaxed">
+                                <span x-show="smartMode === 'BALANCED'">Equal priority to commute and budget</span>
+                                <span x-show="smartMode === 'LOW_COST'">Aggressive focus on cheapest available suites</span>
+                                <span x-show="smartMode === 'NEAREST'">Minimize travel time from your bookmarks</span>
+                            </p>
                         </div>
                     </div>
 
-                    <button type="button" @click="runSmartMatch(distWeight, costWeight, favoredLocations, $el)"
+                    <button type="button" @click="runSmartMatch(smartMode, favoredLocations, $el)"
                         class="w-full mt-10 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-blue-900/40">
                         ANALYZE BEST SCENARIOS <i class="fas fa-sparkles ml-3"></i>
                     </button>

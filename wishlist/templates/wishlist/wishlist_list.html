@@ -4,19 +4,19 @@
 
 {% block portal_content %}
 <div class="max-w-6xl mx-auto py-10">
-    <div class="mb-10 flex items-center justify-between">
+    <div class="mb-8 md:mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tight">Favorite Properties</h1>
-            <p class="text-slate-500 font-medium mt-1">Properties you've saved for later consideration.</p>
+            <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Favorite Properties</h1>
+            <p class="text-slate-500 font-medium mt-1 text-sm md:text-base">Properties you've saved for later consideration.</p>
         </div>
-        <div class="bg-white border border-slate-200 px-6 py-3 rounded-2xl shadow-sm">
-            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Saved Items</p>
-            <p class="text-xl font-black text-slate-900">{{ wishlist_items.count }} Properties</p>
+        <div class="bg-white border border-slate-200 px-5 md:px-6 py-2.5 md:py-3 rounded-[1.5rem] md:rounded-2xl shadow-sm text-center sm:text-left">
+            <p class="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-400">Saved Items</p>
+            <p class="text-lg md:text-xl font-black text-slate-900">{{ wishlist_items.count }} Properties</p>
         </div>
     </div>
 
     <!-- Wishlist Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {% for item in wishlist_items %}
         {% with prop=item.property %}
         <div
@@ -45,12 +45,12 @@
             </div>
 
             <!-- Content Area -->
-            <div class="p-8">
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-xl font-black text-slate-900 line-clamp-1">{{ prop.title }}</h3>
+            <div class="p-6 md:p-8">
+                <div class="flex justify-between items-start mb-3 md:mb-4">
+                    <h3 class="text-lg md:text-xl font-black text-slate-900 line-clamp-1">{{ prop.title }}</h3>
                 </div>
 
-                <div class="flex items-center gap-2 text-slate-400 mb-6">
+                <div class="flex items-center gap-2 text-slate-400 mb-4 md:mb-6">
                     <i class="fas fa-location-dot text-xs text-arion-blue"></i>
                     <span class="text-xs font-bold">{{ prop.city }}</span>
                 </div>
@@ -70,15 +70,15 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between pt-6 border-t border-slate-50">
+                <div class="flex items-center justify-between pt-5 md:pt-6 border-t border-slate-50">
                     <div>
-                        <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest leading-none">Monthly
+                        <p class="text-[9px] md:text-[10px] font-black uppercase text-slate-400 tracking-widest leading-none">Monthly
                             Rent</p>
-                        <p class="text-2xl font-black text-arion-blue">₹{{ prop.price }}</p>
+                        <p class="text-xl md:text-2xl font-black text-arion-blue">₹{{ prop.price }}</p>
                     </div>
                     <a href="{% url 'property:detail' prop.id %}"
-                        class="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center hover:bg-arion-blue transition-all shadow-lg shadow-slate-200">
-                        <i class="fas fa-chevron-right"></i>
+                        class="w-10 h-10 md:w-12 md:h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center hover:bg-arion-blue transition-all shadow-lg shadow-slate-200">
+                        <i class="fas fa-chevron-right text-sm"></i>
                     </a>
                 </div>
             </div>

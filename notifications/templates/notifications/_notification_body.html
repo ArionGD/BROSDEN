@@ -4,10 +4,10 @@ Expects context: page_obj, unread_count, filter_type, read_filter, type_choices
 {% endcomment %}
 
 <!-- Page Header -->
-<div class="flex items-center justify-between mb-10">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 md:mb-10">
     <div>
-        <h1 class="text-3xl font-black text-slate-900 tracking-tight">Notifications</h1>
-        <p class="text-slate-500 font-medium mt-1 text-sm">
+        <h1 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Notifications</h1>
+        <p class="text-slate-500 font-medium mt-1 text-xs md:text-sm">
             {% if unread_count > 0 %}
             You have <span class="font-bold text-arion-blue">{{ unread_count }} unread</span> notification{{
             unread_count|pluralize }}.
@@ -19,7 +19,7 @@ Expects context: page_obj, unread_count, filter_type, read_filter, type_choices
         x-data @submit.prevent="fetch($el.action, { method: 'POST', body: new FormData($el) }).then(() => location.reload())">
         {% csrf_token %}
         <button type="submit"
-            class="flex items-center gap-2 bg-arion-blue hover:opacity-90 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-blue-200 text-sm">
+            class="w-full sm:w-auto flex items-center justify-center gap-2 bg-arion-blue hover:opacity-90 text-white px-5 py-3 md:py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-blue-200 text-xs md:text-sm">
             <i class="fas fa-check-double"></i> Mark All Read
         </button>
     </form>
@@ -27,18 +27,18 @@ Expects context: page_obj, unread_count, filter_type, read_filter, type_choices
 </div>
 
 <!-- Stats -->
-<div class="grid grid-cols-3 gap-4 mb-8">
-    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm text-center">
-        <p class="text-3xl font-black text-arion-blue">{{ unread_count }}</p>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Unread</p>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div class="bg-white border border-slate-200 rounded-2xl p-4 md:p-5 shadow-sm text-center">
+        <p class="text-2xl md:text-3xl font-black text-arion-blue">{{ unread_count }}</p>
+        <p class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Unread</p>
     </div>
-    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm text-center">
-        <p class="text-3xl font-black text-slate-900">{{ page_obj.paginator.count }}</p>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Total</p>
+    <div class="bg-white border border-slate-200 rounded-2xl p-4 md:p-5 shadow-sm text-center">
+        <p class="text-2xl md:text-3xl font-black text-slate-900">{{ page_obj.paginator.count }}</p>
+        <p class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Total</p>
     </div>
-    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm text-center">
-        <p class="text-3xl font-black text-green-500">{{ page_obj.paginator.count|add:"-"|add:unread_count }}</p>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Read</p>
+    <div class="bg-white border border-slate-200 rounded-2xl p-4 md:p-5 shadow-sm text-center">
+        <p class="text-2xl md:text-3xl font-black text-green-500">{{ page_obj.paginator.count|add:"-"|add:unread_count }}</p>
+        <p class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Read</p>
     </div>
 </div>
 
@@ -70,7 +70,7 @@ Expects context: page_obj, unread_count, filter_type, read_filter, type_choices
 <div class="space-y-3" id="notification-list">
     {% for notif in page_obj %}
     {% with color=notif.color icon=notif.icon %}
-    <div class="notification-card group relative bg-white border rounded-2xl p-5 flex items-start gap-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
+    <div class="notification-card group relative bg-white border rounded-2xl p-4 md:p-5 flex flex-col sm:flex-row items-start gap-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
         id="notif-{{ notif.pk }}" 
         x-data="{ isRead: {{ notif.is_read|yesno:'true,false' }}, show: true }"
         x-show="show"
@@ -80,42 +80,43 @@ Expects context: page_obj, unread_count, filter_type, read_filter, type_choices
         :class="isRead ? 'border-slate-200 opacity-75' : 'border-l-4 border-arion-blue'"
         @click="if (!$event.target.closest('button, form') && '{{ notif.link }}') window.location.href = '{{ notif.link }}'">
 
-        <!-- Icon -->
-        <div
-            class="w-12 h-12 flex-shrink-0 rounded-2xl flex items-center justify-center shadow-inner
-            {% if color == 'blue' %}bg-blue-100 text-blue-600{% elif color == 'green' %}bg-green-100 text-green-600{% elif color == 'purple' %}bg-purple-100 text-purple-600{% elif color == 'indigo' %}bg-indigo-100 text-indigo-600{% elif color == 'orange' %}bg-orange-100 text-orange-600{% elif color == 'cyan' %}bg-cyan-100 text-cyan-600{% elif color == 'yellow' %}bg-yellow-100 text-yellow-700{% else %}bg-slate-100 text-slate-600{% endif %}">
-            <i class="fas {{ icon }} text-lg"></i>
-        </div>
-
-        <!-- Content -->
-        <div class="flex-1 min-w-0">
-            <div class="flex items-start justify-between gap-2">
-                <div>
-                    <p class="font-bold text-slate-900 text-sm leading-tight">{{ notif.title }}</p>
-                    <p class="text-slate-500 text-sm mt-1 leading-relaxed">{{ notif.message }}</p>
-                </div>
-                <div class="flex items-center flex-shrink-0 gap-2">
-                    <template x-if="!isRead">
-                        <span class="w-2.5 h-2.5 rounded-full bg-arion-blue flex-shrink-0 unread-dot"></span>
-                    </template>
-                    <span class="text-[11px] text-slate-400 font-medium whitespace-nowrap">{{ notif.created_at|timesince
-                        }} ago</span>
-                </div>
+        <div class="flex items-start gap-4 w-full">
+            <!-- Icon -->
+            <div
+                class="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner
+                {% if color == 'blue' %}bg-blue-100 text-blue-600{% elif color == 'green' %}bg-green-100 text-green-600{% elif color == 'purple' %}bg-purple-100 text-purple-600{% elif color == 'indigo' %}bg-indigo-100 text-indigo-600{% elif color == 'orange' %}bg-orange-100 text-orange-600{% elif color == 'cyan' %}bg-cyan-100 text-cyan-600{% elif color == 'yellow' %}bg-yellow-100 text-yellow-700{% else %}bg-slate-100 text-slate-600{% endif %}">
+                <i class="fas {{ icon }} text-base md:text-lg"></i>
             </div>
-            <div class="flex items-center gap-2 mt-3">
-                <span
-                    class="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full
-                    {% if color == 'blue' %}bg-blue-50 text-blue-600{% elif color == 'green' %}bg-green-50 text-green-600{% elif color == 'purple' %}bg-purple-50 text-purple-600{% elif color == 'indigo' %}bg-indigo-50 text-indigo-600{% elif color == 'orange' %}bg-orange-50 text-orange-600{% elif color == 'cyan' %}bg-cyan-50 text-cyan-600{% elif color == 'yellow' %}bg-yellow-50 text-yellow-700{% else %}bg-slate-100 text-slate-600{% endif %}">
-                    {{ notif.get_notification_type_display }}
-                </span>
-                {% if notif.link %}<span class="text-[10px] text-slate-400 font-medium"><i
-                        class="fas fa-arrow-right text-[8px]"></i> Quick link</span>{% endif %}
+
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between gap-2">
+                    <div>
+                        <p class="font-bold text-slate-900 text-sm leading-tight">{{ notif.title }}</p>
+                        <p class="text-slate-500 text-xs md:text-sm mt-1 leading-relaxed">{{ notif.message }}</p>
+                    </div>
+                    <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
+                        <template x-if="!isRead">
+                            <span class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-arion-blue flex-shrink-0 unread-dot"></span>
+                        </template>
+                        <span class="text-[10px] md:text-[11px] text-slate-400 font-medium whitespace-nowrap">{{ notif.created_at|timesince }} ago</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 mt-3">
+                    <span
+                        class="text-[9px] md:text-[10px] font-black uppercase tracking-widest px-2 md:px-2.5 py-1 rounded-full
+                        {% if color == 'blue' %}bg-blue-50 text-blue-600{% elif color == 'green' %}bg-green-50 text-green-600{% elif color == 'purple' %}bg-purple-50 text-purple-600{% elif color == 'indigo' %}bg-indigo-50 text-indigo-600{% elif color == 'orange' %}bg-orange-50 text-orange-600{% elif color == 'cyan' %}bg-cyan-50 text-cyan-600{% elif color == 'yellow' %}bg-yellow-50 text-yellow-700{% else %}bg-slate-100 text-slate-600{% endif %}">
+                        {{ notif.get_notification_type_display }}
+                    </span>
+                    {% if notif.link %}<span class="text-[9px] md:text-[10px] text-slate-400 font-medium"><i
+                            class="fas fa-arrow-right text-[8px]"></i> Link</span>{% endif %}
+                </div>
             </div>
         </div>
 
         <!-- Actions -->
         <div
-            class="flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0">
+            class="flex sm:flex-col gap-2 mt-4 sm:mt-0 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0 w-full sm:w-auto">
             <template x-if="!isRead">
                 <button type="button" title="Mark as read"
                     @click.stop="
@@ -128,8 +129,9 @@ Expects context: page_obj, unread_count, filter_type, read_filter, type_choices
                             if (b) { b.textContent = data.unread_count; if (!data.unread_count) b.classList.add('hidden'); }
                         })
                     "
-                    class="w-8 h-8 bg-blue-50 hover:bg-arion-blue text-arion-blue hover:text-white rounded-lg flex items-center justify-center transition-all text-xs">
+                    class="flex-1 sm:w-8 sm:h-8 bg-blue-50 hover:bg-arion-blue text-arion-blue hover:text-white rounded-lg flex items-center justify-center transition-all p-2 sm:p-0">
                     <i class="fas fa-check"></i>
+                    <span class="sm:hidden ml-2 text-[10px] font-black uppercase">Mark Read</span>
                 </button>
             </template>
             <button type="button" title="Delete"
@@ -142,8 +144,9 @@ Expects context: page_obj, unread_count, filter_type, read_filter, type_choices
                         setTimeout(() => $el.closest('.notification-card').remove(), 300);
                     })
                 "
-                class="w-8 h-8 bg-red-50 hover:bg-red-500 text-red-500 hover:text-white rounded-lg flex items-center justify-center transition-all text-xs">
+                class="flex-1 sm:w-8 sm:h-8 bg-red-50 hover:bg-red-500 text-red-500 hover:text-white rounded-lg flex items-center justify-center transition-all p-2 sm:p-0">
                 <i class="fas fa-trash"></i>
+                <span class="sm:hidden ml-2 text-[10px] font-black uppercase">Delete</span>
             </button>
         </div>
     </div>

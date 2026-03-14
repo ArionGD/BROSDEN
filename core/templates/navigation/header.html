@@ -1,14 +1,20 @@
-<header class="sticky top-0 z-50 transition-all duration-500">
+{% load static %}
+<header class="sticky top-0 z-50 transition-all duration-500" x-data="{ mobileMenuOpen: false }">
     <div class="bg-white/60 backdrop-blur-3xl rounded-b-[3.5rem] border-b border-x border-white/40 shadow-2xl py-5 px-6 lg:px-20 flex items-center justify-between">
         <!-- Logo - Temporary House Branding -->
-        <a href="{% url 'index' %}" class="flex items-center no-underline group gap-2">
-            <div
-                class="flex items-center justify-center w-10 h-10 bg-arion-blue-light rounded-xl text-white shadow-lg shadow-blue-100 transform group-hover:rotate-6 transition-transform">
-                <i class="fas fa-home"></i>
-            </div>
-            <div class="flex items-baseline">
-                <span class="text-2xl font-black tracking-tighter text-slate-900">den</span>
-                <span class="w-2 h-2 bg-arion-orange rounded-full ml-1"></span>
+        <a href="{% url 'index' %}" class="flex items-center no-underline gap-3 group">
+            <svg class="h-10 w-auto transition-transform group-hover:scale-105" viewBox="0 0 436.49 511.97" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="logo-gradient" x1="-18.79" y1="359.73" x2="194.32" y2="359.73" gradientTransform="matrix(2.05, 0, 0, -2.05, 38.49, 992.77)" gradientUnits="userSpaceOnUse">
+                        <stop offset="0" stop-color="#f1562b"/><stop offset="0.3" stop-color="#f1542b"/><stop offset="0.41" stop-color="#f04d2a"/><stop offset="0.49" stop-color="#ef4229"/><stop offset="0.5" stop-color="#ef4029"/><stop offset="0.56" stop-color="#e83e28"/><stop offset="0.67" stop-color="#e13c26"/><stop offset="1" stop-color="#df3c26"/>
+                    </linearGradient>
+                </defs>
+                <path fill="url(#logo-gradient)" d="M436.49,165.63,420.7,122.75l11-24.6A8.47,8.47,0,0,0,430,88.78L400.11,58.6a48.16,48.16,0,0,0-50.23-11.66l-8.19,2.89L296.09.43,218.25,0,140.4.61,94.85,50.41l-8.11-2.87A48.33,48.33,0,0,0,36.19,59.3L5.62,90.05a6.73,6.73,0,0,0-1.36,7.47l11.47,25.56L0,165.92,56.47,380.64a89.7,89.7,0,0,0,34.7,50.23l111.68,75.69a24.73,24.73,0,0,0,30.89,0l111.62-75.8A88.86,88.86,0,0,0,380,380.53l46.07-176.14Z"/>
+                <path fill="#fff" d="M231,317.33a65.61,65.61,0,0,0-9.11-3.3h-5.49a66.08,66.08,0,0,0-9.11,3.3l-13.81,5.74-15.6,7.18-25.4,13.24a4.84,4.84,0,0,0-.62,9l22.06,15.49q7,5,13.55,10.76l6.21,5.35,13,11.37,5.89,5.2a10.15,10.15,0,0,0,12.95,0l25.39-22.18,13.6-10.77,22.06-15.79a4.8,4.8,0,0,0-.68-8.93l-25.36-12.8L244.84,323ZM387.4,175.2l.8-2.3a61.26,61.26,0,0,0-.57-9.18,73.51,73.51,0,0,0-8.19-15.44l-14.35-21.06-10.22-13.88-19.23-24a69.65,69.65,0,0,0-5.7-6.67h-.4L321,84.25l-42.27,8.14a33.49,33.49,0,0,1-12.59-1.84l-23.21-7.5-16.61-4.59a70.52,70.52,0,0,0-14.67,0L195,83.1l-23.21,7.54a33.89,33.89,0,0,1-12.59,1.84l-42.22-8-8.54-1.58h-.4a65.79,65.79,0,0,0-5.7,6.67l-19.2,24Q77.81,120.32,73,127.45L58.61,148.51l-6.78,11.31a51,51,0,0,0-1.94,13.35l.8,2.3A34.51,34.51,0,0,0,52,179.81l11.33,13,50.23,53.39a14.31,14.31,0,0,1,2.55,14.34L107.68,280a25.23,25.23,0,0,0-.39,16l1.64,4.52a43.58,43.58,0,0,0,13.39,18.76l7.89,6.43a15,15,0,0,0,14.35,1.72L172.62,314A70.38,70.38,0,0,0,187,304.52l22.46-20.27a9,9,0,0,0,3-6.36,9.08,9.08,0,0,0-2.5-6.56L159.2,237.18a9.83,9.83,0,0,1-3.09-12.45l19.66-36.95a19.21,19.21,0,0,0,1-14.67A22.37,22.37,0,0,0,165.58,163L103.94,139.8c-4.44-1.6-4.2-3.6.51-3.88l36.2-3.59a55.9,55.9,0,0,1,16.9,1.5l31.5,8.8a9.64,9.64,0,0,1,6.74,10.76L183.42,221a34.72,34.72,0,0,0-.61,11.41c.5,1.61,4.73,3.6,9.36,4.73l19.19,4a46.38,46.38,0,0,0,16.86,0l17.26-4c4.64-1,8.82-3.23,9.35-4.85a34.94,34.94,0,0,0-.63-11.4l-12.45-67.59a9.66,9.66,0,0,1,6.74-10.76l31.5-8.83a55.87,55.87,0,0,1,16.9-1.5l36.2,3.37c4.74.44,5,2.2.54,3.88L272,162.79a22.08,22.08,0,0,0-11.16,10.12,19.3,19.3,0,0,0,1,14.67l19.69,36.95A9.84,9.84,0,0,1,278.45,237l-50.66,34.23a9,9,0,0,0,.32,12.78l.15.14,22.49,20.27a71.46,71.46,0,0,0,14.35,9.47l28.06,13.35a14.89,14.89,0,0,0,14.34-1.76l7.9-6.45a43.53,43.53,0,0,0,13.38-18.8l1.65-4.52a25.27,25.27,0,0,0-.39-16l-8.26-19.49a14.4,14.4,0,0,1,2.55-14.35l50.23-53.45,11.3-13a35.8,35.8,0,0,0,1.54-4.24Z"/>
+            </svg>
+            <div class="flex items-baseline font-black tracking-tighter text-2xl">
+                <span class="text-blue-500">BrosDen</span>
+                <span class="text-yellow-400 text-4xl leading-none">.</span>
             </div>
         </a>
 
@@ -37,11 +43,11 @@
             </a>
         </nav>
 
-        <!-- Right Side Actions -->
-        <div class="flex items-center">
+        <!-- Right Side Actions & Mobile Toggle -->
+        <div class="flex items-center gap-4">
             {% if user.is_authenticated %}
-            <!-- User Profile Block with Dropdown -->
-            <div class="relative" x-data="{ open: false }">
+            <!-- User Profile Block with Dropdown (PC) -->
+            <div class="relative hidden sm:block" x-data="{ open: false }">
                 <button @click="open = !open"
                     class="flex items-center gap-3 bg-slate-50 hover:bg-slate-100 p-1.5 pr-4 rounded-full transition-all border border-slate-100 group"
                     :class="{'bg-slate-100 ring-2 ring-arion-blue/10': open}">
@@ -59,7 +65,7 @@
                         class="fas fa-chevron-down text-xs text-slate-300 group-hover:text-slate-600 transition-colors ml-1"></i>
                 </button>
 
-                <!-- Dropdown Menu -->
+                <!-- Dropdown Menu (PC) -->
                 <div x-show="open" @click.outside="open = false"
                     x-transition:enter="transition ease-out duration-200"
                     x-transition:enter-start="opacity-0 scale-95 translate-y-2"
@@ -105,11 +111,107 @@
                 </div>
             </div>
             {% else %}
-            <!-- Login Button - Arion Blue Light Style -->
+            <!-- Login Button (PC) -->
             <a href="{% url 'accounts:login' %}"
-                class="bg-arion-blue-light hover:bg-arion-blue text-white font-black px-10 h-11 rounded-full shadow-lg shadow-blue-200 transition-all transform hover:-translate-y-1 active:scale-95 text-[13px] no-underline flex items-center justify-center">
+                class="hidden sm:flex bg-arion-blue-light hover:bg-arion-blue text-white font-black px-8 h-10 rounded-full shadow-lg shadow-blue-200 transition-all transform hover:-translate-y-1 active:scale-95 text-[12px] no-underline items-center justify-center">
                 Login
             </a>
+            {% endif %}
+
+            <!-- Mobile Hamburger Toggle -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" 
+                class="lg:hidden w-11 h-11 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-slate-200 transition-all active:scale-95 z-[60]">
+                <i class="fas fa-bars" x-show="!mobileMenuOpen"></i>
+                <i class="fas fa-times" x-show="mobileMenuOpen"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Drawer Menu -->
+    <div x-show="mobileMenuOpen" 
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 -translate-y-8"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-8"
+        class="fixed inset-x-0 top-[88px] bg-white border-b border-slate-100 shadow-2xl z-40 lg:hidden overflow-y-auto max-h-[calc(100vh-88px)]"
+        style="display: none;"
+        @click.away="mobileMenuOpen = false">
+        
+        <div class="p-6 flex flex-col gap-4">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1 px-2">Navigation</p>
+            
+            <a href="{% url 'index' %}" class="flex items-center justify-between px-6 py-4 bg-slate-50 rounded-2xl text-slate-900 font-bold no-underline hover:bg-slate-100 transition-all group">
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-house-chimney text-arion-blue w-6 text-center"></i> 
+                    <span>Home</span>
+                </div>
+                <i class="fas fa-chevron-right text-[10px] text-slate-300 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+            <a href="{% url 'map:explore' %}" class="flex items-center justify-between px-6 py-4 bg-slate-50 rounded-2xl text-slate-900 font-bold no-underline hover:bg-slate-100 transition-all group">
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-compass text-arion-orange w-6 text-center"></i> 
+                    <span>Explore</span>
+                </div>
+                <i class="fas fa-chevron-right text-[10px] text-slate-300 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+            <a href="{% url 'support' %}" class="flex items-center justify-between px-6 py-4 bg-slate-50 rounded-2xl text-slate-900 font-bold no-underline hover:bg-slate-100 transition-all group">
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-headset text-red-500 w-6 text-center"></i> 
+                    <span>Support</span>
+                </div>
+                <i class="fas fa-chevron-right text-[10px] text-slate-300 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+
+            <div class="w-full h-px bg-slate-100 my-1"></div>
+
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1 px-2">Discovery</p>
+            <a href="{% url 'map:explore' %}" class="flex items-center gap-4 px-6 py-4 bg-slate-900 text-white rounded-2xl font-black no-underline shadow-lg shadow-slate-200">
+                <i class="fas fa-key w-6 text-center text-arion-orange"></i> 
+                <span>Rent a Property</span>
+            </a>
+            <a href="{% if user.is_authenticated and user.role == 'OWNER' %}{% url 'analytics:owner_dashboard' %}{% else %}{% url 'accounts:login' %}{% endif %}" 
+                class="flex items-center gap-4 px-6 py-4 bg-slate-900 text-white rounded-2xl font-black no-underline shadow-lg shadow-slate-200">
+                <i class="fas fa-plus w-6 text-center text-arion-blue"></i> 
+                <span>List Your Den</span>
+            </a>
+
+            <div class="w-full h-px bg-slate-100 my-1"></div>
+
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1 px-4">Your Account</p>
+            {% if user.is_authenticated %}
+                <div class="flex items-center gap-4 px-6 py-4 bg-slate-50 rounded-2xl mb-1">
+                     <div class="w-12 h-12 bg-arion-blue rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-100">
+                        {{ user.username|slice:":1"|upper }}
+                     </div>
+                     <div>
+                         <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Welcome back</p>
+                         <p class="text-base font-black text-slate-900 leading-none truncate overflow-hidden max-w-[180px]">{{ user.username }}</p>
+                     </div>
+                </div>
+
+                {% if user.role == 'TENANT' %}
+                <a href="{% url 'analytics:tenant_dashboard' %}" class="flex items-center gap-4 px-6 py-4 bg-indigo-600 text-white rounded-2xl font-black no-underline">
+                    <i class="fas fa-chart-line w-6 text-center"></i> My Dashboard
+                </a>
+                {% elif user.role == 'OWNER' %}
+                <a href="{% url 'analytics:owner_dashboard' %}" class="flex items-center gap-4 px-6 py-4 bg-indigo-600 text-white rounded-2xl font-black no-underline">
+                    <i class="fas fa-chart-pie w-6 text-center"></i> Owner Portal
+                </a>
+                {% elif user.role == 'ADMIN' %}
+                <a href="{% url 'sys_admin:dashboard' %}" class="flex items-center gap-4 px-6 py-4 bg-indigo-600 text-white rounded-2xl font-black no-underline">
+                    <i class="fas fa-shield-halved w-6 text-center"></i> Management Panel
+                </a>
+                {% endif %}
+
+                <a href="{% url 'accounts:logout' %}" class="flex items-center gap-4 px-6 py-4 bg-red-50 text-red-600 rounded-2xl font-black no-underline">
+                    <i class="fas fa-power-off w-6 text-center"></i> Sign Out
+                </a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}" class="flex items-center justify-center gap-3 bg-arion-blue text-white font-black py-4 rounded-2xl no-underline text-base active:scale-95 transition-all">
+                    Login to BrosDen <i class="fas fa-arrow-right-to-bracket text-sm"></i>
+                </a>
             {% endif %}
         </div>
     </div>

@@ -3,20 +3,20 @@
 {% block title %}Register | BrosDen-AV{% endblock %}
 
 {% block content %}
-<div class="min-h-[80vh] flex items-center justify-center p-6 bg-slate-50">
+<div class="min-h-[80vh] flex items-center justify-center p-4 md:p-6 bg-slate-50">
     <div
-        class="max-w-2xl w-full bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100 transition-all hover:shadow-blue-100">
-        <div class="px-10 py-12">
-            <div class="text-center mb-10">
+        class="max-w-2xl w-full bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100 transition-all hover:shadow-blue-100">
+        <div class="px-6 py-8 md:px-10 md:py-12">
+            <div class="text-center mb-8 md:mb-10">
                 <div
-                    class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-lg shadow-blue-200 mb-6">
-                    <i class="fas fa-user-plus text-white text-2xl"></i>
+                    class="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-blue-600 rounded-2xl shadow-lg shadow-blue-200 mb-6">
+                    <i class="fas fa-user-plus text-white text-xl md:text-2xl"></i>
                 </div>
-                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Create Account</h2>
-                <p class="text-slate-500 font-medium mt-2">Join our premium housing community</p>
+                <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Create Account</h2>
+                <p class="text-slate-500 text-sm md:text-base font-medium mt-2">Join our premium housing community</p>
             </div>
 
-            <form method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {% csrf_token %}
 
                 <!-- Username -->

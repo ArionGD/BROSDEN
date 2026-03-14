@@ -20,7 +20,10 @@ def get_owner_badge(owner):
         return {'color': 'white', 'name': 'No Reviews', 'avg': 0.0, 'icon': 'fa-solid fa-circle'}
     
     avg_rating = reviews.aggregate(Avg('rating'))['rating__avg']
-    avg_rating = round(avg_rating, 2)
+    if avg_rating is None:
+        return {'color': 'white', 'name': 'No Reviews', 'avg': 0.0, 'icon': 'fa-solid fa-circle'}
+        
+    avg_rating = round(float(avg_rating), 2)
     
     if avg_rating > 4.5:
         return {'color': 'cyan', 'name': 'Diamond', 'avg': avg_rating, 'icon': 'fa-solid fa-gem'}

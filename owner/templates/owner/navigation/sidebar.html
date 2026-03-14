@@ -1,5 +1,5 @@
 <aside id="sidebar"
-    class="h-full bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 transition-all duration-300 relative overflow-hidden group/sidebar"
+    class="hidden lg:flex h-full bg-white border-r border-slate-200 flex-col shadow-xl z-20 transition-all duration-300 relative overflow-hidden group/sidebar"
     :class="sidebarCollapsed ? 'w-16' : 'w-72'">
     <div class="py-6 overflow-y-auto overflow-x-hidden flex-1 no-scrollbar flex flex-col px-4 transition-all duration-300"
          :class="sidebarCollapsed ? 'px-2' : 'px-4'">
@@ -9,20 +9,20 @@
             Core Workspace</h2>
         <nav class="space-y-1.5 mb-8">
             <a href="{% url 'analytics:owner_dashboard' %}"
-                class="flex items-center bg-blue-50 text-arion-blue rounded-xl font-bold transition-all shadow-sm group/nav"
-                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-arion-blue'">
+                class="flex items-center rounded-xl font-bold transition-all group/nav {% if request.resolver_match.view_name == 'analytics:owner_dashboard' or request.resolver_match.view_name == 'owner:dashboard' %}bg-blue-50 text-arion-blue shadow-sm{% else %}text-slate-500 hover:bg-slate-50{% endif %}"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 {% if request.resolver_match.view_name == 'analytics:owner_dashboard' or request.resolver_match.view_name == 'owner:dashboard' %}border-arion-blue{% else %}border-transparent hover:border-slate-300{% endif %}'">
                 <i class="fas fa-chart-pie w-6 text-center text-base group-hover/nav:scale-110 transition-transform"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Dashboard</span>
             </a>
             <a href="{% url 'property:owner_list' %}"
-                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
-                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
+                class="flex items-center rounded-xl font-bold transition-all group/nav {% if request.resolver_match.view_name == 'property:owner_list' %}bg-blue-50 text-arion-blue shadow-sm{% else %}text-slate-500 hover:bg-slate-50{% endif %}"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 {% if request.resolver_match.view_name == 'property:owner_list' %}border-arion-blue{% else %}border-transparent hover:border-slate-300{% endif %}'">
                 <i class="fas fa-city w-6 text-center text-base text-blue-500 group-hover/nav:scale-110 transition-transform"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">My Properties</span>
             </a>
             <a href="{% url 'map:explore' %}"
-                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
-                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
+                class="flex items-center rounded-xl font-bold transition-all group/nav {% if request.resolver_match.view_name == 'map:explore' %}bg-blue-50 text-arion-blue shadow-sm{% else %}text-slate-500 hover:bg-slate-50{% endif %}"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 {% if request.resolver_match.view_name == 'map:explore' %}border-arion-blue{% else %}border-transparent hover:border-slate-300{% endif %}'">
                 <i class="fas fa-map-location-dot w-6 text-center text-base text-blue-500 group-hover/nav:scale-110 transition-transform"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Map Explore</span>
             </a>
@@ -34,38 +34,38 @@
             Operations Center</h2>
         <nav class="space-y-1.5 mb-8">
             <a href="{% url 'booking:owner_bookings' %}"
-                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
-                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
+                class="flex items-center rounded-xl font-bold transition-all group/nav {% if request.resolver_match.view_name == 'booking:owner_bookings' %}bg-blue-50 text-arion-blue shadow-sm{% else %}text-slate-500 hover:bg-slate-50{% endif %}"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 {% if request.resolver_match.view_name == 'booking:owner_bookings' %}border-arion-blue{% else %}border-transparent hover:border-slate-300{% endif %}'">
                 <i class="fas fa-bell w-6 text-center text-base text-amber-500 group-hover/nav:scale-110 transition-transform"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Requests</span>
             </a>
             <a href="{% url 'contract:rent_dashboard' %}"
-                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
-                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
+                class="flex items-center rounded-xl font-bold transition-all group/nav {% if request.resolver_match.view_name == 'contract:rent_dashboard' %}bg-blue-50 text-arion-blue shadow-sm{% else %}text-slate-500 hover:bg-slate-50{% endif %}"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 {% if request.resolver_match.view_name == 'contract:rent_dashboard' %}border-arion-blue{% else %}border-transparent hover:border-slate-300{% endif %}'">
                 <i class="fas fa-hand-holding-dollar w-6 text-center text-base text-indigo-500 group-hover/nav:scale-110 transition-transform"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Rent Ledger</span>
             </a>
             <a href="{% url 'reviews:owner_list' %}"
-                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
-                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
+                class="flex items-center rounded-xl font-bold transition-all group/nav {% if request.resolver_match.view_name == 'reviews:owner_list' %}bg-blue-50 text-arion-blue shadow-sm{% else %}text-slate-500 hover:bg-slate-50{% endif %}"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 {% if request.resolver_match.view_name == 'reviews:owner_list' %}border-arion-blue{% else %}border-transparent hover:border-slate-300{% endif %}'">
                 <i class="fas fa-star w-6 text-center text-base text-amber-500 group-hover/nav:scale-110 transition-transform"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Reviews</span>
             </a>
             <a href="{% url 'chat:chat_list' %}"
-                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
-                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
+                class="flex items-center rounded-xl font-bold transition-all group/nav {% if 'chat' in request.resolver_match.view_name %}bg-blue-50 text-arion-blue shadow-sm{% else %}text-slate-500 hover:bg-slate-50{% endif %}"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 {% if 'chat' in request.resolver_match.view_name %}border-arion-blue{% else %}border-transparent hover:border-slate-300{% endif %}'">
                 <i class="fas fa-comments w-6 text-center text-base text-arion-blue group-hover/nav:scale-110 transition-transform"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Messages</span>
             </a>
             <a href="{% url 'payment:history' %}"
-                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
-                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
+                class="flex items-center rounded-xl font-bold transition-all group/nav {% if request.resolver_match.view_name == 'payment:history' %}bg-blue-50 text-arion-blue shadow-sm{% else %}text-slate-500 hover:bg-slate-50{% endif %}"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 {% if request.resolver_match.view_name == 'payment:history' %}border-arion-blue{% else %}border-transparent hover:border-slate-300{% endif %}'">
                 <i class="fas fa-file-invoice-dollar w-6 text-center text-base text-green-500 group-hover/nav:scale-110 transition-transform"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">Payments</span>
             </a>
             <a href="{% url 'accounts:owner_kyc' %}"
-                class="flex items-center text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-all group/nav"
-                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 border-transparent hover:border-slate-300'">
+                class="flex items-center rounded-xl font-bold transition-all group/nav {% if request.resolver_match.view_name == 'accounts:owner_kyc' %}bg-blue-50 text-arion-blue shadow-sm{% else %}text-slate-500 hover:bg-slate-50{% endif %}"
+                :class="sidebarCollapsed ? 'px-2 justify-center border-l-0 py-3' : 'px-4 py-2 border-l-4 {% if request.resolver_match.view_name == 'accounts:owner_kyc' %}border-arion-blue{% else %}border-transparent hover:border-slate-300{% endif %}'">
                 <i class="fas fa-shield-halved w-6 text-center text-base group-hover/nav:scale-110 transition-transform"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text text-[15px] ml-4 whitespace-nowrap">KYC Status</span>
             </a>
