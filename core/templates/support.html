@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Support & About | BrosDen-AV{% endblock %}
 
@@ -10,55 +11,99 @@
             <div class="absolute top-0 -left-10 w-96 h-96 bg-arion-blue rounded-full blur-[100px]"></div>
             <div class="absolute bottom-0 -right-10 w-96 h-96 bg-arion-orange rounded-full blur-[100px]"></div>
         </div>
-        <div class="container mx-auto px-6 relative z-10 text-center">
-            <span class="inline-block px-4 py-1.5 mb-6 text-[10px] font-black uppercase tracking-[0.3em] text-arion-orange bg-arion-orange/10 rounded-full">Help, Missions & Vision</span>
-            <h1 class="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">
-                Your Success is <br><span class="text-arion-blue">Our Mission.</span>
-            </h1>
-            <p class="max-w-2xl mx-auto text-slate-400 text-lg md:text-xl font-medium leading-relaxed">
-                BrosDen-AV is committed to simplifying the property searching experience through spatial innovation and radical transparency.
-            </p>
+        <div class="w-full px-6 lg:px-20 relative z-10">
+            <div class="max-w-3xl text-left">
+                    <span class="inline-block px-4 py-1.5 mb-6 text-[10px] font-black uppercase tracking-[0.3em] text-arion-orange bg-arion-orange/10 rounded-full">Help Center</span>
+                    <h1 class="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">
+                        Home Search, <br><span class="text-arion-blue">Evolved.</span>
+                    </h1>
+                    <p class="text-slate-400 text-lg md:text-xl font-medium leading-relaxed max-w-xl">
+                        Skip the confusion and the commissions. We’re building a transparent gateway for you to discover premium spaces with <span class="text-arion-orange font-bold">Zero Brokerage</span> and absolute peace of mind.
+                    </p>
+            </div>
         </div>
     </section>
 
     <!-- Info & Mission (From About Page) -->
-    <section class="container mx-auto px-6 -mt-16 relative z-20">
+    <section class="max-w-7xl mx-auto px-6 -mt-16 relative z-20">
         <div class="bg-white rounded-[3.5rem] p-12 md:p-20 shadow-2xl border border-slate-100">
-            <div class="grid lg:grid-cols-2 gap-20 items-center">
-                <div>
+            <div class="flex flex-col lg:flex-row gap-20 items-start">
+                <div class="lg:w-3/5 text-left">
                     <span class="text-arion-blue font-black tracking-widest uppercase text-xs">Our Identity</span>
                     <h2 class="text-4xl font-black text-slate-900 mt-2 mb-8 leading-tight">Everything you need to <br><span class="text-arion-orange">find your dream home.</span></h2>
-                    <p class="text-slate-500 text-lg leading-relaxed font-medium mb-10">
+                    <p class="text-slate-500 text-lg leading-relaxed font-medium mb-12">
                         At BrosDen-AV, we provide a transparent platform for owners and tenants to connect directly. No middlemen, no confusion, just pure spatial discovery.
                     </p>
-                    <div class="space-y-8">
-                        <div class="flex gap-6">
-                            <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 text-arion-blue shadow-sm">
-                                <i class="fas fa-shield-halved text-xl"></i>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+                        <div class="flex gap-5 group">
+                            <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center shrink-0 text-arion-blue shadow-sm border border-blue-100 group-hover:bg-arion-blue group-hover:text-white transition-all duration-300">
+                                <i class="fas fa-brain text-lg"></i>
                             </div>
                             <div>
-                                <h4 class="text-lg font-black text-slate-900 mb-1">Verified Listings</h4>
-                                <p class="text-slate-500 font-medium">Every property meets our 45-point quality and trust standards through rigorous verification.</p>
+                                <h4 class="text-base font-black text-slate-900 mb-1">AI Smart Search</h4>
+                                <p class="text-slate-500 text-xs font-medium leading-relaxed">Multi-dimensional weighted matching logic.</p>
                             </div>
                         </div>
-                        <div class="flex gap-6">
-                            <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 text-arion-orange shadow-sm">
-                                <i class="fas fa-handshake text-xl"></i>
+                        <div class="flex gap-5 group">
+                            <div class="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center shrink-0 text-arion-orange shadow-sm border border-orange-100 group-hover:bg-arion-orange group-hover:text-white transition-all duration-300">
+                                <i class="fas fa-face-smile-wink text-lg"></i>
                             </div>
                             <div>
-                                <h4 class="text-lg font-black text-slate-900 mb-1">Direct Connection</h4>
-                                <p class="text-slate-500 font-medium">Skip broker fees. Chat directly with owners and manage your entire rental journey in one place.</p>
+                                <h4 class="text-base font-black text-slate-900 mb-1">Vibe Check</h4>
+                                <p class="text-slate-500 text-xs font-medium leading-relaxed">Verified community sentiment mapping.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-5 group">
+                            <div class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center shrink-0 text-emerald-600 shadow-sm border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                                <i class="fas fa-map-location-dot text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-black text-slate-900 mb-1">Spatial Discovery</h4>
+                                <p class="text-slate-500 text-xs font-medium leading-relaxed">Interactive neighborhood proximity engine.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-5 group">
+                            <div class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center shrink-0 text-indigo-600 shadow-sm border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                                <i class="fas fa-file-signature text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-black text-slate-900 mb-1">E-Contracts</h4>
+                                <p class="text-slate-500 text-xs font-medium leading-relaxed">Digital, legally binding paperless signing.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-5 group">
+                            <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 text-slate-600 shadow-sm border border-slate-200 group-hover:bg-slate-900 group-hover:text-white transition-all duration-300">
+                                <i class="fas fa-shield-halved text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-black text-slate-900 mb-1">Verified Trust</h4>
+                                <p class="text-slate-500 text-xs font-medium leading-relaxed">45-point physical premise verification.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-5 group">
+                            <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 text-slate-600 shadow-sm border border-slate-200 group-hover:bg-slate-900 group-hover:text-white transition-all duration-300">
+                                <i class="fas fa-handshake text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-black text-slate-900 mb-1">Direct Chat</h4>
+                                <p class="text-slate-500 text-xs font-medium leading-relaxed">Zero brokerage. Chat directly with owners.</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="relative group">
-                    <div class="aspect-square bg-slate-100 rounded-[3rem] overflow-hidden border-[10px] border-slate-50 shadow-xl group-hover:scale-[1.02] transition-transform duration-700 flex items-center justify-center">
+                <!-- Right Side Illustration Box -->
+                <div class="lg:w-2/5 relative group self-center">
+                    <div class="aspect-square bg-white rounded-[3rem] overflow-hidden border-[10px] border-slate-50 shadow-xl group-hover:scale-[1.02] transition-transform duration-700 flex items-center justify-center">
+                         <!-- Static Identity Illustration -->
+                         <img src="{% static 'bd about img.png' %}" alt="BrosDen Identity" class="w-full h-full object-cover">
+                         
+                         <!-- Placeholder Icon (Commented)
                          <i class="fas fa-building text-arion-blue/10 text-[18rem]"></i>
+                         -->
                     </div>
-                    <div class="absolute -bottom-8 -right-8 bg-arion-blue text-white p-10 rounded-[2.5rem] shadow-2xl">
-                        <p class="text-4xl font-black">100%</p>
-                        <p class="text-[10px] font-black uppercase tracking-widest opacity-80">Zero Brokerage</p>
+                    <div class="absolute -bottom-10 -right-6 bg-arion-blue text-white p-7 rounded-[2rem] shadow-2xl">
+                        <p class="text-2xl font-black">100%</p>
+                        <p class="text-[9px] font-black uppercase tracking-widest opacity-80">Zero Brokerage</p>
                     </div>
                 </div>
             </div>
@@ -66,7 +111,7 @@
     </section>
 
     <!-- Support Options (From Contact Page) -->
-    <section class="container mx-auto px-6 py-28">
+    <section class="max-w-7xl mx-auto px-6 py-28">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="bg-white rounded-[2.5rem] p-10 shadow-xl border border-slate-100 hover:border-arion-blue/30 transition-all group">
                 <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
@@ -112,23 +157,88 @@
             </div>
 
             <div class="space-y-6" x-data="{ activeFaq: null }">
-                <!-- FAQ Item -->
+                <!-- FAQ Item 1: Verification -->
                 <div class="border-b border-slate-100 last:border-0 pb-6">
                     <button @click="activeFaq = (activeFaq === 1 ? null : 1)" 
                             class="w-full flex justify-between items-center py-4 cursor-pointer group text-left outline-none">
                         <span class="text-xl font-bold text-slate-700 group-hover:text-arion-blue transition-all"
-                              :class="{ 'text-arion-blue': activeFaq === 1 }">How do I verify my tenant profile?</span>
+                              :class="{ 'text-arion-blue': activeFaq === 1 }">What are verified listings and how are they checked?</span>
                         <div class="w-10 h-10 rounded-full border border-slate-100 flex items-center justify-center group-hover:bg-slate-50 transition-all bg-white"
                              :class="{ 'bg-arion-blue/5 border-arion-blue/20': activeFaq === 1 }">
                             <i class="fas fa-plus text-slate-300 transition-transform duration-300"
                                :class="{ 'rotate-45 text-arion-blue': activeFaq === 1 }"></i>
                         </div>
                     </button>
-                    <div x-show="activeFaq === 1" 
-                         x-collapse
-                         x-cloak
-                         class="text-slate-500 leading-loose font-medium pt-4">
-                        To verify your profile, go to your dashboard settings and upload a valid government ID. Our team Approval typically happens within 24-48 hours.
+                    <div x-show="activeFaq === 1" x-collapse x-cloak class="text-slate-500 leading-relaxed font-medium pt-4 bg-slate-50/50 p-6 rounded-2xl">
+                        Verified listings are properties that have undergone our comprehensive 45-point inspection. Our team physically visits the premise or conducts a live video verification to confirm the property's condition, existence, and ownership documents. This ensures 100% protection against fraudulent listings.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2: Zero Brokerage -->
+                <div class="border-b border-slate-100 last:border-0 pb-6">
+                    <button @click="activeFaq = (activeFaq === 2 ? null : 2)" 
+                            class="w-full flex justify-between items-center py-4 cursor-pointer group text-left outline-none">
+                        <span class="text-xl font-bold text-slate-700 group-hover:text-arion-blue transition-all"
+                              :class="{ 'text-arion-blue': activeFaq === 2 }">Is it really zero brokerage? How do you make money?</span>
+                        <div class="w-10 h-10 rounded-full border border-slate-100 flex items-center justify-center group-hover:bg-slate-50 transition-all bg-white"
+                             :class="{ 'bg-arion-blue/5 border-arion-blue/20': activeFaq === 2 }">
+                            <i class="fas fa-plus text-slate-300 transition-transform duration-300"
+                                :class="{ 'rotate-45 text-arion-blue': activeFaq === 2 }"></i>
+                        </div>
+                    </button>
+                    <div x-show="activeFaq === 2" x-collapse x-cloak class="text-slate-500 leading-relaxed font-medium pt-4 bg-slate-50/50 p-6 rounded-2xl">
+                        Yes! BrosDen-AV charging zero brokerage fees to both tenants and owners. We generate revenue through value-added services such as digital rental agreements, insurance products, and premium listing visibility for owners. Our core mission is to keep the property discovery process free and direct.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3: Direct Chat -->
+                <div class="border-b border-slate-100 last:border-0 pb-6">
+                    <button @click="activeFaq = (activeFaq === 3 ? null : 3)" 
+                            class="w-full flex justify-between items-center py-4 cursor-pointer group text-left outline-none">
+                        <span class="text-xl font-bold text-slate-700 group-hover:text-arion-blue transition-all"
+                              :class="{ 'text-arion-blue': activeFaq === 3 }">How do I contact an owner safely?</span>
+                        <div class="w-10 h-10 rounded-full border border-slate-100 flex items-center justify-center group-hover:bg-slate-50 transition-all bg-white"
+                             :class="{ 'bg-arion-blue/5 border-arion-blue/20': activeFaq === 3 }">
+                            <i class="fas fa-plus text-slate-300 transition-transform duration-300"
+                                :class="{ 'rotate-45 text-arion-blue': activeFaq === 3 }"></i>
+                        </div>
+                    </button>
+                    <div x-show="activeFaq === 3" x-collapse x-cloak class="text-slate-500 leading-relaxed font-medium pt-4 bg-slate-50/50 p-6 rounded-2xl">
+                        Use our built-in real-time spatial chat engine. This keeps your personal contact information private until you feel comfortable sharing it. We recommend scheduling site visits only after discussing your requirements through our secure platform.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4: Rent Payments -->
+                <div class="border-b border-slate-100 last:border-0 pb-6">
+                    <button @click="activeFaq = (activeFaq === 4 ? null : 4)" 
+                            class="w-full flex justify-between items-center py-4 cursor-pointer group text-left outline-none">
+                        <span class="text-xl font-bold text-slate-700 group-hover:text-arion-blue transition-all"
+                              :class="{ 'text-arion-blue': activeFaq === 4 }">Can I pay my rent using a credit card?</span>
+                        <div class="w-10 h-10 rounded-full border border-slate-100 flex items-center justify-center group-hover:bg-slate-50 transition-all bg-white"
+                             :class="{ 'bg-arion-blue/5 border-arion-blue/20': activeFaq === 4 }">
+                            <i class="fas fa-plus text-slate-300 transition-transform duration-300"
+                                :class="{ 'rotate-45 text-arion-blue': activeFaq === 4 }"></i>
+                        </div>
+                    </button>
+                    <div x-show="activeFaq === 4" x-collapse x-cloak class="text-slate-500 leading-relaxed font-medium pt-4 bg-slate-50/50 p-6 rounded-2xl">
+                        Absolutely. Our 'Rent Pay' feature allows you to use Credit Cards, UPI, or Net Banking. Paying with a credit card through our platform helps you earn reward points and build a better credit score for future home loans.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 5: Security Deposits -->
+                <div class="border-b border-slate-100 last:border-0 pb-6">
+                    <button @click="activeFaq = (activeFaq === 5 ? null : 5)" 
+                            class="w-full flex justify-between items-center py-4 cursor-pointer group text-left outline-none">
+                        <span class="text-xl font-bold text-slate-700 group-hover:text-arion-blue transition-all"
+                              :class="{ 'text-arion-blue': activeFaq === 5 }">What happens if there's a dispute over the deposit?</span>
+                        <div class="w-10 h-10 rounded-full border border-slate-100 flex items-center justify-center group-hover:bg-slate-50 transition-all bg-white"
+                             :class="{ 'bg-arion-blue/5 border-arion-blue/20': activeFaq === 5 }">
+                            <i class="fas fa-plus text-slate-300 transition-transform duration-300"
+                                :class="{ 'rotate-45 text-arion-blue': activeFaq === 5 }"></i>
+                        </div>
+                    </button>
+                    <div x-show="activeFaq === 5" x-collapse x-cloak class="text-slate-500 leading-relaxed font-medium pt-4 bg-slate-50/50 p-6 rounded-2xl">
+                        Our smart digital agreements include clear clauses regarding security deposit deductions and move-out inspections. We offer a 'Deposit Shield' service that acts as a neutral third-party mediator to resolve disputes based on move-in/move-out evidence photos uploaded to our platform.
                     </div>
                 </div>
             </div>

@@ -3,58 +3,69 @@
 {% block title %}Login | BrosDen-AV{% endblock %}
 
 {% block content %}
-<div class="min-h-[70vh] flex items-center justify-center p-6 bg-slate-50">
-    <div
-        class="max-w-md w-full bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100 transition-all hover:shadow-blue-100">
-        <div class="px-10 py-12">
-            <div class="text-center mb-10">
-                <div
-                    class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-lg shadow-blue-200 mb-6">
-                    <i class="fas fa-lock text-white text-2xl"></i>
+<div class="min-h-[80vh] flex items-center justify-center p-6 bg-slate-50">
+    <div class="max-w-4xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100 flex flex-col md:flex-row transition-all hover:shadow-blue-100">
+        
+        <!-- Left Side: Branding/Visual -->
+        <div class="md:w-5/12 bg-slate-900 p-12 flex flex-col justify-center relative overflow-hidden">
+            <div class="absolute inset-0 z-0 opacity-20">
+                <div class="absolute top-0 -left-10 w-64 h-64 bg-blue-600 rounded-full blur-[80px]"></div>
+                <div class="absolute bottom-0 -right-10 w-64 h-64 bg-orange-600 rounded-full blur-[80px]"></div>
+            </div>
+            <div class="relative z-10">
+                <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-8 border border-white/20">
+                    <i class="fas fa-home text-white text-2xl"></i>
                 </div>
-                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Welcome Back</h2>
-                <p class="text-slate-500 font-medium mt-2">Login to access your portal</p>
+                <h2 class="text-4xl font-black text-white leading-tight mb-4">Welcome to <br><span class="text-blue-400">BrosDen.</span></h2>
+                <p class="text-slate-400 font-medium">Your gateway to commission-free <br>modern living spaces.</p>
+            </div>
+        </div>
+
+        <!-- Right Side: Login Form -->
+        <div class="md:w-7/12 px-10 py-10">
+            <div class="mb-8">
+                <h3 class="text-2xl font-black text-slate-900 tracking-tight">Login Portal</h3>
+                <p class="text-slate-500 font-medium mt-1">Enter your credentials to continue</p>
             </div>
 
-
-            <form method="POST" class="space-y-6">
+            <form method="POST" class="space-y-5">
                 {% csrf_token %}
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Username</label>
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Username</label>
                     <div class="relative">
                         <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
                         <input type="text" name="username" required
-                            class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800"
-                            placeholder="Enter your username">
+                            class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800"
+                            placeholder="username">
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400 px-1">Password</label>
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Password</label>
                     <div class="relative">
                         <i class="fas fa-key absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
                         <input type="password" name="password" required
-                            class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800"
+                            class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800"
                             placeholder="••••••••">
                     </div>
                 </div>
 
                 <button type="submit"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl shadow-lg shadow-blue-200 transition-all transform hover:-translate-y-1 active:scale-95 text-lg">
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl shadow-lg shadow-blue-200 transition-all transform hover:-translate-y-1 active:scale-95 text-base mt-2">
                     Sign In <i class="fas fa-arrow-right ml-2 text-sm"></i>
                 </button>
             </form>
 
-            <div class="mt-8 pt-8 border-t border-slate-50 text-center">
-                <p class="text-slate-500 font-medium">Don't have an account? <a href="{% url 'accounts:register' %}"
-                        class="text-blue-600 font-bold hover:underline">Register now</a></p>
+            <div class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
+                <p class="text-slate-500 text-sm font-medium">New here? <a href="{% url 'accounts:register' %}"
+                        class="text-blue-600 font-bold hover:underline">Register</a></p>
+                <p class="text-[9px] text-slate-300 font-black uppercase tracking-widest">v2.4.0</p>
             </div>
-        </div>
-
-        <!-- Helpful Tip for Dev -->
-        <div class="bg-blue-50 px-10 py-4 text-center">
-            <p class="text-[10px] text-blue-400 font-black uppercase tracking-widest">Dev Preview: Use 'tenant' or
-                'owner' / 'password'</p>
+            
+            <!-- Dev Tip -->
+            <div class="mt-4 text-center">
+                <p class="text-[9px] text-slate-300 font-bold uppercase tracking-widest">Preview: tenant / pass</p>
+            </div>
         </div>
     </div>
 </div>
