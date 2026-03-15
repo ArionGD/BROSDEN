@@ -84,6 +84,13 @@ class KYCForm(forms.ModelForm):
             'co_owner_contact': forms.TextInput(attrs={'class': I_CLASS, 'placeholder': 'Co-owner contact number'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Explicitly mark secondary fields as NOT required to allow partial submissions
+        for field_name, field in self.fields.items():
+            if field_name != 'full_name':
+                field.required = False
+
 
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:

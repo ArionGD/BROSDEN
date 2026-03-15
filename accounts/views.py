@@ -105,8 +105,20 @@ def _shared_kyc_logic(request, template_name):
                 messages.info(request, "✅ KYC Submitted Successfully. Awaiting Manual Admin Verification.")
                 kyc_obj.is_verified = False
 
-            kyc_obj.save()
+            try:
+                kyc_obj.save()
+                print(f"DEBUG: KYC saved for user {request.user.username}. ID Type: {kyc_obj.id_type}, Verification: {kyc_obj.is_verified}")
+                messages.success(request, "✅ KYC Application Logged! It has been sent to the Admin verification queue.")
+            except Exception as e:
+                print(f"ERROR: Failed to save KYC for {request.user.username}: {e}")
+                messages.error(request, "❌ System Error: Could not log your KYC. Please contact support.")
+                
             return redirect(request.user.get_dashboard_url())
+        else:
+            # Explicitly log and show form errors to the user
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"Error in {field}: {error}")
     else:
         form = KYCForm(instance=kyc)
         if is_verified:

@@ -64,13 +64,16 @@ def listing_requests(request):
 @admin_required
 def tenant_kyc(request):
     """View to manage tenant KYC verification."""
-    kyc_list = KYC.objects.filter(user__role='TENANT', is_verified=False).order_by('-submitted_at')
+    # Show all pending KYC records to ensure nothing is missed
+    kyc_list = KYC.objects.filter(is_verified=False).order_by('-submitted_at')
+    # Filter by tenants in the template or here if needed, but let's see all for now
     return render(request, 'sys_admin/operations/tenant_kyc.html', {'kyc_list': kyc_list})
 
 @admin_required
 def owner_kyc(request):
     """View to manage owner KYC verification."""
-    kyc_list = KYC.objects.filter(user__role='OWNER', is_verified=False).order_by('-submitted_at')
+    # Show all pending KYC records for visibility
+    kyc_list = KYC.objects.filter(is_verified=False).order_by('-submitted_at')
     return render(request, 'sys_admin/operations/owner_kyc.html', {'kyc_list': kyc_list})
 
 @admin_required
