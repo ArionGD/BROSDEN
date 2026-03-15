@@ -80,23 +80,29 @@ def _shared_kyc_logic(request, template_name):
             elif kyc_obj.id_type == 'PAN':
                 img_to_verify = kyc_obj.pan_image
 
-            if img_to_verify:
-                kyc_obj.save()  # Save first so that .path is available
-                extracted_no = verify_id_document(kyc_obj.id_type, img_to_verify.path)
+            # OCR Logic — Bypassed if TESSERACT is disabled (e.g., PythonAnywhere)
+            if getattr(settings, 'ENABLE_TESSERACT', True) and img_to_verify:
+                try:
+                    kyc_obj.save()  # Save first so that .path is available
+                    extracted_no = verify_id_document(kyc_obj.id_type, img_to_verify.path)
 
-                if extracted_no:
-                    kyc_obj.extracted_id_no = extracted_no
-                    user_no = kyc_obj.id_number.replace(" ", "")
+                    if extracted_no:
+                        kyc_obj.extracted_id_no = extracted_no
+                        user_no = kyc_obj.id_number.replace(" ", "")
 
-                    if user_no == extracted_no:
-                        kyc_obj.is_verified = True
-                        kyc_obj.verification_score = 100.0
-                        messages.success(request, f"✅ OCR Match! {kyc_obj.id_type} verified instantly.")
+                        if user_no == extracted_no:
+                            kyc_obj.is_verified = True
+                            kyc_obj.verification_score = 100.0
+                            messages.success(request, f"✅ OCR Match! {kyc_obj.id_type} verified instantly.")
+                        else:
+                            messages.warning(request, f"⚠️ OCR extracted '{extracted_no}' but you entered '{kyc_obj.id_number}'. Pending manual review.")
                     else:
-                        messages.warning(request, f"⚠️ OCR extracted '{extracted_no}' but you entered '{kyc_obj.id_number}'. Pending manual review.")
-                else:
-                    messages.warning(request, "⚠️ OCR could not read your ID clearly. Submitted for KYC review (Wrong Docs).")
+                        messages.warning(request, "⚠️ OCR could not read your ID clearly. Submitted for manual verification.")
+                except Exception as e:
+                    messages.warning(request, "⚠️ System OCR is currently unavailable. Submitted for manual review.")
             else:
+                # If Tesseract is disabled, just save as pending
+                messages.info(request, "✅ KYC Submitted Successfully. Awaiting Manual Admin Verification.")
                 kyc_obj.is_verified = False
 
             kyc_obj.save()
