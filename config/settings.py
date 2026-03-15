@@ -175,5 +175,5 @@ if os.name == 'nt':
 else:
     TESSERACT_CMD = 'tesseract'
 
-# Toggle this for environments like PythonAnywhere where Tesseract is not available
-ENABLE_TESSERACT = os.environ.get('ENABLE_TESSERACT', 'True') == 'True'
+# Default to False for PythonAnywhere (No native binary support)
+ENABLE_TESSERACT = os.environ.get('ENABLE_TESSERACT', 'False') == 'True'
