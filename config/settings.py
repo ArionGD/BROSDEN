@@ -10,10 +10,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-ih63!yxy5o@tt(@a55_w=f-fk&xyqptb6(gh%^hq$cg+0it#v&'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+import os
+import dj_database_url
 
-ALLOWED_HOSTS = []
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+
+CSRF_TRUSTED_ORIGINS = ['https://*.run.app', 'http://*.localhost', 'http://127.0.0.1']
 
 
 # Application definition
@@ -54,7 +59,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -87,10 +92,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 
@@ -139,7 +145,7 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 
@@ -163,4 +169,8 @@ DEFAULT_FROM_EMAIL  = 'BrosDen-AV <aditya.raj322005@gmail.com>'
 # ─────────────────────────────────────────────────────────────────────────────
 # OCR Configuration — Tesseract
 # ─────────────────────────────────────────────────────────────────────────────
-TESSERACT_CMD = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# Production Linux Path for Cloud Run
+if os.name == 'nt':
+    TESSERACT_CMD = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+else:
+    TESSERACT_CMD = 'tesseract'
