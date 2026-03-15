@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from .forms import UserRegistrationForm, KYCForm
 from .models import KYC, ProMembership
 from .ocr_utils import verify_id_document
