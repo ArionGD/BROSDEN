@@ -174,3 +174,6 @@ if os.name == 'nt':
     TESSERACT_CMD = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 else:
     TESSERACT_CMD = 'tesseract'
+
+# Toggle this for environments like PythonAnywhere where Tesseract is not available
+ENABLE_TESSERACT = os.environ.get('ENABLE_TESSERACT', 'True') == 'True'
