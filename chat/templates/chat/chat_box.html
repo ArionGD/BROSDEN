@@ -3,51 +3,51 @@
 {% block title %}Chat with {{ other_user.username }} | BrosDen-AV{% endblock %}
 
 {% block portal_content %}
-<div class="max-w-4xl mx-auto h-[calc(100vh-200px)] flex flex-col">
+<div class="max-w-4xl mx-auto h-[calc(100vh-160px)] md:h-[calc(100vh-200px)] flex flex-col">
     <!-- Chat Header -->
-    <div class="mb-6 flex items-center justify-between">
-        <div class="flex items-center gap-4">
+    <div class="mb-4 md:mb-6 flex items-center justify-between">
+        <div class="flex items-center gap-3 md:gap-4">
             <a href="{% url 'chat:chat_list' %}"
-                class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all">
-                <i class="fas fa-arrow-left"></i>
+                class="w-8 h-8 md:w-10 md:h-10 bg-slate-100 rounded-lg md:rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all">
+                <i class="fas fa-arrow-left text-xs md:text-sm"></i>
             </a>
             <div>
-                <h3 class="text-xl font-black text-slate-900 leading-tight">
+                <h3 class="text-lg md:text-xl font-black text-slate-900 leading-tight">
                     {% for p in conversation.participants.all %}
                     {% if p != user %}{{ p.username }}{% endif %}
                     {% endfor %}
                 </h3>
-                <p class="text-[10px] text-emerald-500 font-black uppercase tracking-widest">Online Now</p>
+                <p class="text-[9px] md:text-[10px] text-emerald-500 font-black uppercase tracking-widest mt-0.5">Online Now</p>
             </div>
         </div>
-        <button class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400">
-            <i class="fas fa-ellipsis-v"></i>
+        <button class="w-8 h-8 md:w-10 md:h-10 bg-slate-100 rounded-lg md:rounded-xl flex items-center justify-center text-slate-400">
+            <i class="fas fa-ellipsis-v text-xs md:text-sm"></i>
         </button>
     </div>
 
     <!-- Message Area -->
-    <div class="flex-1 bg-white rounded-[3rem] shadow-xl border-2 border-blue-100 p-8 overflow-y-auto mb-6 flex flex-col gap-6"
+    <div class="flex-1 bg-white rounded-[2rem] md:rounded-[3rem] shadow-xl border-2 border-blue-50 p-4 md:p-8 overflow-y-auto mb-4 md:mb-6 flex flex-col gap-4 md:gap-6"
         id="message-container">
         {% for message in chat_messages %}
         <div class="flex {% if message.sender == user %}justify-end{% endif %}">
             <div
-                class="max-w-[70%] {% if message.sender == user %}bg-arion-blue text-white rounded-t-3xl rounded-bl-3xl shadow-md shadow-blue-500/20{% else %}bg-slate-50 text-slate-800 rounded-t-3xl rounded-br-3xl border border-slate-100{% endif %} p-5 shadow-sm">
-                <p class="text-sm font-medium leading-relaxed">{{ message.content }}</p>
+                class="max-w-[85%] md:max-w-[70%] {% if message.sender == user %}bg-arion-blue text-white rounded-t-2xl md:rounded-t-3xl rounded-bl-2xl md:rounded-bl-3xl shadow-md shadow-blue-500/20{% else %}bg-slate-50 text-slate-800 rounded-t-2xl md:rounded-t-3xl rounded-br-2xl md:rounded-br-3xl border border-slate-100{% endif %} p-4 md:p-5 shadow-sm">
+                <p class="text-xs md:text-sm font-medium leading-relaxed">{{ message.content }}</p>
                 <div class="mt-2 flex items-center gap-2 {% if message.sender == user %}justify-end{% endif %}">
                     <span
-                        class="text-[9px] {% if message.sender == user %}text-blue-100{% else %}text-slate-400{% endif %} font-bold uppercase tracking-tighter">
+                        class="text-[8px] md:text-[9px] {% if message.sender == user %}text-blue-100{% else %}text-slate-400{% endif %} font-bold uppercase tracking-tighter">
                         {{ message.timestamp|date:"H:i" }}</span>
                     {% if message.sender == user %}
                     <i
-                        class="fas fa-check-double text-[9px] {% if message.is_read %}text-white{% else %}text-blue-200{% endif %}"></i>
+                        class="fas fa-check-double text-[8px] md:text-[9px] {% if message.is_read %}text-white{% else %}text-blue-200{% endif %}"></i>
                     {% endif %}
                 </div>
             </div>
         </div>
         {% empty %}
         <div class="flex-1 flex flex-col items-center justify-center opacity-30">
-            <i class="fas fa-comments text-8xl mb-4 text-arion-blue filter drop-shadow-md p-4 bg-blue-50/50 rounded-full"></i>
-            <p class="font-black uppercase tracking-widest text-xs text-slate-500">No messages yet. Say hello!</p>
+            <i class="fas fa-comments text-6xl md:text-8xl mb-4 text-arion-blue filter drop-shadow-md p-4 bg-blue-50/50 rounded-full"></i>
+            <p class="font-black uppercase tracking-widest text-[10px] md:text-xs text-slate-500">No messages yet. Say hello!</p>
         </div>
         {% endfor %}
     </div>
@@ -55,11 +55,11 @@
     <!-- Input Area -->
     <form method="POST" class="relative">
         {% csrf_token %}
-        <input type="text" name="content" autocomplete="off" placeholder="Type your message..." required
-            class="w-full bg-white border-2 border-blue-200 rounded-[2rem] py-5 px-8 pr-20 text-sm font-bold text-slate-800 focus:outline-none focus:border-arion-blue focus:ring-4 focus:ring-blue-100 transition-all shadow-xl">
+        <input type="text" name="content" autocomplete="off" placeholder="Your message..." required
+            class="w-full bg-white border-2 border-blue-100 rounded-[1.5rem] md:rounded-[2rem] py-4 md:py-5 px-6 md:px-8 pr-16 md:pr-20 text-xs md:text-sm font-bold text-slate-800 focus:outline-none focus:border-arion-blue focus:ring-4 focus:ring-blue-100 transition-all shadow-lg md:shadow-xl">
         <button type="submit"
-            class="absolute right-3 top-3 bottom-3 w-14 bg-arion-blue hover:bg-black text-white rounded-full flex items-center justify-center transition-all shadow-lg shadow-blue-300/50 hover:scale-105 transform">
-            <i class="fas fa-paper-plane relative ml-0.5 mt-0.5"></i>
+            class="absolute right-2 md:right-3 top-2 md:top-3 bottom-2 md:bottom-3 w-10 md:w-14 bg-arion-blue hover:bg-black text-white rounded-full flex items-center justify-center transition-all shadow-lg shadow-blue-300/50 hover:scale-105 transform">
+            <i class="fas fa-paper-plane relative text-xs md:text-sm"></i>
         </button>
     </form>
 </div>

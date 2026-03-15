@@ -45,8 +45,7 @@
                 </div>
                 <div class="text-right">
                     <p class="text-2xl font-black">₹{{ amount }}</p>
-                    <p class="text-[10px] text-white/70">Order ID: #ORD_{{ user.id }}_{{ user.username|slice:":3"|upper
-                        }}</p>
+                    <p class="text-[10px] text-white/70">Order ID: #ORD_{{ user.id }}_{{ user.username|slice:":3"|upper }}</p>
                 </div>
             </div>
         </div>
@@ -63,8 +62,7 @@
                     <span class="font-bold text-slate-900">₹{{ breakdown.security_deposit }}</span>
                 </div>
                 <div class="flex justify-between text-xs">
-                    <span class="text-slate-500 font-medium">Auto-Contract Fee ({{ breakdown.contract_percentage
-                        }}%)</span>
+                    <span class="text-slate-500 font-medium">Auto-Contract Fee ({{ breakdown.contract_percentage }}%)</span>
                     <span class="font-bold text-slate-900">₹{{ breakdown.contract_fee }}</span>
                 </div>
                 <div class="pt-2 border-t border-slate-200 flex justify-between text-sm font-black text-blue-600">

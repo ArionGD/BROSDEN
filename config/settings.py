@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'onboarding',
     'feedback',
     'sys_admin',
+    'database',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

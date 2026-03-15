@@ -14,8 +14,6 @@
                     radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
                     radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.05) 0px, transparent 50%),
                     radial-gradient(at 0% 100%, rgba(239, 68, 68, 0.05) 0px, transparent 50%);
-        border-radius: 3rem;
-        padding: 2rem;
     }
 
     .glass-card {
@@ -46,12 +44,19 @@
     }
 </style>
 
-<div class="mb-10">
-    <h1 class="text-3xl font-black text-slate-900 tracking-tighter">User Matrix</h1>
-    <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-1">Growth & Identity Distribution Interface</p>
+<div class="mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+    <div>
+        <h1 class="text-3xl font-black text-slate-900 tracking-tighter">User Matrix</h1>
+        <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-1">Growth & Identity Distribution Interface</p>
+    </div>
+    <a href="{% url 'sys_admin:export_accounts_excel' %}" 
+       class="bg-white/40 backdrop-blur-xl border border-white/60 px-6 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-slate-700 font-black text-xs uppercase tracking-widest hover:bg-white/60 transition-all hover:-translate-y-1 active:scale-95 group">
+        <i class="fas fa-file-excel text-emerald-500 text-lg group-hover:scale-110 transition-transform"></i>
+        Export Account Audit (XLSX)
+    </a>
 </div>
 
-<div class="matrix-workspace">
+<div class="matrix-workspace rounded-[1.5rem] md:rounded-[3rem] p-4 md:p-8">
 
 <!-- BLOCK 1: TENANT ECOSYSTEM -->
 <div class="mb-12">

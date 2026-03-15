@@ -7,8 +7,9 @@
     <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-1">Global Identity Verification Audit</p>
 </div>
 
-<div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
-    <table class="w-full text-left">
+<div class="bg-white rounded-[2rem] md:rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto no-scrollbar">
+        <table class="w-full text-left min-w-[900px] lg:min-w-0">
         <thead class="bg-slate-50 border-b border-slate-200">
             <tr>
                 <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Submit Date</th>
@@ -82,7 +83,8 @@
             </tr>
             {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </div>
 </div>
 
 <script>

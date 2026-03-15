@@ -2,18 +2,18 @@
 {% load account_tags %}
 
 {% block portal_content %}
-<div class="flex items-center justify-between mb-10">
-    <div class="flex items-center gap-4">
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-8 md:mb-10 gap-6">
+    <div class="flex items-center gap-3 md:gap-4">
         <a href="{% url 'sys_admin:owner_kyc' %}" class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-900 hover:text-white transition-all no-underline">
-            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-left text-sm"></i>
         </a>
         <div>
-            <h1 class="text-3xl font-black text-slate-900 tracking-tighter">Partner Audit: {{ kyc.full_name }}</h1>
-            <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-1">Owner Asset Sentinel — ID: #{{ kyc.pk }}</p>
+            <h1 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter">Partner Audit</h1>
+            <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-1 line-clamp-1">{{ kyc.full_name }} — #{{ kyc.pk }}</p>
         </div>
     </div>
-    <div class="flex items-center gap-3">
-        <span class="bg-indigo-100 text-indigo-600 text-[10px] font-black uppercase px-4 py-2 rounded-xl border border-indigo-200 shadow-sm">
+    <div class="flex items-center">
+        <span class="w-full md:w-auto text-center bg-indigo-100 text-indigo-600 text-[10px] font-black uppercase px-6 py-2.5 rounded-xl border border-indigo-200 shadow-sm">
             Asset Verification Mode
         </span>
     </div>
@@ -23,12 +23,12 @@
     <div class="lg:col-span-2 space-y-8">
         <!-- Identity Dossier -->
         <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
-            <div class="px-8 py-6 bg-slate-50 border-b border-slate-100">
+            <div class="px-6 md:px-8 py-5 md:py-6 bg-slate-50 border-b border-slate-100">
                 <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
                     <i class="fas fa-id-card text-blue-500"></i> Partner Identity
                 </h3>
             </div>
-            <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                 <div class="space-y-6">
                     <div>
                         <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Full Name</p>
@@ -57,12 +57,12 @@
 
         <!-- Ownership Proof & Asset Details -->
         <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
-            <div class="px-8 py-6 bg-slate-50 border-b border-slate-100">
+            <div class="px-6 md:px-8 py-5 md:py-6 bg-slate-50 border-b border-slate-100">
                 <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
                     <i class="fas fa-file-invoice text-emerald-500"></i> Asset Proofs
                 </h3>
             </div>
-            <div class="p-8 space-y-8">
+            <div class="p-6 md:p-8 space-y-6 md:space-y-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100">
                         <p class="text-[9px] font-black text-emerald-600 uppercase mb-1">Property Type</p>

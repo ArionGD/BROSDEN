@@ -56,7 +56,7 @@
                     </td>
                     <td class="px-8 py-6 text-right">
                         {% if item.status != 'PAID' %}
-                        <form method="post" action="#" class="inline">
+                        <form method="post" action="{% url 'contract:mark_rent_paid' item.id %}" class="inline">
                              {% csrf_token %}
                              <button type="submit" class="text-[10px] font-black text-indigo-600 hover:text-indigo-700 uppercase tracking-widest">
                                  Mark as Received

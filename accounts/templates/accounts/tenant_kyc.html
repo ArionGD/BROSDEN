@@ -7,21 +7,21 @@
 {% block role_steps %}
 <!-- ═══ STEP 2: TENANT INFO ═══════════════════════════════ -->
 <div class="step-container" x-show="currentStep === 2" x-transition.opacity style="display: none;">
-    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-        <div class="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-5">
+    <div class="bg-white rounded-[2rem] md:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        <div class="bg-gradient-to-r from-emerald-500 to-teal-600 px-6 md:px-8 py-4 md:py-5">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-home text-white"></i>
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-white/20 rounded-lg md:rounded-xl flex items-center justify-center">
+                    <i class="fas fa-home text-white text-sm md:text-base"></i>
                 </div>
                 <div>
-                    <h2 class="text-white font-black text-lg">Tenant-Specific Details</h2>
-                    <p class="text-emerald-100 text-xs font-medium">Required for police verification</p>
+                    <h2 class="text-white font-black text-base md:text-lg">Tenant Details</h2>
+                    <p class="text-emerald-100 text-[10px] md:text-xs font-medium">Required for police verification</p>
                 </div>
             </div>
         </div>
-        <div class="p-8 space-y-6">
+        <div class="p-6 md:p-8 space-y-6">
             <!-- Tenant Type Toggle -->
-            <div class="flex flex-col sm:flex-row items-center gap-4 bg-slate-50 p-5 rounded-3xl border border-slate-100 shadow-sm mb-4">
+            <div class="flex flex-col sm:flex-row items-center gap-4 bg-slate-50 p-4 md:p-5 rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm mb-4">
                 <div class="flex items-center gap-2">
                     <i class="fas fa-user-tag text-emerald-500"></i>
                     <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Verify Identity As:</span>
@@ -42,26 +42,26 @@
                 </div>
             </div>
 
-            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-5">
-                <h3 class="font-black text-slate-700 flex items-center gap-2">
+            <div class="bg-slate-50 rounded-2xl p-5 md:p-6 border border-slate-100 space-y-5">
+                <h3 class="font-black text-slate-700 text-sm md:text-base flex items-center gap-2">
                     <i class="fas fa-briefcase text-emerald-500"></i> <span x-text="tenantType === 'STUDENT' ? 'College & Guardian Details' : 'Occupation & Employer Details'"></span>
                 </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
                     <div class="space-y-2">
-                        <label class="text-xs font-black uppercase tracking-widest text-slate-400" x-text="tenantType === 'STUDENT' ? 'Degree / Course of Study' : 'Occupation'"></label>
+                        <label class="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-400" x-text="tenantType === 'STUDENT' ? 'Degree / Course of Study' : 'Occupation'"></label>
                         {{ form.occupation }}
                     </div>
                     <div class="space-y-2">
-                        <label class="text-xs font-black uppercase tracking-widest text-slate-400" x-text="tenantType === 'STUDENT' ? 'College / Guardian Name' : 'Employer Name'"></label>
+                        <label class="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-400" x-text="tenantType === 'STUDENT' ? 'College / Guardian Name' : 'Employer Name'"></label>
                         {{ form.employer_name }}
                     </div>
                 </div>
                 <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400" x-text="tenantType === 'STUDENT' ? 'College / Home Address' : 'Office Address'"></label>
+                    <label class="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-400" x-text="tenantType === 'STUDENT' ? 'College / Home Address' : 'Office Address'"></label>
                     {{ form.employer_address }}
                 </div>
                 <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-400" x-text="tenantType === 'STUDENT' ? 'Monthly Allowance (₹)' : 'Monthly Income (₹)'"></label>
+                    <label class="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-400" x-text="tenantType === 'STUDENT' ? 'Monthly Allowance (₹)' : 'Monthly Income (₹)'"></label>
                     {{ form.monthly_income }}
                 </div>
             </div>
@@ -98,64 +98,59 @@
 
 <!-- ═══ STEP 3: DOCUMENTS ═════════════════════════════════════════ -->
 <div class="step-container" x-show="currentStep === 3" x-transition.opacity style="display: none;">
-    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden mb-8">
-        <div class="bg-gradient-to-r from-amber-500 to-orange-500 px-8 py-5">
+    <div class="bg-white rounded-[2rem] md:rounded-3xl border border-slate-100 shadow-sm overflow-hidden mb-8">
+        <div class="bg-gradient-to-r from-amber-500 to-orange-500 px-6 md:px-8 py-4 md:py-5">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-file-contract text-white"></i>
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-white/20 rounded-lg md:rounded-xl flex items-center justify-center">
+                    <i class="fas fa-file-contract text-white text-sm md:text-base"></i>
                 </div>
                 <div>
-                    <h2 class="text-white font-black text-lg">Document Uploads</h2>
-                    <p class="text-orange-100 text-xs font-medium">Your identity will be auto-verified using OCR</p>
+                    <h2 class="text-white font-black text-base md:text-lg">Document Uploads</h2>
+                    <p class="text-orange-100 text-[10px] md:text-xs font-medium">Auto-verified using AI OCR</p>
                 </div>
             </div>
         </div>
         
-        <div class="p-8 space-y-6">
-            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-5">
-                <h3 class="font-black text-slate-700 flex items-center gap-2"><i class="fas fa-camera text-arion-blue"></i> Identity Documents</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-6 md:p-8 space-y-6">
+            <div class="bg-slate-50 rounded-2xl p-5 md:p-6 border border-slate-100 space-y-5">
+                <h3 class="font-black text-slate-700 text-sm md:text-base flex items-center gap-2"><i class="fas fa-camera text-arion-blue"></i> Identity Documents</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
                     <div class="space-y-2">
-                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">Selfie Verification <span class="text-blue-400 text-[9px]">Liveness Check</span></label>
-                        <div class="relative group h-36 bg-white border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all hover:border-blue-400 hover:bg-blue-50/20 overflow-hidden">
+                        <label class="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-400">Selfie Verification <span class="text-blue-400 text-[9px]">Liveness</span></label>
+                        <div class="relative group h-32 md:h-36 bg-white border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all hover:border-blue-400 hover:bg-blue-50/20 overflow-hidden">
                             <input type="file" name="passport_photo" id="passport_photo" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" @change="previewDoc($event, 'passport_prev', 'passport_ph')">
                             <img x-ref="passport_prev" id="passport_prev" class="absolute inset-0 w-full h-full object-cover rounded-2xl {% if kyc and kyc.passport_photo.name %}block{% else %}hidden{% endif %}" {% if kyc and kyc.passport_photo.name %}src="{{ kyc.passport_photo.url }}"{% endif %}>
                             <div x-ref="passport_ph" id="passport_ph" class="text-center p-4 {% if kyc and kyc.passport_photo.name %}hidden{% endif %}">
-                                <div class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-2 mx-auto group-hover:bg-blue-500 group-hover:text-white transition-all shadow-inner border border-blue-100">
-                                    <i class="fas fa-camera-rotate text-2xl"></i>
+                                <div class="w-12 h-12 md:w-16 md:h-14 bg-blue-50 text-blue-500 rounded-lg md:rounded-xl flex items-center justify-center mb-2 mx-auto group-hover:bg-blue-500 group-hover:text-white transition-all shadow-inner border border-blue-100">
+                                    <i class="fas fa-camera-rotate text-xl md:text-2xl"></i>
                                 </div>
-                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Take a Selfie</p>
-                                <p class="text-[8px] text-slate-300 font-bold uppercase mt-1">Face Match Required</p>
+                                <p class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">Add Selfie</p>
                             </div>
                         </div>
                     </div>
                     <div class="space-y-2">
-                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">Aadhaar Card <span class="text-blue-400 text-[9px]">OCR Scan</span></label>
-                        <div class="relative group h-36 bg-white border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all hover:border-blue-400 hover:bg-blue-50/20 overflow-hidden">
+                        <label class="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-400">Aadhaar Card <span class="text-blue-400 text-[9px]">OCR</span></label>
+                        <div class="relative group h-32 md:h-36 bg-white border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all hover:border-blue-400 hover:bg-blue-50/20 overflow-hidden">
                             <input type="file" name="aadhaar_image" id="aadhaar_image" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" @change="previewDoc($event, 'aadhaar_prev', 'aadhaar_ph')">
                             <img x-ref="aadhaar_prev" id="aadhaar_prev" class="absolute inset-0 w-full h-full object-cover rounded-2xl {% if kyc and kyc.aadhaar_image.name %}block{% else %}hidden{% endif %}" {% if kyc and kyc.aadhaar_image.name %}src="{{ kyc.aadhaar_image.url }}"{% endif %}>
                             <div x-ref="aadhaar_ph" id="aadhaar_ph" class="text-center p-4 {% if kyc and kyc.aadhaar_image.name %}hidden{% endif %}">
-                                <div class="w-16 h-12 bg-emerald-50 text-emerald-500 rounded-xl flex items-center justify-center mb-2 mx-auto group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-inner border border-emerald-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
-                                    </svg>
+                                <div class="w-12 h-10 md:w-16 md:h-12 bg-emerald-50 text-emerald-500 rounded-lg md:rounded-xl flex items-center justify-center mb-2 mx-auto group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-inner border border-emerald-100">
+                                    <i class="fas fa-id-card text-xl md:text-2xl"></i>
                                 </div>
-                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Front Side</p>
+                                <p class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">Aadhaar Front</p>
                             </div>
                         </div>
                     </div>
                     <div class="space-y-2">
-                        <label class="text-xs font-black uppercase tracking-widest text-slate-400">PAN Card <span class="text-blue-400 text-[9px]">OCR Scan</span></label>
-                        <div class="relative group h-36 bg-white border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all hover:border-blue-400 hover:bg-blue-50/20 overflow-hidden">
+                        <label class="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-400">PAN Card <span class="text-blue-400 text-[9px]">OCR</span></label>
+                        <div class="relative group h-32 md:h-36 bg-white border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center transition-all hover:border-blue-400 hover:bg-blue-50/20 overflow-hidden">
                             <input type="file" name="pan_image" id="pan_image" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" @change="previewDoc($event, 'pan_prev', 'pan_ph')">
                             <img x-ref="pan_prev" id="pan_prev" class="absolute inset-0 w-full h-full object-cover rounded-2xl {% if kyc and kyc.pan_image.name %}block{% else %}hidden{% endif %}" {% if kyc and kyc.pan_image.name %}src="{{ kyc.pan_image.url }}"{% endif %}>
                             <div x-ref="pan_ph" id="pan_ph" class="text-center p-4 {% if kyc and kyc.pan_image.name %}hidden{% endif %}">
-                                <div class="w-16 h-12 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center mb-2 mx-auto group-hover:bg-amber-500 group-hover:text-white transition-all shadow-inner border border-amber-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                    </svg>
+                                <div class="w-12 h-10 md:w-16 md:h-12 bg-amber-50 text-amber-500 rounded-lg md:rounded-xl flex items-center justify-center mb-2 mx-auto group-hover:bg-amber-500 group-hover:text-white transition-all shadow-inner border border-amber-100">
+                                    <i class="fas fa-credit-card text-xl md:text-2xl"></i>
                                 </div>
-                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">PAN Front</p>
+                                <p class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">PAN Front</p>
                             </div>
                         </div>
                     </div>

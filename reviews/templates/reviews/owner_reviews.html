@@ -3,36 +3,33 @@
 {% block title %}Property Reviews | BrosDen-AV{% endblock %}
 
 {% block portal_content %}
-<div class="max-w-6xl mx-auto py-10">
-    <div class="mb-10 flex items-center justify-between">
-        <div>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tight">Property Reviews</h1>
-            <p class="text-slate-500 font-medium mt-1">Feedback from tenants about your managed properties.</p>
-        </div>
+<div class="max-w-6xl mx-auto py-6 md:py-10 px-4 md:px-0">
+    <div class="mb-8 md:mb-10">
+        <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Property Reviews</h1>
+        <p class="text-slate-500 font-medium mt-1 text-sm md:text-base">Feedback from tenants about your managed properties.</p>
     </div>
 
-    <div class="space-y-6">
+    <div class="space-y-4 md:space-y-6">
         {% for review in reviews %}
         <div
-            class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-slate-100 flex flex-col md:flex-row gap-8 items-start">
+            class="bg-white rounded-[1.5rem] md:rounded-[2.5rem] p-5 md:p-12 shadow-xl border border-slate-100 flex flex-col md:flex-row gap-6 md:gap-8 items-start">
             <!-- Property Info -->
             <div class="w-full md:w-64 flex-shrink-0">
-                <div class="h-40 bg-slate-50 rounded-3xl mb-4 flex items-center justify-center text-slate-200">
-                    <i class="fas fa-image text-3xl"></i>
+                <div class="h-32 md:h-40 bg-slate-50 rounded-2xl md:rounded-3xl mb-3 md:mb-4 flex items-center justify-center text-slate-200">
+                    <i class="fas fa-image text-2xl md:text-3xl"></i>
                 </div>
-                <h3 class="text-lg font-black text-slate-900 line-clamp-1">{{ review.property.title }}</h3>
-                <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest mt-1">{{ review.property.city
-                    }}</p>
+                <h3 class="text-base md:text-lg font-black text-slate-900 line-clamp-1">{{ review.property.title }}</h3>
+                <p class="text-[8px] md:text-[10px] font-black uppercase text-slate-400 tracking-widest mt-1">{{ review.property.city }}</p>
                 <a href="{% url 'property:detail' review.property.id %}"
-                    class="mt-4 inline-block text-arion-blue text-xs font-bold hover:underline">View Listing</a>
+                    class="mt-2 md:mt-4 inline-block text-arion-blue text-[10px] md:text-xs font-bold hover:underline">View Listing</a>
             </div>
 
             <!-- Review Content -->
-            <div class="flex-1">
-                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-                    <div class="flex items-center gap-4">
+            <div class="flex-1 w-full border-t md:border-t-0 pt-6 md:pt-0">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4 md:mb-6">
+                    <div class="flex items-center gap-3 md:gap-4">
                         <div
-                            class="w-12 h-12 bg-arion-blue/10 rounded-2xl flex items-center justify-center text-arion-blue font-black">
+                            class="w-10 h-10 md:w-12 md:h-12 bg-arion-blue/10 rounded-xl md:rounded-2xl flex items-center justify-center text-arion-blue font-black text-sm md:text-base">
                             {% if review.is_anonymous %}
                             A
                             {% else %}
@@ -40,29 +37,29 @@
                             {% endif %}
                         </div>
                         <div>
-                            <h4 class="font-black text-slate-900">
+                            <h4 class="font-black text-slate-900 text-sm md:text-base">
                                 {% if review.is_anonymous %}
                                 Anonymous Tenant
                                 {% else %}
                                 {{ review.tenant.username }}
                                 {% endif %}
                             </h4>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                            <p class="text-[8px] md:text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">
                                 {{ review.created_at|date:"d M Y" }}
                             </p>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-1 bg-amber-50 px-4 py-2 rounded-xl text-amber-500">
+                    <div class="flex items-center gap-1 bg-amber-50 px-3 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl text-amber-500">
                         {% for i in "12345" %}
                         <i
-                            class="{% if forloop.counter <= review.rating %}fas{% else %}far{% endif %} fa-star text-sm"></i>
+                            class="{% if forloop.counter <= review.rating %}fas{% else %}far{% endif %} fa-star text-[10px] md:text-sm"></i>
                         {% endfor %}
                     </div>
                 </div>
 
                 <div
-                    class="bg-slate-50/50 rounded-3xl p-6 border border-slate-100 italic text-slate-600 leading-relaxed">
+                    class="bg-slate-50/50 rounded-2xl md:rounded-3xl p-4 md:p-6 border border-slate-100 italic text-slate-600 leading-relaxed text-xs md:text-sm">
                     "{{ review.comment }}"
                 </div>
             </div>

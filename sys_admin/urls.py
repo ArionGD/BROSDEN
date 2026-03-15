@@ -17,4 +17,9 @@ urlpatterns = [
     # KYC Actions
     path('operations/kyc/<int:pk>/approve/', views.approve_kyc, name='approve_kyc'),
     path('operations/kyc/<int:pk>/reject/', views.reject_kyc, name='reject_kyc'),
+    # Property Actions
+    path('operations/property/<int:pk>/approve/', views.approve_property, name='approve_property'),
+    path('operations/property/<int:pk>/reject/', views.reject_property, name='reject_property'),
+    
+    path('export-accounts-excel/', views.export_accounts_excel, name='export_accounts_excel'),
 ]

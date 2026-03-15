@@ -96,6 +96,8 @@ def rent_dashboard(request):
         schedules = RentSchedule.objects.filter(contract__in=active_contracts).order_by('due_date')
         transactions = PaymentReceipt.objects.filter(booking__property__owner=request.user).order_by('-created_at')[:5]
         template = 'contract/rent_owner.html'
+    
+    is_owner = (request.user.role == 'OWNER')
         
     # Calculate specific timeline: Prev, Current, Next
     # Filter by both month AND year for accuracy
@@ -123,5 +125,31 @@ def rent_dashboard(request):
         'timeline': timeline,
         'active_contracts': active_contracts,
         'next_cycle_start': (today + relativedelta(months=1)).replace(day=1),
-        'portal_base': request.user.portal_base
+        'portal_base': request.user.portal_base,
+        'total_collected': schedules.filter(status='PAID').count() * schedules.first().amount if is_owner and schedules.filter(status='PAID').exists() else 0, # Rough calc
+        'current_month_expected': timeline['current'].amount if is_owner and timeline['current'] and not isinstance(timeline['current'], dict) else 0
     })
+
+from accounts.decorators import owner_required
+
+@owner_required
+def mark_rent_paid(request, schedule_id):
+    """Allow owners to manually acknowledge rent payment."""
+    schedule = get_object_or_404(RentSchedule, id=schedule_id, contract__booking__property__owner=request.user)
+    
+    if request.method == 'POST':
+        schedule.status = 'PAID'
+        schedule.paid_at = timezone.now()
+        schedule.transaction_id = f"MANUAL_{schedule.id}_{timezone.now().strftime('%y%m%d')}"
+        schedule.save()
+        
+        # Notify Tenant
+        try:
+            from notifications.models import send_notification
+            send_notification(schedule.contract.booking.tenant, "Rent Acknowledged", f"Owner has acknowledged your rent payment for {schedule.due_date|date:'F Y'}.", 'PAYMENT')
+        except:
+            pass
+            
+        messages.success(request, f"Rent for {schedule.due_date|date:'F'} marked as paid.")
+    
+    return redirect('contract:rent_dashboard')

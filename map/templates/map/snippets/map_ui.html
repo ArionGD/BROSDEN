@@ -9,25 +9,25 @@
     <!-- ════════════════════════════════════════════════════════
          PAGE HEADER & BREADCRUMBS
     ════════════════════════════════════════════════════════ -->
-    <div class="w-full max-w-7xl mx-auto px-6 pt-10 pb-6">
-        <nav class="flex items-center gap-3 mb-5">
-            <a href="/" class="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 hover:text-blue-600 transition-all">Home</a>
-            <i class="fas fa-chevron-right text-[7px] text-slate-300"></i>
-            <span class="text-[9px] font-black uppercase tracking-[0.4em] text-blue-600">Map Explorer</span>
+    <div class="w-full max-w-7xl mx-auto px-4 md:px-6 pt-6 md:pt-10 pb-4 md:pb-6">
+        <nav class="flex items-center gap-3 mb-4 md:mb-5">
+            <a href="/" class="text-[8px] md:text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 hover:text-blue-600 transition-all">Home</a>
+            <i class="fas fa-chevron-right text-[6px] md:text-[7px] text-slate-300"></i>
+            <span class="text-[8px] md:text-[9px] font-black uppercase tracking-[0.4em] text-blue-600">Map Explorer</span>
         </nav>
         
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div class="space-y-3">
-                <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">{{ map_title|default:"Map Explorer" }}</h1>
-                <div class="h-1.5 w-24 bg-blue-600 rounded-full"></div>
-                <p class="text-sm font-bold text-slate-400 leading-relaxed max-w-3xl">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 md:gap-6">
+            <div class="space-y-2 md:space-y-3 text-center lg:text-left">
+                <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">{{ map_title|default:"Map Explorer" }}</h1>
+                <div class="h-1 w-16 md:h-1.5 md:w-24 bg-blue-600 rounded-full mx-auto lg:mx-0"></div>
+                <p class="text-xs md:text-sm font-bold text-slate-400 leading-relaxed max-w-3xl">
                     Discover premium verified suites through our interactive spatial discovery engine. 
-                    Real-time proximity analysis and intelligent neighborhood matching.
+                    Real-time proximity analysis and intelligent matching.
                 </p>
             </div>
             
             <!-- Live Engine Indicator -->
-            <div class="hidden md:flex items-center gap-4 bg-white/80 backdrop-blur-md px-6 py-4 rounded-[1.5rem] border border-slate-100 shadow-sm transition-all hover:shadow-md">
+            <div class="hidden lg:flex items-center gap-4 bg-white/80 backdrop-blur-md px-6 py-4 rounded-[1.5rem] border border-slate-100 shadow-sm transition-all hover:shadow-md">
                 <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
                     <i class="fas fa-radar text-lg animate-pulse"></i>
                 </div>
@@ -42,8 +42,8 @@
     <!-- ════════════════════════════════════════════════════════
          BLOCK 1 — FILTER SUITE (Floating Island)
     ════════════════════════════════════════════════════════ -->
-    <div class="relative z-40 w-full pt-4 px-4 flex justify-center pointer-events-none">
-        <div class="bg-white/95 backdrop-blur-xl border border-slate-200 shadow-xl rounded-[2.5rem] p-5 pointer-events-auto w-full xl:w-fit transition-all hover:shadow-2xl">
+    <div class="relative z-40 w-full pt-4 md:pt-4 px-4 flex justify-center pointer-events-none mb-6">
+        <div class="bg-white/95 backdrop-blur-xl border border-slate-200 shadow-xl rounded-[1.5rem] md:rounded-[2.5rem] p-4 md:p-5 pointer-events-auto w-full xl:w-fit transition-all hover:shadow-2xl">
             {% include "map/snippets/map_filters.html" %}
         </div>
     </div>
@@ -51,27 +51,27 @@
     <!-- ════════════════════════════════════════════════════════
          SPLIT DISCOVERY VIEW (Map Left, Cards Right)
     ════════════════════════════════════════════════════════ -->
-    <div class="w-full h-[720px] px-6 mb-32 mt-10 flex gap-6" :class="isMapOpen ? '' : 'hidden'">
-        <!-- Map Canvas (Left 50%) -->
-        <div class="w-1/2 h-full bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl overflow-hidden relative">
+    <div class="w-full h-auto lg:h-[720px] px-4 md:px-6 mb-20 md:mb-32 flex flex-col lg:flex-row gap-6" :class="isMapOpen ? '' : 'hidden'">
+        <!-- Map Canvas (Left 50% on PC, Top on Mobile) -->
+        <div class="w-full lg:w-1/2 h-[350px] md:h-[500px] lg:h-full bg-white rounded-3xl md:rounded-[2.5rem] border border-slate-100 shadow-2xl overflow-hidden relative shrink-0">
             <div id="fullScreenMap" class="w-full h-full" 
                  data-focus="{{ focus_id|default:'' }}"
                  data-query="{{ request_params.q|default:'' }}"></div>
             
             <!-- Map Locality Search (Floated) -->
-            <div class="absolute top-6 left-6 right-6 z-20 pointer-events-none">
-                <div class="flex justify-between items-start">
-                    <div class="bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-xl border border-white/50 flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-lg">
-                            <i class="fas fa-location-crosshairs text-xs"></i>
+            <div class="absolute top-4 md:top-6 left-4 md:left-6 right-4 md:right-6 z-20 pointer-events-none">
+                <div class="flex justify-between items-start gap-4">
+                    <div class="bg-white/90 backdrop-blur-md px-3 md:px-4 py-2 rounded-xl md:rounded-2xl shadow-xl border border-white/50 flex items-center gap-2 md:gap-3">
+                        <div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-lg">
+                            <i class="fas fa-location-crosshairs text-[8px] md:text-xs"></i>
                         </div>
-                        <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest">Active Engine</p>
+                        <p class="text-[8px] md:text-[10px] font-black text-slate-900 uppercase tracking-widest hidden sm:block">Active</p>
                     </div>
                     
-                    <div class="relative group/msearch pointer-events-auto">
-                        <input type="text" id="mapSearch" placeholder="Search Locality..." @keydown.enter="searchMap()"
-                               class="w-48 py-2.5 px-4 bg-white/90 backdrop-blur-md border border-slate-100 rounded-2xl text-[10px] font-bold focus:w-64 focus:ring-4 focus:ring-blue-100/50 outline-none transition-all shadow-xl">
-                        <button @click="searchMap()" class="absolute right-2 top-1.5 w-7 h-7 bg-blue-600 text-white rounded-lg flex items-center justify-center hover:bg-blue-700 transition-colors">
+                    <div class="relative group/msearch pointer-events-auto flex-1 md:flex-none max-w-[200px]">
+                        <input type="text" id="mapSearch" placeholder="Search locality..." @keydown.enter="searchMap()"
+                               class="w-full md:w-48 py-2 md:py-2.5 px-3 md:px-4 bg-white/90 backdrop-blur-md border border-slate-100 rounded-xl md:rounded-2xl text-[10px] md:text-[10px] font-bold focus:md:w-64 focus:ring-4 focus:ring-blue-100/50 outline-none transition-all shadow-xl">
+                        <button @click="searchMap()" class="absolute right-1.5 top-1.5 w-6 h-6 md:w-7 md:h-7 bg-blue-600 text-white rounded-lg flex items-center justify-center hover:bg-blue-700 transition-colors">
                             <i class="fas fa-search text-[8px]"></i>
                         </button>
                     </div>
@@ -79,36 +79,36 @@
             </div>
         </div>
 
-        <!-- Horizontal List (Right 50%) -->
-        <div class="w-1/2 h-full flex flex-col gap-6">
+        <!-- Horizontal List (Right 50% on PC, Bottom on Mobile) -->
+        <div class="w-full lg:w-1/2 h-[500px] lg:h-full flex flex-col gap-6">
             <!-- Static Summary Block -->
-            <div class="bg-slate-900 rounded-[2rem] p-6 text-white flex items-center justify-between shadow-2xl relative z-10 shrink-0">
+            <div class="bg-slate-900 rounded-2xl md:rounded-[2rem] p-4 md:p-6 text-white flex items-center justify-between shadow-2xl relative z-10 shrink-0">
                 <div>
-                    <h3 class="text-lg font-black tracking-tight">Search Results</h3>
-                    <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mt-1">{{ properties|length }} properties in Ahmedabad</p>
+                    <h3 class="text-sm md:text-lg font-black tracking-tight">Search Results</h3>
+                    <p class="text-[7px] md:text-[9px] font-black uppercase tracking-widest text-slate-400 mt-1">{{ properties|length }} properties found</p>
                 </div>
-                <div class="flex -space-x-4">
-                    <div class="w-11 h-11 rounded-full border-[3px] border-slate-900 bg-blue-600 flex items-center justify-center text-[11px] font-black shadow-lg">AI</div>
-                    <div class="w-11 h-11 rounded-full border-[3px] border-slate-900 bg-emerald-500 flex items-center justify-center text-[11px] font-black shadow-lg"><i class="fas fa-check"></i></div>
+                <div class="flex -space-x-2 md:-space-x-4">
+                    <div class="w-8 h-8 md:w-11 md:h-11 rounded-full border-[2px] md:border-[3px] border-slate-900 bg-blue-600 flex items-center justify-center text-[8px] md:text-[11px] font-black shadow-lg">AI</div>
+                    <div class="w-8 h-8 md:w-11 md:h-11 rounded-full border-[2px] md:border-[3px] border-slate-900 bg-emerald-500 flex items-center justify-center text-[8px] md:text-[11px] font-black shadow-lg"><i class="fas fa-check"></i></div>
                 </div>
             </div>
 
             <!-- Scrollable Cards Container -->
-            <div class="flex-1 overflow-y-auto pr-4 portal-scroll flex flex-col gap-6 pb-20">
+            <div class="flex-1 overflow-y-auto pr-2 md:pr-4 portal-scroll flex flex-col gap-4 md:gap-6 pb-20">
                 {% for prop in properties %}
-                <div class="hybrid-card group bg-white border border-slate-200 rounded-[2rem] overflow-hidden cursor-pointer hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-500 flex min-h-[160px] h-40"
+                <div class="hybrid-card group bg-white border border-slate-200 rounded-2xl md:rounded-[2rem] overflow-hidden cursor-pointer hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-500 flex min-h-[120px] md:min-h-[160px] h-32 md:h-40"
                      id="hybrid-card-{{ prop.id }}"
                      data-id="{{ prop.id }}"
                      data-lat="{{ prop.latitude|default:0 }}"
                      data-lng="{{ prop.longitude|default:0 }}">
                     
                     <!-- Image (Left) -->
-                    <div class="w-48 h-full overflow-hidden relative shrink-0">
+                    <div class="w-32 md:w-48 h-full overflow-hidden relative shrink-0">
                         {% if prop.images.first %}
                         <img src="{{ prop.images.first.image.url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                         {% else %}
                         <div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">
-                            <i class="fas fa-building text-2xl"></i>
+                            <i class="fas fa-building text-xl md:text-2xl"></i>
                         </div>
                         {% endif %}
                         
@@ -124,44 +124,44 @@
                     </div>
 
                     <!-- Details (Right) -->
-                    <div class="flex-1 p-5 flex flex-col justify-between bg-white">
-                        <div class="flex justify-between items-start gap-4">
+                    <div class="flex-1 p-3 md:p-5 flex flex-col justify-between bg-white">
+                        <div class="flex justify-between items-start gap-2 md:gap-4">
                             <div class="flex-1">
-                                <h4 class="text-sm font-black text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">{{ prop.title }}</h4>
-                                <p class="text-[9px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest flex items-center gap-1.5">
+                                <h4 class="text-xs md:text-sm font-black text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">{{ prop.title }}</h4>
+                                <p class="text-[8px] md:text-[9px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest flex items-center gap-1.5">
                                     <i class="fas fa-location-dot text-blue-400"></i> {{ prop.city }}
                                 </p>
                             </div>
-                            <div class="flex items-center gap-1 text-orange-500">
-                                <i class="fas fa-star text-[8px]"></i>
-                                <span class="text-[9px] font-black">4.8</span>
+                            <div class="flex items-center gap-1 text-orange-500 flex-shrink-0">
+                                <i class="fas fa-star text-[7px] md:text-[8px]"></i>
+                                <span class="text-[8px] md:text-[9px] font-black">4.8</span>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-3">
-                            <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
-                                <i class="fas fa-bed text-blue-500 text-[10px]"></i>
-                                <span class="text-[10px] font-black text-slate-700">{{ prop.bedrooms|default:1 }} BHK</span>
+                        <div class="flex items-center gap-2 md:gap-3 my-2 md:my-0">
+                            <div class="flex items-center gap-1.5 md:gap-2 bg-slate-50 px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-slate-100 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
+                                <i class="fas fa-bed text-blue-500 text-[8px] md:text-[10px]"></i>
+                                <span class="text-[8px] md:text-[10px] font-black text-slate-700">{{ prop.bedrooms|default:1 }} BHK</span>
                             </div>
-                            <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 group-hover:bg-indigo-50 group-hover:border-indigo-100 transition-colors">
-                                <i class="fas fa-users text-indigo-500 text-[10px]"></i>
-                                <span class="text-[10px] font-black text-slate-700 uppercase">{{ prop.gender_preference|default:"ALL" }}</span>
+                            <div class="flex items-center gap-1.5 md:gap-2 bg-slate-50 px-2 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl border border-slate-100 group-hover:bg-indigo-50 group-hover:border-indigo-100 transition-colors">
+                                <i class="fas fa-users text-indigo-500 text-[8px] md:text-[10px]"></i>
+                                <span class="text-[8px] md:text-[10px] font-black text-slate-700 uppercase">{{ prop.gender_preference|default:"ALL" }}</span>
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-between border-t border-slate-50 pt-3">
-                            <div class="flex items-center gap-2">
-                                <div class="w-6 h-6 rounded-lg bg-slate-100 overflow-hidden border border-slate-200 flex items-center justify-center">
+                        <div class="flex items-center justify-between border-t border-slate-50 pt-2 md:pt-3">
+                            <div class="hidden sm:flex items-center gap-2">
+                                <div class="w-5 h-5 md:w-6 md:h-6 rounded-lg bg-slate-100 overflow-hidden border border-slate-200 flex items-center justify-center">
                                     {% if prop.owner.user_profile.profile_picture %}
                                     <img src="{{ prop.owner.user_profile.profile_picture.url }}" class="w-full h-full object-cover">
                                     {% else %}
-                                    <i class="fas fa-user text-slate-300 text-[8px]"></i>
+                                    <i class="fas fa-user text-slate-300 text-[7px] md:text-[8px]"></i>
                                     {% endif %}
                                 </div>
-                                <span class="text-[8px] font-black text-slate-400 uppercase tracking-tighter">Owner</span>
+                                <span class="text-[7px] md:text-[8px] font-black text-slate-400 uppercase tracking-tighter">Owner</span>
                             </div>
-                            <a href="{% url 'property:detail' prop.pk %}" onclick="event.stopPropagation()" class="px-4 py-1.5 bg-slate-900 text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all flex items-center gap-1.5">
-                                Details <i class="fas fa-arrow-right text-[7px]"></i>
+                            <a href="{% url 'property:detail' prop.pk %}" onclick="event.stopPropagation()" class="px-3 md:px-4 py-1 md:py-1.5 bg-slate-900 text-white rounded-lg text-[8px] md:text-[9px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all flex items-center gap-1.5 ml-auto sm:ml-0">
+                                Details <i class="fas fa-arrow-right text-[6px] md:text-[7px]"></i>
                             </a>
                         </div>
                     </div>

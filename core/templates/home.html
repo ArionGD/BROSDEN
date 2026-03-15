@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}BrosDen-AV | Find Your Perfect Den{% endblock %}
 
@@ -10,43 +11,40 @@
 <section class="relative min-h-[500px] md:min-h-[700px] flex items-center overflow-hidden bg-white border-b-[5px] border-slate-50 shadow-xl">
     <!-- Sliding Background System -->
     <div class="absolute inset-0 z-0 overflow-hidden" 
-         x-data="{ currentSlide: 0, totalSlides: 5 }" 
+         x-data="{ currentSlide: 0, totalSlides: 3 }" 
          x-init="setInterval(() => { currentSlide = (currentSlide + 1) % totalSlides }, 5000)">
-        <div id="hero-slider" class="flex h-full w-[500%] transition-transform duration-[1500ms] ease-in-out"
+        <div id="hero-slider" class="flex h-full w-[300%] transition-transform duration-[1500ms] ease-in-out"
              :style="'transform: translateX(-' + (currentSlide * (100 / totalSlides)) + '%)'">
-            <!-- Slide 1 (Blue Accent) -->
-            <div class="w-full h-full bg-white flex items-center justify-end">
-                <div class="w-[40%] flex justify-center">
-                    <i class="fas fa-image text-arion-blue/10 text-[25rem]"></i>
+            
+            <!-- Slide 1 (Static PG Img 1) -->
+            <div class="w-full h-full relative">
+                <div class="absolute inset-0 bg-white/40 z-10"></div>
+                <img src="{% static 'hero1.jpg' %}" class="w-full h-full object-cover opacity-60">
+                <div class="absolute right-20 top-1/2 -translate-y-1/2 w-[35%] hidden lg:block">
+                    <img src="{% static 'hero1.jpg' %}" class="w-full rounded-[3rem] shadow-2xl border-[10px] border-white rotate-2 hover:rotate-0 transition-transform duration-700">
                 </div>
             </div>
-            <!-- Slide 2 (Orange Accent) -->
-            <div class="w-full h-full bg-slate-50 flex items-center justify-end">
-                <div class="w-[40%] flex justify-center">
-                    <i class="fas fa-city text-arion-orange/10 text-[25rem]"></i>
+
+            <!-- Slide 2 (Illustration 1) -->
+            <div class="w-full h-full relative">
+                <div class="absolute inset-0 bg-slate-50/40 z-10"></div>
+                <img src="{% static 'pg1.png' %}" class="w-full h-full object-cover opacity-40">
+                <div class="absolute right-20 top-1/2 -translate-y-1/2 w-[35%] hidden lg:block">
+                    <img src="{% static 'pg1.png' %}" class="w-full rounded-[3rem] shadow-2xl border-[10px] border-white -rotate-2 hover:rotate-0 transition-transform duration-700">
                 </div>
             </div>
-            <!-- Slide 3 (Red Accent) -->
-            <div class="w-full h-full bg-white flex items-center justify-end">
-                <div class="w-[40%] flex justify-center">
-                    <i class="fas fa-building text-red-500/10 text-[25rem]"></i>
-                </div>
-            </div>
-            <!-- Slide 4 (Blue Accent) -->
-            <div class="w-full h-full bg-slate-50 flex items-center justify-end">
-                <div class="w-[40%] flex justify-center">
-                    <i class="fas fa-house-chimney text-arion-blue/10 text-[25rem]"></i>
-                </div>
-            </div>
-            <!-- Slide 5 (Orange Accent) -->
-            <div class="w-full h-full bg-white flex items-center justify-end">
-                <div class="w-[40%] flex justify-center">
-                    <i class="fas fa-landmark text-arion-orange/10 text-[25rem]"></i>
+
+            <!-- Slide 3 (Illustration 2) -->
+            <div class="w-full h-full relative">
+                <div class="absolute inset-0 bg-white/40 z-10"></div>
+                <img src="{% static 'pg2.png' %}" class="w-full h-full object-cover opacity-40">
+                <div class="absolute right-20 top-1/2 -translate-y-1/2 w-[35%] hidden lg:block">
+                    <img src="{% static 'pg2.png' %}" class="w-full rounded-[3rem] shadow-2xl border-[10px] border-white rotate-1 hover:rotate-0 transition-transform duration-700">
                 </div>
             </div>
         </div>
         <!-- Subtle Light Gradient for Depth -->
-        <div class="absolute inset-0 bg-gradient-to-r from-white via-white/20 to-transparent z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-white via-white/40 to-transparent z-20"></div>
     </div>
 
     <div class="w-full px-6 lg:px-20 relative z-10 py-12 md:py-24">
@@ -176,7 +174,13 @@
             <div
                 class="group bg-white border border-slate-100 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-400">
                 <div class="relative h-56 overflow-hidden bg-slate-50 flex items-center justify-center group">
-                    {% if p.images.all %}
+                    {% if forloop.counter == 1 %}
+                        <img src="{% static 'fl1.jpg' %}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000">
+                    {% elif forloop.counter == 2 %}
+                        <img src="{% static 'fl2.jpg' %}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000">
+                    {% elif forloop.counter == 3 %}
+                        <img src="{% static 'fl3.jpg' %}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000">
+                    {% elif p.images.all %}
                         <img src="{{ p.images.first.image.url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000">
                     {% else %}
                         <!-- Architectural Icon Placeholder -->
@@ -207,7 +211,7 @@
                     <div class="flex items-center justify-between pt-5 border-t border-slate-50">
                         <div class="flex gap-4 text-slate-400 font-bold text-sm">
                             <span><i class="fas fa-bed mr-2 text-arion-blue"></i> {{ p.bedrooms }} BHK</span>
-                            <span><i class="fas fa-maximize mr-2 text-arion-blue"></i> {{ p.sqft }} sqft</span>
+                            <span><i class="fas fa-users mr-2 text-arion-blue"></i> {{ p.gender_preference|default:"COED"|lower }}</span>
                         </div>
                         <a href="{% url 'property:detail' p.id %}"
                             class="w-9 h-9 bg-slate-100 hover:bg-arion-blue text-slate-400 hover:text-white rounded-xl flex items-center justify-center transition-all">

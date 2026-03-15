@@ -3,17 +3,17 @@
 {% block title %}Help & Support | BrosDen-AV{% endblock %}
 
 {% block portal_content %}
-<div class="max-w-6xl mx-auto">
+<div class="max-w-6xl mx-auto py-6 px-4 md:px-0">
     <!-- Header -->
-    <div class="text-center mb-16">
-        <h2 class="text-5xl font-black text-slate-900 tracking-tight">How can we help?</h2>
-        <p class="text-slate-500 font-medium mt-4 text-xl">Search our knowledge base or get in touch with our experts.
+    <div class="text-center mb-10 md:mb-16">
+        <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">How can we help?</h2>
+        <p class="text-slate-500 font-medium mt-3 md:mt-4 text-base md:text-xl">Search our knowledge base or get in touch with our experts.
         </p>
 
-        <div class="max-w-2xl mx-auto mt-10 relative">
-            <input type="text" placeholder="Search for help (e.g. security deposit, contracts...)"
-                class="w-full bg-white border-2 border-slate-100 rounded-[2rem] py-6 px-10 text-lg font-bold text-slate-800 shadow-2xl focus:outline-none focus:border-arion-blue-light transition-all">
-            <i class="fas fa-search absolute right-10 top-1/2 -translate-y-1/2 text-slate-300 text-xl"></i>
+        <div class="max-w-2xl mx-auto mt-8 md:mt-10 relative">
+            <input type="text" placeholder="Search for help..."
+                class="w-full bg-white border-2 border-slate-100 rounded-[1.5rem] md:rounded-[2rem] py-4 md:py-6 px-6 md:px-10 text-base md:text-lg font-bold text-slate-800 shadow-2xl focus:outline-none focus:border-arion-blue-light transition-all placeholder:text-slate-300">
+            <i class="fas fa-search absolute right-6 md:right-10 top-1/2 -translate-y-1/2 text-slate-300 text-lg md:text-xl"></i>
         </div>
     </div>
 
@@ -41,26 +41,26 @@
     </div>
 
     <!-- Contact Options -->
-    <div class="bg-slate-900 rounded-[4rem] p-12 md:p-20 text-white relative overflow-hidden">
-        <div class="absolute top-0 right-0 p-20 opacity-10 rotate-12">
+    <div class="bg-slate-900 rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-20 text-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-20 opacity-10 rotate-12 hidden md:block">
             <i class="fas fa-headset text-[15rem]"></i>
         </div>
 
-        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
             <div>
                 <span
-                    class="bg-arion-orange text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full">Still
+                    class="bg-arion-orange text-white text-[9px] md:text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full">Still
                     need help?</span>
-                <h2 class="text-4xl font-black mt-6 tracking-tight">Can't find what you're looking for?</h2>
-                <p class="text-slate-400 mt-4 leading-relaxed font-medium">Our support team is available 24/7 to help
+                <h2 class="text-3xl md:text-4xl font-black mt-6 tracking-tight">Can't find what you're looking for?</h2>
+                <p class="text-slate-400 mt-4 leading-relaxed font-medium text-sm md:text-base">Our support team is available 24/7 to help
                     you with any queries regarding property bookings, payments, or legal contracts.</p>
 
-                <div class="flex gap-4 mt-10">
+                <div class="flex flex-col sm:flex-row gap-4 mt-10">
                     <a href="{% url 'helpdesk:create_ticket' %}"
-                        class="bg-white text-slate-900 px-8 py-4 rounded-2xl font-black text-sm no-underline hover:bg-arion-orange hover:text-white transition-all">Submit
+                        class="bg-white text-slate-900 px-8 py-4 rounded-xl md:rounded-2xl font-black text-sm no-underline hover:bg-arion-orange hover:text-white transition-all text-center">Submit
                         a Ticket</a>
                     <a href="{% url 'helpdesk:ticket_list' %}"
-                        class="bg-slate-800 text-white px-8 py-4 rounded-2xl font-black text-sm no-underline hover:bg-slate-700 transition-all">View
+                        class="bg-slate-800 text-white px-8 py-4 rounded-xl md:rounded-2xl font-black text-sm no-underline hover:bg-slate-700 transition-all text-center">View
                         My Tickets</a>
                 </div>
             </div>

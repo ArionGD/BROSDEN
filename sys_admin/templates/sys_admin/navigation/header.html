@@ -1,7 +1,12 @@
 {% load static %}
-<header class="bg-white border-b border-slate-200 py-5 px-12 md:px-20 flex items-center justify-between shadow-sm z-10">
-    <div class="flex items-center gap-6">
-        <a href="{% url 'index' %}" class="flex items-center no-underline gap-3 group">
+<header class="bg-white border-b border-slate-200 py-4 md:py-5 px-4 md:px-20 flex items-center justify-between shadow-sm z-40">
+    <div class="flex items-center gap-3 md:gap-6">
+        <!-- Mobile Menu Toggle -->
+        <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-500 hover:bg-slate-50 rounded-xl transition-all">
+            <i class="fas fa-bars-staggered text-lg"></i>
+        </button>
+
+        <a href="{% url 'index' %}" class="flex items-center no-underline gap-2 md:gap-3 group">
             <svg class="h-10 w-auto transition-transform group-hover:scale-105" viewBox="0 0 436.49 511.97" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <linearGradient id="logo-gradient-admin" x1="-18.79" y1="359.73" x2="194.32" y2="359.73" gradientTransform="matrix(2.05, 0, 0, -2.05, 38.49, 992.77)" gradientUnits="userSpaceOnUse">

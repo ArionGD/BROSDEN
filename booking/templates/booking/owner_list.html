@@ -1,45 +1,45 @@
 {% extends "owner/portal_base.html" %}
 
 {% block portal_content %}
-<div class="mb-10">
-    <h2 class="text-3xl font-black text-slate-800 tracking-tight">Booking Requests</h2>
-    <p class="text-slate-500 font-medium mt-2">Manage inquiries for your listed properties.</p>
+<div class="mb-8 md:mb-10">
+    <h2 class="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Booking Requests</h2>
+    <p class="text-slate-500 font-medium mt-2 text-sm md:text-base">Manage inquiries for your listed properties.</p>
 </div>
 
-<div class="space-y-6">
+<div class="space-y-4 md:space-y-6">
     {% for booking in bookings %}
     <div
-        class="bg-white border border-slate-200 rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start hover:shadow-xl transition-all border-l-8 {% if booking.status == 'PENDING' %}border-amber-400{% elif booking.status == 'APPROVED' %}border-emerald-500{% elif booking.status == 'PAID' %}border-arion-blue{% else %}border-red-400{% endif %}">
+        class="bg-white border border-slate-200 rounded-[1.5rem] md:rounded-3xl p-5 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 items-start hover:shadow-xl transition-all border-l-[6px] md:border-l-8 {% if booking.status == 'PENDING' %}border-amber-400{% elif booking.status == 'APPROVED' %}border-emerald-500{% elif booking.status == 'PAID' %}border-arion-blue{% else %}border-red-400{% endif %}">
 
-        <div class="flex-1">
-            <div class="flex items-center gap-3 mb-4">
+        <div class="flex-1 w-full">
+            <div class="flex items-center gap-3 mb-4 md:mb-6">
                 <div
-                    class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 font-bold uppercase text-sm">
+                    class="w-8 h-8 md:w-10 md:h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 font-bold uppercase text-xs md:text-sm">
                     {{ booking.tenant.username|slice:":1" }}
                 </div>
                 <div>
-                    <h3 class="text-lg font-black text-slate-900 leading-tight">{{ booking.tenant.username }}</h3>
-                    <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">Potential Tenant</p>
+                    <h3 class="text-base md:text-lg font-black text-slate-900 leading-tight">{{ booking.tenant.username }}</h3>
+                    <p class="text-[8px] md:text-[10px] text-slate-400 font-black uppercase tracking-widest">Potential Tenant</p>
                 </div>
             </div>
 
-            <div class="bg-slate-50 rounded-2xl p-4 mb-4">
-                <p class="text-xs font-black uppercase text-slate-400 mb-2">Requesting for:</p>
-                <p class="text-md font-bold text-arion-blue">{{ booking.property.title }}</p>
+            <div class="bg-slate-50 rounded-xl md:rounded-2xl p-4 mb-4">
+                <p class="text-[9px] md:text-[10px] font-black uppercase text-slate-400 mb-1.5 md:mb-2">Requesting for:</p>
+                <p class="text-sm md:text-md font-bold text-arion-blue truncate">{{ booking.property.title }}</p>
             </div>
 
-            <div class="prose prose-sm italic text-slate-600">
+            <div class="prose prose-sm italic text-slate-600 text-xs md:text-sm">
                 <p>"
                     {{ booking.message|default:"I am interested in this property and would like to schedule a visit." }}
                 "</p>
             </div>
         </div>
 
-        <div class="w-full md:w-auto flex flex-col gap-3 min-w-[200px]">
-            <div class="text-right mb-4">
-                <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">Status</p>
+        <div class="w-full md:w-auto flex flex-col gap-3 min-w-0 md:min-w-[200px] border-t md:border-t-0 pt-4 md:pt-0">
+            <div class="flex flex-row md:flex-col justify-between md:text-right mb-2 md:mb-4">
+                <p class="text-[8px] md:text-[10px] text-slate-400 font-black uppercase tracking-widest">Status</p>
                 <p
-                    class="text-sm font-black {% if booking.status == 'PENDING' %}text-amber-600{% elif booking.status == 'APPROVED' %}text-emerald-600{% elif booking.status == 'PAID' %}text-arion-blue{% else %}text-red-500{% endif %} mt-1">
+                    class="text-xs md:text-sm font-black {% if booking.status == 'PENDING' %}text-amber-600{% elif booking.status == 'APPROVED' %}text-emerald-600{% elif booking.status == 'PAID' %}text-arion-blue{% else %}text-red-500{% endif %} mt-0 md:mt-1">
                     {{ booking.status }}
                 </p>
             </div>
@@ -47,30 +47,30 @@
             {% if booking.status == 'PENDING' %}
             <div class="flex flex-col gap-2">
                 <a href="{% url 'booking:handle' booking.id 'approve' %}"
-                    class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 rounded-xl shadow-lg shadow-emerald-100 text-center text-sm transition-all">
-                    <i class="fas fa-check mr-2"></i> Approve Request
+                    class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-2.5 md:py-3 rounded-xl shadow-lg shadow-emerald-100 text-center text-xs md:text-sm transition-all">
+                    <i class="fas fa-check mr-2"></i> Approve
                 </a>
                 <a href="{% url 'booking:handle' booking.id 'reject' %}"
-                    class="w-full bg-red-50 hover:bg-red-100 text-red-500 font-black py-3 rounded-xl text-center text-sm transition-all border border-red-100">
-                    <i class="fas fa-times mr-2"></i> Reject Request
+                    class="w-full bg-red-50 hover:bg-red-100 text-red-500 font-black py-2.5 md:py-3 rounded-xl text-center text-xs md:text-sm transition-all border border-red-100">
+                    <i class="fas fa-times mr-2"></i> Reject
                 </a>
             </div>
             {% elif booking.status == 'PAID' %}
             <div class="flex flex-col gap-2">
                 <a href="{% url 'contract:view' booking.contract.id %}"
-                    class="w-full bg-slate-900 text-white font-black py-3 rounded-xl text-center text-sm transition-all border border-slate-800 no-underline">
-                    <i class="fas fa-file-contract mr-2 text-arion-orange"></i> View Generated Contract
+                    class="w-full bg-slate-900 text-white font-black py-2.5 md:py-3 rounded-xl text-center text-xs md:text-sm transition-all border border-slate-800 no-underline">
+                    <i class="fas fa-file-contract mr-2 text-arion-orange"></i> View Contract
                 </a>
-                <p class="text-[10px] text-center font-bold text-emerald-500 uppercase mt-2">Security Deposit Paid</p>
+                <p class="text-[8px] md:text-[9px] text-center font-bold text-emerald-500 uppercase mt-2">Security Deposit Paid</p>
             </div>
             {% else %}
-            <div class="text-center p-4 bg-slate-50 rounded-2xl">
-                <p class="text-xs font-bold text-slate-400 italic">This request has been resolved.</p>
+            <div class="text-center p-3 md:p-4 bg-slate-50 rounded-xl md:rounded-2xl">
+                <p class="text-[10px] md:text-xs font-bold text-slate-400 italic">This request has been resolved.</p>
             </div>
             {% endif %}
 
-            <p class="text-center text-[9px] font-black uppercase text-slate-300 mt-4 tracking-tighter">Received on 
-                {{ booking.created_at|date:"F d, Y" }}</p>
+            <p class="text-center text-[8px] md:text-[9px] font-black uppercase text-slate-300 mt-2 md:mt-4 tracking-tighter">Received on 
+                {{ booking.created_at|date:"M d, Y" }}</p>
         </div>
     </div>
     {% empty %}

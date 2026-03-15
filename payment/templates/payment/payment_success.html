@@ -3,15 +3,15 @@
 {% block title %}Payment Success | BrosDen-AV{% endblock %}
 
 {% block portal_content %}
-<div class="max-w-2xl mx-auto py-10">
+<div class="max-w-2xl mx-auto py-6 md:py-10 px-4 md:px-0">
     <!-- Success Celebration -->
-    <div class="text-center mb-12">
+    <div class="text-center mb-8 md:mb-12">
         <div
-            class="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl shadow-lg shadow-emerald-50">
+            class="w-20 h-20 md:w-24 md:h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6 text-3xl md:text-4xl shadow-lg shadow-emerald-50">
             <i class="fas fa-check"></i>
         </div>
-        <h2 class="text-4xl font-black text-slate-900 tracking-tight">Payment Successful!</h2>
-        <p class="text-slate-500 font-medium mt-2">
+        <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Payment Successful!</h2>
+        <p class="text-slate-500 font-medium mt-2 text-sm md:text-base">
             {% if payment_type == 'RENT' %}
             Your monthly rent for <b>{{ booking.property.title }}</b> has been received.
             {% else %}
@@ -21,7 +21,7 @@
     </div>
 
     <!-- Payment Receipt Card -->
-    <div class="bg-white rounded-[3rem] p-10 shadow-2xl border border-slate-100 overflow-hidden relative">
+    <div class="bg-white rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 shadow-2xl border border-slate-100 overflow-hidden relative">
         <!-- Ribbon -->
         <div
             class="absolute top-0 right-0 bg-emerald-500 text-white py-2 px-10 rotate-45 translate-x-10 translate-y-4 font-black text-[10px] uppercase tracking-widest">

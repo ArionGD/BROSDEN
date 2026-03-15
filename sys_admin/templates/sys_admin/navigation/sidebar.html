@@ -1,8 +1,13 @@
 <aside 
-    :class="sidebarCollapsed ? 'w-16 sidebar-collapsed' : 'w-72'"
-    class="h-full bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 transition-all duration-300 relative overflow-hidden group/sidebar">
+    :class="{
+        'w-16 sidebar-collapsed': sidebarCollapsed && !mobileMenuOpen,
+        'w-72': !sidebarCollapsed || mobileMenuOpen,
+        '-translate-x-full': !mobileMenuOpen,
+        'translate-x-0': mobileMenuOpen
+    }"
+    class="fixed lg:static inset-y-0 left-0 h-full bg-white border-r border-slate-200 flex flex-col shadow-xl z-40 lg:z-20 transition-all duration-300 relative overflow-hidden group/sidebar lg:translate-x-0 lg:flex">
     <div class="py-6 overflow-y-hidden overflow-x-hidden flex-1 no-scrollbar flex flex-col px-4 transition-all duration-300"
-         :class="sidebarCollapsed ? 'px-2' : ''">
+         :class="sidebarCollapsed ? 'lg:px-2' : ''">
         
         <!-- Section: Authority -->
         <h2 class="sidebar-text text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 px-1 transition-all duration-200">

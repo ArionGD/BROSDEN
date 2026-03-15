@@ -4,78 +4,76 @@
 
 {% block portal_content %}
 <div class="max-w-4xl mx-auto">
-    <div class="mb-10 flex justify-between items-end">
+    <div class="mb-6 md:mb-10 flex flex-col sm:flex-row justify-between items-center sm:items-end gap-4 text-center sm:text-left">
         <div>
-            <h2 class="text-4xl font-black text-slate-900 tracking-tight">Messages</h2>
-            <p class="text-slate-500 font-medium mt-1">Chat with owners and tenants regarding your properties.</p>
+            <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Messages</h2>
+            <p class="text-slate-500 font-medium mt-1 text-xs md:text-sm">Chat regarding your properties.</p>
         </div>
     </div>
 
-    <div class="bg-white rounded-[3rem] shadow-xl border border-slate-100 overflow-hidden min-h-[500px]">
-            <div class="bg-slate-50 px-8 py-5 border-b border-slate-100 flex items-center justify-between">
-                <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest"><i class="fas fa-history mr-2"></i>Continue Chat</h3>
+    <div class="bg-white rounded-[2rem] md:rounded-[3rem] shadow-xl border border-slate-100 overflow-hidden min-h-[400px] md:min-h-[500px]">
+            <div class="bg-slate-50 px-5 md:px-8 py-4 md:py-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest"><i class="fas fa-history mr-2"></i>Recent Chats</h3>
             </div>
             <div class="divide-y divide-slate-50">
                 {% for convo in read_conversations %}
                 {% for other_user in convo.participants.all %}
                 {% if other_user != user %}
                 <a href="{% url 'chat:chat_box' convo.id %}"
-                    class="flex items-center gap-6 p-8 hover:bg-slate-50 transition-all group no-underline">
-                    <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-xl font-black text-slate-400 group-hover:bg-arion-blue-light group-hover:text-white transition-colors">
+                    class="flex items-center gap-3 md:gap-6 p-4 md:p-8 hover:bg-slate-50 transition-all group no-underline">
+                    <div class="w-10 h-10 md:w-16 md:h-16 bg-slate-100 rounded-lg md:rounded-2xl flex items-center justify-center text-base md:text-xl font-black text-slate-400 group-hover:bg-arion-blue-light group-hover:text-white transition-colors flex-shrink-0">
                         {{ other_user.username|slice:":1"|upper }}
                     </div>
-                    <div class="flex-1">
-                        <div class="flex justify-between items-start mb-1">
-                            <h3 class="text-lg font-black text-slate-900">{{ other_user.username }}</h3>
-                            <span class="text-[10px] font-black text-slate-300 uppercase">{{ convo.updated_at|timesince }} ago</span>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start mb-0.5 md:mb-1 gap-2">
+                            <h3 class="text-sm md:text-lg font-black text-slate-900 truncate">{{ other_user.username }}</h3>
+                            <span class="text-[7px] md:text-[10px] font-black text-slate-300 uppercase whitespace-nowrap">{{ convo.updated_at|timesince }} ago</span>
                         </div>
-                        <p class="text-slate-500 text-sm line-clamp-1">
+                        <p class="text-slate-500 text-[11px] md:text-sm line-clamp-1">
                             {% if convo.messages.last %}
                                 {% if convo.messages.last.sender == user %}You: {% endif %}{{ convo.messages.last.content }}
                             {% else %}
-                                No messages yet. Start a conversation!
+                                No messages yet.
                             {% endif %}
                         </p>
                     </div>
-                    <i class="fas fa-chevron-right text-slate-200 group-hover:translate-x-1 group-hover:text-arion-blue transition-all"></i>
                 </a>
                 {% endif %}
                 {% endfor %}
                 {% empty %}
                 <div class="text-center py-12 bg-white">
                      <i class="fas fa-comments text-slate-100 text-5xl mb-4"></i>
-                     <h3 class="text-lg font-black text-slate-900">No ongoing conversations</h3>
-                     <p class="text-slate-500 font-medium text-sm mt-1">Start chatting by messaging a property owner.</p>
+                     <h3 class="text-base font-black text-slate-900">No conversations</h3>
+                     <p class="text-slate-500 font-medium text-xs mt-1">Chat history will appear here.</p>
                 </div>
                 {% endfor %}
             </div>
 
-            <div class="bg-blue-50/50 px-8 py-5 border-y border-blue-100 flex items-center justify-between">
-                <h3 class="text-xs font-black text-arion-blue uppercase tracking-widest"><i class="fas fa-envelope mr-2"></i>Unread Messages</h3>
-                <span class="bg-arion-orange text-white text-[10px] font-black px-3 py-1 rounded-full shadow-sm">{{ unread_conversations|length }} NEW</span>
+            <div class="bg-blue-50/50 px-5 md:px-8 py-4 md:py-5 border-y border-blue-100 flex items-center justify-between">
+                <h3 class="text-[10px] md:text-xs font-black text-arion-blue uppercase tracking-widest"><i class="fas fa-envelope mr-2"></i>Unread</h3>
+                <span class="bg-arion-orange text-white text-[9px] md:text-[10px] font-black px-2 md:px-3 py-0.5 md:py-1 rounded-full shadow-sm">{{ unread_conversations|length }} NEW</span>
             </div>
             <div class="divide-y divide-slate-50">
                 {% for convo in unread_conversations %}
                 {% for other_user in convo.participants.all %}
                 {% if other_user != user %}
                 <a href="{% url 'chat:chat_box' convo.id %}"
-                    class="flex items-center gap-6 p-8 hover:bg-slate-50 transition-all group no-underline relative">
-                    <div class="relative">
-                        <div class="w-16 h-16 bg-blue-100/50 rounded-2xl flex items-center justify-center text-xl font-black text-arion-blue group-hover:bg-arion-blue group-hover:text-white transition-colors">
+                    class="flex items-center gap-3 md:gap-6 p-4 md:p-8 hover:bg-slate-50 transition-all group no-underline relative">
+                    <div class="relative flex-shrink-0">
+                        <div class="w-10 h-10 md:w-16 md:h-16 bg-blue-100/50 rounded-lg md:rounded-2xl flex items-center justify-center text-base md:text-xl font-black text-arion-blue group-hover:bg-arion-blue group-hover:text-white transition-colors">
                             {{ other_user.username|slice:":1"|upper }}
                         </div>
-                        <div class="absolute -top-1 -right-1 w-4 h-4 bg-arion-orange rounded-full border-2 border-white shadow-lg"></div>
+                        <div class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 md:w-4 md:h-4 bg-arion-orange rounded-full border-2 border-white shadow-lg"></div>
                     </div>
-                    <div class="flex-1">
-                        <div class="flex justify-between items-start mb-1">
-                            <h3 class="text-lg font-black text-slate-900">{{ other_user.username }}</h3>
-                            <span class="text-[10px] font-black text-arion-blue uppercase">{{ convo.updated_at|timesince }} ago</span>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start mb-0.5 md:mb-1 gap-2">
+                            <h3 class="text-sm md:text-lg font-black text-slate-900 truncate">{{ other_user.username }}</h3>
+                            <span class="text-[7px] md:text-[10px] font-black text-arion-blue uppercase whitespace-nowrap">{{ convo.updated_at|timesince }} ago</span>
                         </div>
-                        <p class="text-slate-800 font-bold text-sm line-clamp-1">
-                            {% if convo.messages.last %}{{ convo.messages.last.content }}{% else %}Start a conversation!{% endif %}
+                        <p class="text-slate-800 font-bold text-[11px] md:text-sm line-clamp-1">
+                            {% if convo.messages.last %}{{ convo.messages.last.content }}{% else %}Start chatting!{% endif %}
                         </p>
                     </div>
-                    <i class="fas fa-chevron-right text-slate-200 group-hover:translate-x-1 group-hover:text-arion-blue transition-all"></i>
                 </a>
                 {% endif %}
                 {% endfor %}
