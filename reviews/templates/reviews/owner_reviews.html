@@ -30,19 +30,11 @@
                     <div class="flex items-center gap-3 md:gap-4">
                         <div
                             class="w-10 h-10 md:w-12 md:h-12 bg-arion-blue/10 rounded-xl md:rounded-2xl flex items-center justify-center text-arion-blue font-black text-sm md:text-base">
-                            {% if review.is_anonymous %}
-                            A
-                            {% else %}
                             {{ review.tenant.username|slice:":1"|upper }}
-                            {% endif %}
                         </div>
                         <div>
                             <h4 class="font-black text-slate-900 text-sm md:text-base">
-                                {% if review.is_anonymous %}
-                                Anonymous Tenant
-                                {% else %}
                                 {{ review.tenant.username }}
-                                {% endif %}
                             </h4>
                             <p class="text-[8px] md:text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">
                                 {{ review.created_at|date:"d M Y" }}

@@ -38,6 +38,7 @@ urlpatterns = [
     path('sys-admin/', include('sys_admin.urls')),
     path('feedback/', include('feedback.urls')),
     path('database/', include('database.urls')),
+    path('dms/', include('dms.urls')),
     path('', include('core.urls')),
 ]
 

@@ -49,10 +49,14 @@
                     class="bg-blue-100 text-arion-blue px-4 py-1.5 rounded-full text-[10px] md:text-xs font-black uppercase tracking-tighter shadow-sm">
                     <i class="fas fa-receipt mr-1"></i> Paid & Contracted
                 </span>
-                <div class="mt-4">
+                <div class="mt-4 flex flex-col gap-2">
                     <a href="{% url 'contract:view' booking.contract.id %}"
                         class="block bg-slate-900 text-white px-6 py-3 rounded-xl text-[10px] md:text-xs font-black transition-all shadow-lg no-underline text-center">
                         <i class="fas fa-file-contract mr-2 text-arion-orange"></i> View Contract
+                    </a>
+                    <a href="{% url 'reviews:add_property_review' booking.id %}"
+                        class="block bg-blue-50 text-arion-blue px-6 py-3 rounded-xl text-[10px] md:text-xs font-black transition-all border border-blue-100 no-underline text-center">
+                        <i class="fas fa-star mr-2"></i> {% if booking.property_review %}Update Review{% else %}Review Property{% endif %}
                     </a>
                 </div>
                 {% elif booking.status == 'REJECTED' %}

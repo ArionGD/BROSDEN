@@ -1,0 +1,88 @@
+{% extends "sys_admin/portal_base.html" %}
+
+{% block title %}Document Vault | Sentinel{% endblock %}
+
+{% block portal_content %}
+<div class="mb-10">
+    <h2 class="text-3xl font-black text-slate-800 tracking-tight">Document Vault</h2>
+    <p class="text-slate-500 font-medium mt-2">Centralized repository for all user-uploaded salary slips, leases, and property documents.</p>
+</div>
+
+<div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto no-scrollbar">
+        <table class="w-full text-left min-w-[900px]">
+            <thead class="bg-slate-50 border-b border-slate-100">
+                <tr>
+                    <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Document</th>
+                    <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
+                    <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">User / Role</th>
+                    <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Uploaded</th>
+                    <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Verification</th>
+                    <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                {% for doc in documents %}
+                <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="px-8 py-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-violet-50 text-violet-600 rounded-xl flex items-center justify-center">
+                                <i class="fas {% if doc.file.url|lower|slice:'-4:' == '.pdf' %}fa-file-pdf{% else %}fa-file-image{% endif %}"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-black text-slate-900 leading-none mb-1">{{ doc.title }}</p>
+                                <a href="{{ doc.file.url }}" target="_blank" class="text-[10px] font-bold text-indigo-500 uppercase hover:underline">View Original File</a>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-8 py-6">
+                        <span class="text-[10px] font-black px-2 py-1 bg-slate-100 text-slate-600 rounded-md uppercase tracking-widest">{{ doc.get_doc_type_display }}</span>
+                    </td>
+                    <td class="px-8 py-6">
+                        <div class="flex flex-col">
+                            <span class="text-sm font-black text-slate-700 leading-none mb-1">{{ doc.user.username }}</span>
+                            <span class="text-[9px] font-bold {% if doc.user.role == 'OWNER' %}text-emerald-500{% else %}text-blue-500{% endif %} uppercase tracking-widest">{{ doc.user.role }}</span>
+                        </div>
+                    </td>
+                    <td class="px-8 py-6">
+                        <span class="text-xs font-bold text-slate-400">{{ doc.created_at|date:"M d, Y" }}</span>
+                    </td>
+                    <td class="px-8 py-6">
+                        {% if doc.is_verified %}
+                        <div class="flex items-center gap-2 text-emerald-500">
+                            <i class="fas fa-circle-check text-xs"></i>
+                            <span class="text-[10px] font-black uppercase tracking-widest">Verified</span>
+                        </div>
+                        {% else %}
+                        <div class="flex items-center gap-2 text-amber-500">
+                            <i class="fas fa-clock text-xs"></i>
+                            <span class="text-[10px] font-black uppercase tracking-widest">Unverified</span>
+                        </div>
+                        {% endif %}
+                    </td>
+                    <td class="px-8 py-6">
+                        {% if not doc.is_verified %}
+                        <a href="{% url 'dms:approve_document' doc.pk %}" class="px-4 py-2 bg-indigo-600 text-white text-[10px] font-black rounded-lg shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center gap-2 w-fit no-underline">
+                            <i class="fas fa-check"></i> APPROVE
+                        </a>
+                        {% else %}
+                        <span class="text-[10px] font-black text-slate-300 uppercase italic">Archived</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-8 py-32 text-center bg-slate-50/20">
+                        <div class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-folder-open text-slate-200 text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800">No documents found.</h3>
+                        <p class="text-slate-500 mt-2 font-medium">Any user-uploaded documents will be indexed and stored here.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

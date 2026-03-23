@@ -9,10 +9,10 @@
             <h2 class="text-3xl font-black text-slate-800 tracking-tight">Payment Receipt</h2>
             <p class="text-slate-500 font-medium mt-2">Official proof of transaction.</p>
         </div>
-        <button @click="window.print()"
-            class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2">
-            <i class="fas fa-print"></i> Print Receipt
-        </button>
+        <a href="{% url 'payment:download_receipt_pdf' receipt.id %}"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 no-underline shadow-lg shadow-blue-200">
+            <i class="fas fa-file-pdf"></i> Download Official PDF
+        </a>
     </div>
 
     <!-- Receipt Card -->

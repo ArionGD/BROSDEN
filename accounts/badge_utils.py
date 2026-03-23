@@ -1,5 +1,5 @@
 from django.db.models import Avg
-from reviews.models import Review
+from reviews.models import PropertyReview
 
 def get_owner_badge(owner):
     if not owner or not hasattr(owner, 'is_authenticated') or not owner.is_authenticated:
@@ -14,7 +14,7 @@ def get_owner_badge(owner):
     - Avg < 2.0 -> Red
     - No reviews -> White
     """
-    reviews = Review.objects.filter(property__owner=owner)
+    reviews = PropertyReview.objects.filter(property__owner=owner)
     
     if not reviews.exists():
         return {'color': 'white', 'name': 'No Reviews', 'avg': 0.0, 'icon': 'fa-solid fa-circle'}

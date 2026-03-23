@@ -10,4 +10,5 @@ urlpatterns = [
     path('sign/<int:contract_id>/', views.sign_contract, name='sign_contract'),
     path('rent-management/', views.rent_dashboard, name='rent_dashboard'),
     path('rent-management/mark-paid/<int:schedule_id>/', views.mark_rent_paid, name='mark_rent_paid'),
+    path('download/<int:contract_id>/', views.download_contract_pdf, name='download_contract_pdf'),
 ]

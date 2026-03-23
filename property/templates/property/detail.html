@@ -146,7 +146,7 @@
                     <button @click="activeTab = 'reviews'"
                         :class="activeTab === 'reviews' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-bold text-xs md:text-sm transition-all">
-                        Reviews ({{ property.reviews.count }})
+                        Reviews ({{ property.property_reviews.count }})
                     </button>
                     <button @click="activeTab = 'feedback'"
                         :class="activeTab === 'feedback' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
@@ -456,11 +456,10 @@
             <div x-show="activeTab === 'reviews'" class="py-8 animate-fadeIn" style="display: none;">
                 <div class="flex items-center justify-between mb-8">
                     <h3 class="text-2xl font-black text-slate-900">Tenant Reviews</h3>
-                    <a href="{% url 'reviews:add_review' property.id %}"
-                        class="text-sm font-bold text-indigo-600 hover:text-indigo-700">Write a Review</a>
+                    <p class="text-xs text-slate-400 font-bold italic">Only verified residents can leave reviews via dashboard</p>
                 </div>
                 <div class="space-y-6">
-                    {% include 'reviews/_reviews_list.html' with reviews=property.reviews.all %}
+                    {% include 'reviews/_reviews_list.html' with reviews=property.property_reviews.all %}
                 </div>
             </div>
 
@@ -687,11 +686,7 @@
                         </button>
                     </form>
 
-                    <a href="{% url 'reviews:add_review' property.id %}"
-                        class="w-full bg-slate-50 hover:bg-slate-100 text-slate-400 font-black py-4 rounded-2xl transition-all flex items-center justify-center gap-3">
-                        <i class="fas fa-pen-to-square"></i>
-                        Post a Review
-                    </a>
+
 
                     <button
                         class="w-full bg-slate-50 hover:bg-slate-100 text-slate-600 font-black py-4 rounded-2xl transition-all">

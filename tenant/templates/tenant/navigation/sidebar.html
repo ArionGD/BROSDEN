@@ -16,31 +16,31 @@
         </div>
         <nav class="space-y-2 flex-1">
             <a href="{% url 'analytics:tenant_dashboard' %}"
-                class="flex items-center rounded-2xl font-bold transition-all {% if request.resolver_match.view_name == 'analytics:tenant_dashboard' or request.resolver_match.view_name == 'tenant:dashboard' %}bg-blue-50 text-arion-blue shadow-sm border-l-4 border-arion-blue{% else %}text-slate-500 hover:bg-slate-50 border-l-4 border-transparent hover:border-slate-300{% endif %}"
+                class="flex items-center rounded-2xl font-bold transition-all {% if request.resolver_match.view_name == 'analytics:tenant_dashboard' or request.resolver_match.view_name == 'tenant:dashboard' %}bg-blue-50 text-arion-blue shadow-sm border-l-4 border-arion-blue{% else %}text-slate-900 hover:bg-slate-50 border-l-4 border-transparent hover:border-slate-300{% endif %}"
                 :class="sidebarCollapsed ? 'px-2 py-3 justify-center border-l-0' : 'px-4 py-3'">
-                <i class="fas fa-chart-line w-6 text-center text-lg"></i> 
+                <i class="fas fa-chart-line w-6 text-center text-lg text-blue-500"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text text-[14px] transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden font-bold">Dashboard</span>
             </a>
             <a href="{% url 'map:explore' %}"
-                class="flex items-center rounded-2xl font-bold transition-all {% if request.resolver_match.view_name == 'map:explore' %}bg-blue-50 text-arion-blue shadow-sm border-l-4 border-arion-blue{% else %}text-slate-500 hover:bg-slate-50 border-l-4 border-transparent hover:border-slate-300{% endif %}"
+                class="flex items-center rounded-2xl font-bold transition-all {% if request.resolver_match.view_name == 'map:explore' %}bg-blue-50 text-arion-blue shadow-sm border-l-4 border-arion-blue{% else %}text-slate-900 hover:bg-slate-50 border-l-4 border-transparent hover:border-slate-300{% endif %}"
                 :class="sidebarCollapsed ? 'px-2 py-3 justify-center border-l-0' : 'px-4 py-3'">
                 <i class="fas fa-map-location-dot w-6 text-center text-lg text-blue-500"></i> 
-                <span x-show="!sidebarCollapsed" class="sidebar-text text-[14px] transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden font-bold">Explore Map</span>
+                <span x-show="!sidebarCollapsed" class="sidebar-text text-[14px] transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden font-bold">Explore</span>
             </a>
             <a href="{% url 'booking:tenant_bookings' %}"
-                class="flex items-center rounded-2xl font-bold transition-all {% if request.resolver_match.view_name == 'booking:tenant_bookings' %}bg-blue-50 text-arion-blue shadow-sm border-l-4 border-arion-blue{% else %}text-slate-500 hover:bg-slate-50 border-l-4 border-transparent hover:border-slate-300{% endif %}"
+                class="flex items-center rounded-2xl font-bold transition-all {% if request.resolver_match.view_name == 'booking:tenant_bookings' %}bg-blue-50 text-arion-blue shadow-sm border-l-4 border-arion-blue{% else %}text-slate-900 hover:bg-slate-50 border-l-4 border-transparent hover:border-slate-300{% endif %}"
                 :class="sidebarCollapsed ? 'px-2 py-3 justify-center border-l-0' : 'px-4 py-3'">
                 <i class="fas fa-calendar-days w-6 text-center text-lg text-blue-500"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text text-[14px] transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden font-bold">Bookings</span>
             </a>
             <a href="{% url 'contract:rent_dashboard' %}"
-                class="flex items-center rounded-2xl font-bold transition-all {% if request.resolver_match.view_name == 'contract:rent_dashboard' %}bg-blue-50 text-arion-blue shadow-sm border-l-4 border-arion-blue{% else %}text-slate-500 hover:bg-slate-50 border-l-4 border-transparent hover:border-slate-300{% endif %}"
+                class="flex items-center rounded-2xl font-bold transition-all {% if request.resolver_match.view_name == 'contract:rent_dashboard' %}bg-blue-50 text-arion-blue shadow-sm border-l-4 border-arion-blue{% else %}text-slate-900 hover:bg-slate-50 border-l-4 border-transparent hover:border-slate-300{% endif %}"
                 :class="sidebarCollapsed ? 'px-2 py-3 justify-center border-l-0' : 'px-4 py-3'">
                 <i class="fas fa-credit-card w-6 text-center text-lg text-blue-500"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text text-[14px] transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden font-bold">Payments</span>
             </a>
             <a href="{% url 'chat:chat_list' %}"
-                class="flex items-center rounded-2xl font-bold transition-all {% if 'chat' in request.resolver_match.view_name %}bg-blue-50 text-arion-blue shadow-sm border-l-4 border-arion-blue{% else %}text-slate-500 hover:bg-slate-50 border-l-4 border-transparent hover:border-slate-300{% endif %}"
+                class="flex items-center rounded-2xl font-bold transition-all {% if 'chat' in request.resolver_match.view_name %}bg-blue-50 text-arion-blue shadow-sm border-l-4 border-arion-blue{% else %}text-slate-900 hover:bg-slate-50 border-l-4 border-transparent hover:border-slate-300{% endif %}"
                 :class="sidebarCollapsed ? 'px-2 py-3 justify-center border-l-0' : 'px-4 py-3'">
                 <i class="fas fa-comments w-6 text-center text-lg text-arion-blue"></i> 
                 <span x-show="!sidebarCollapsed" class="sidebar-text text-[14px] transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden font-bold">Messages</span>
@@ -57,9 +57,9 @@
         </div>
         
         <a href="{% url 'accounts:account_settings' %}"
-            class="flex items-center rounded-2xl font-bold transition-all group/nav {% if request.resolver_match.view_name == 'accounts:account_settings' %}bg-blue-50 text-arion-blue shadow-sm border-l-4 border-arion-blue{% else %}text-slate-500 hover:bg-slate-50 border-l-4 border-transparent hover:border-slate-300{% endif %}"
+            class="flex items-center rounded-2xl font-bold transition-all group/nav {% if request.resolver_match.view_name == 'accounts:account_settings' %}bg-blue-50 text-arion-blue shadow-sm border-l-4 border-arion-blue{% else %}text-slate-900 hover:bg-slate-50 border-l-4 border-transparent hover:border-slate-300{% endif %}"
             :class="sidebarCollapsed ? 'px-2 py-3 justify-center border-l-0' : 'px-4 py-3'">
-            <i class="fas fa-gear w-6 text-center text-lg group-hover/nav:rotate-90 transition-transform duration-500"></i> 
+            <i class="fas fa-gear w-6 text-center text-lg text-blue-500 group-hover/nav:rotate-90 transition-transform duration-500"></i> 
             <span x-show="!sidebarCollapsed" class="sidebar-text text-[14px] transition-all duration-200 ml-4 whitespace-nowrap overflow-hidden font-bold">Settings</span>
         </a>
 

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @page {
+            size: a4 portrait;
+            margin: 1.5cm;
+            @frame footer {
+                -pdf-frame-content: footer_content;
+                bottom: 30pt; left: 50pt; height: 20pt;
+            }
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #1e293b;
+        }
+        .header {
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .logo {
+            height: 50px;
+            float: left;
+        }
+        .receipt-info {
+            float: right;
+            text-align: right;
+        }
+        .receipt-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1e293b;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .label {
+            color: #64748b;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .value {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .section {
+            margin-bottom: 30px;
+            clear: both;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-size: 11px;
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-transform: uppercase;
+        }
+        td {
+            padding: 15px 12px;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 13px;
+        }
+        .total-row td {
+            border-bottom: none;
+            background-color: #f8fafc;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: #dcfce7;
+            color: #166534;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .signature-box {
+            margin-top: 50px;
+            width: 300px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 10px;
+            text-align: center;
+        }
+        .signature-img {
+            height: 40px;
+            margin-bottom: 5px;
+        }
+        #footer_content {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 9px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{{ logo_path }}" class="logo">
+        <div class="receipt-info">
+            <h1 class="receipt-title">Official Receipt</h1>
+            <p class="label">Date: <span class="value">{{ receipt.created_at|date:"F d, Y" }}</span></p>
+            <p class="label">No: <span class="value">#{{ receipt.transaction_id }}</span></p>
+        </div>
+    </div>
+
+    <div class="section">
+        <div style="width: 50%; float: left;">
+            <p class="label">Bill To:</p>
+            <p class="value" style="font-size: 18px;">{{ receipt.user.username }}</p>
+            <p style="font-size: 12px; color: #64748b;">{{ receipt.user.email }}</p>
+        </div>
+        <div style="width: 40%; float: right; text-align: right;">
+            <p class="label">Payment Status:</p>
+            <span class="badge">PAID</span>
+        </div>
+    </div>
+
+    <div class="section" style="margin-top: 50px;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Property</th>
+                    <th style="text-align: right;">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if receipt.payment_type == 'SECURITY_DEPOSIT' %}
+                <tr>
+                    <td>Security Deposit (Refundable)</td>
+                    <td>{{ receipt.property_title }}</td>
+                    <td style="text-align: right;">${{ receipt.security_deposit_amount|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <td>Digital Contract & Processing Fee</td>
+                    <td>-</td>
+                    <td style="text-align: right;">${{ receipt.contract_fee_amount|floatformat:2 }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td>Monthly Rent ({{ receipt.period_month }}/{{ receipt.period_year }})</td>
+                    <td>{{ receipt.property_title }}</td>
+                    <td style="text-align: right;">${{ receipt.amount|floatformat:2 }}</td>
+                </tr>
+                {% endif %}
+                <tr class="total-row">
+                    <td colspan="2" style="text-align: right;">Total Paid</td>
+                    <td style="text-align: right; color: #3b82f6;">${{ receipt.amount|floatformat:2 }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section" style="margin-top: 60px;">
+        <p class="label" style="text-align: center;">Verification</p>
+        <p style="font-size: 11px; text-align: center; color: #94a3b8;">
+            This is a digitally generated receipt. No physical signature is required.<br>
+            Verified by BrosDen Automated Payment System. Transaction ID: {{ receipt.transaction_id }}
+        </p>
+    </div>
+
+    <div id="footer_content">
+        BrosDen. - Premium Property Management Platform | Visit: www.brosden.com | Contact: support@brosden.com
+    </div>
+</body>
+</html>

@@ -2,6 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
+from datetime import date
+from django.http import HttpResponse
+from core.utils import render_to_pdf
+import os
 from .models import Contract, RentSchedule
 from payment.models import PaymentReceipt
 from core.notifications import send_simulated_whatsapp
@@ -153,3 +157,32 @@ def mark_rent_paid(request, schedule_id):
         messages.success(request, f"Rent for {schedule.due_date|date:'F'} marked as paid.")
     
     return redirect('contract:rent_dashboard')
+
+@login_required
+def download_contract_pdf(request, contract_id):
+    """Generates and downloads a formal PDF contract with digital signatures."""
+    contract = get_object_or_404(Contract, id=contract_id)
+    if not _check_contract_access(request.user, contract):
+        return render(request, '403.html', status=403)
+        
+    # Resolve Logo Path (preferring static image)
+    from django.conf import settings
+    logo_path = os.path.join(settings.STATICFILES_DIRS[0], 'main logo.jpg')
+    if not os.path.exists(logo_path):
+        logo_path = "https://brosden.com/static/images/main logo.jpg"
+
+    context = {
+        'contract': contract,
+        'logo_path': logo_path,
+    }
+    
+    pdf = render_to_pdf('contract/contract_pdf.html', context)
+    if pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        filename = f"Contract_{contract.booking.property.title.replace(' ', '_')}.pdf"
+        content = f"attachment; filename={filename}"
+        response['Content-Disposition'] = content
+        return response
+    
+    messages.error(request, "Failed to generate PDF. Please try again.")
+    return redirect('contract:view_contract', contract_id=contract.id)

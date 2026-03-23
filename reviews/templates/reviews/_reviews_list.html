@@ -6,12 +6,9 @@
             <div class="flex items-center gap-2 mt-1">
                 <i class="fas fa-star text-amber-400"></i>
                 <span class="text-xl font-black text-slate-900">
-                    {% if reviews %}
-                    {{ reviews.0.property.reviews.all|dictsort:"rating"|last }}
-                    {% else %}
-                    0.0
-                    {% endif %}
+                    {{ reviews.count|default:"0" }}
                 </span>
+                <span class="text-[8px] font-black text-slate-400 uppercase">Total</span>
             </div>
         </div>
     </div>
@@ -22,19 +19,11 @@
             <div class="flex items-center gap-4">
                 <div
                     class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 font-black">
-                    {% if review.is_anonymous %}
-                    A
-                    {% else %}
                     {{ review.tenant.username|slice:":1"|upper }}
-                    {% endif %}
                 </div>
                 <div>
                     <h4 class="font-black text-slate-900 text-sm">
-                        {% if review.is_anonymous %}
-                        Anonymous Tenant
-                        {% else %}
                         {{ review.tenant.username }}
-                        {% endif %}
                     </h4>
                     <span class="text-[10px] font-black text-slate-300 uppercase">
                         {{ review.created_at|date:"d M, Y" }}

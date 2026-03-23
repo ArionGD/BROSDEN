@@ -28,6 +28,23 @@ class User(AbstractUser):
         return hasattr(self, 'kyc') and self.kyc.is_verified
 
     @property
+    def tenant_rating(self):
+        """Average rating received from owners."""
+        reviews = self.received_tenant_reviews.all()
+        if not reviews:
+            return 0
+        return sum(r.rating for r in reviews) / len(reviews)
+
+    @property
+    def owner_rating(self):
+        """Average rating across all properties owned."""
+        from reviews.models import PropertyReview
+        reviews = PropertyReview.objects.filter(property__owner=self)
+        if not reviews.exists():
+            return 0
+        return sum(r.rating for r in reviews) / reviews.count()
+
+    @property
     def portal_base(self):
         if self.role == 'ADMIN':
             return 'sys_admin/portal_base.html'

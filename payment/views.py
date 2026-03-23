@@ -2,9 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponse
 from .models import PaymentReceipt
 from booking.models import BookingRequest
 from contract.utils import generate_contract
+from core.utils import render_to_pdf
+import os
+
 
 
 
@@ -156,3 +160,36 @@ def payment_history(request):
         'is_owner': is_owner,
         'portal_base': request.user.portal_base
     })
+
+@login_required
+def download_receipt_pdf(request, receipt_id):
+    """Generates and downloads a professional PDF receipt."""
+    receipt = get_object_or_404(PaymentReceipt, id=receipt_id)
+    
+    # Security: Ensure only participant can download
+    if receipt.user != request.user and receipt.booking.property.owner != request.user:
+        messages.error(request, "Access denied.")
+        return redirect('index')
+    
+    # Resolve Logo Path (preferring static image)
+    from django.conf import settings
+    logo_path = os.path.join(settings.STATICFILES_DIRS[0], 'main logo.jpg')
+    if not os.path.exists(logo_path):
+        # Fallback to absolute URL if file doesn't exist locally (should exist)
+        logo_path = "https://brosden.com/static/images/main logo.jpg"
+
+    context = {
+        'receipt': receipt,
+        'logo_path': logo_path,
+    }
+    
+    pdf = render_to_pdf('payment/receipt_pdf.html', context)
+    if pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        filename = f"Receipt_{receipt.transaction_id}.pdf"
+        content = f"attachment; filename={filename}"
+        response['Content-Disposition'] = content
+        return response
+    
+    messages.error(request, "Failed to generate PDF. Please try again.")
+    return redirect('payment:view_receipt', receipt_id=receipt.id)

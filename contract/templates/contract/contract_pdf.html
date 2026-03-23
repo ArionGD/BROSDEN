@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @page {
+            size: a4 portrait;
+            margin: 2.5cm 1.5cm;
+            @frame header_frame {
+                -pdf-frame-content: header_content;
+                top: 30pt; left: 50pt; height: 50pt;
+            }
+            @frame footer_frame {
+                -pdf-frame-content: footer_content;
+                bottom: 30pt; left: 50pt; height: 20pt;
+            }
+        }
+        body {
+            font-family: 'Times New Roman', serif;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #0f172a;
+        }
+        .header-title {
+            text-align: right;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 10px;
+            margin-bottom: 40px;
+        }
+        .contract-no {
+            font-size: 10px;
+            color: #64748b;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-left: 4px solid #3b82f6;
+            padding-left: 10px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            background-color: #f8fafc;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        .p-classic {
+            font-size: 12px;
+            text-align: justify;
+            margin-bottom: 10px;
+        }
+        .metadata-grid {
+            margin-bottom: 40px;
+        }
+        .metadata-row {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 5px;
+        }
+        .label {
+            width: 150px;
+            float: left;
+            font-weight: bold;
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+        .value {
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .signature-section {
+            margin-top: 100px;
+        }
+        .signature-box {
+            width: 45%;
+            float: left;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            background-color: #fdfdfd;
+            border-radius: 8px;
+            height: 150px;
+            text-align: center;
+        }
+        .sig-label {
+            font-size: 9px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-top: 5px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 5px;
+        }
+        .sig-status {
+            color: #166534;
+            font-weight: bold;
+            font-size: 11px;
+            margin-top: 10px;
+        }
+        .watermark {
+            color: #f1f5f9;
+            font-size: 70px;
+            position: absolute;
+            transform: rotate(-45deg);
+            z-index: -1000;
+            top: 40%;
+            left: 10%;
+        }
+    </style>
+</head>
+<body>
+    <div id="header_content">
+        <img src="{{ logo_path }}" height="40">
+    </div>
+
+    <div class="header-title">
+        <span class="contract-no">Doc Ref: BD-{{ contract.id }}-{{ contract.created_at|date:"Y" }}</span>
+        <h1 style="margin: 5px 0 0 0; font-size: 24px;">Residential Lease Agreement</h1>
+    </div>
+
+    <div class="metadata-grid">
+        <div class="metadata-row">
+            <span class="label">The Landlord (Owner):</span>
+            <span class="value">{{ contract.booking.property.owner.username|upper }}</span>
+        </div>
+        <div class="metadata-row">
+            <span class="label">The Tenant:</span>
+            <span class="value">{{ contract.booking.tenant.username|upper }}</span>
+        </div>
+        <div class="metadata-row">
+            <span class="label">The Property Address:</span>
+            <span class="value">{{ contract.booking.property.title }}, {{ contract.booking.property.city }}</span>
+        </div>
+        <div class="metadata-row" style="width: 50%; float: left;">
+            <span class="label">Monthly Rent:</span>
+            <span class="value">${{ contract.booking.property.price|floatformat:2 }}</span>
+        </div>
+        <div class="metadata-row" style="width: 45%; float: right;">
+            <span class="label">Security Deposit:</span>
+            <span class="value">${{ contract.booking.property.price|floatformat:2 }}</span>
+        </div>
+    </div>
+
+    <div class="section-title">Terms of Agreement</div>
+    <div class="p-classic">
+        {{ contract.content|safe|linebreaks }}
+    </div>
+
+    <div class="section-title">Payment Schedule</div>
+    <div class="p-classic">
+        The tenant agrees to pay a monthly rent of <strong>${{ contract.booking.property.price }}</strong> on or before the 1st of each month. 
+        A security deposit of <strong>${{ contract.booking.property.price }}</strong> is required before move-in.
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-box" style="margin-right: 5%;">
+            <div style="height: 60px;">
+                {% if contract.is_signed_by_owner %}
+                <p style="font-family: cursive; font-size: 24px; color: #1e293b; margin: 0;">{{ contract.booking.property.owner.username }}</p>
+                <div class="sig-status">SIGNED (Digital Verification)</div>
+                <div style="font-size: 8px; color: #94a3b8;">{{ contract.signed_at|date:"Y-m-d H:i:s" }}</div>
+                {% else %}
+                <p style="color: #cbd5e1; font-style: italic; padding-top: 20px;">Awaiting Owner Signature</p>
+                {% endif %}
+            </div>
+            <div class="sig-label">Landlord's Signature & Date</div>
+        </div>
+
+        <div class="signature-box">
+            <div style="height: 60px;">
+                {% if contract.is_signed_by_tenant %}
+                <p style="font-family: cursive; font-size: 24px; color: #1e293b; margin: 0;">{{ contract.booking.tenant.username }}</p>
+                <div class="sig-status">SIGNED (Verified Tenant Identity)</div>
+                <div style="font-size: 8px; color: #94a3b8;">{{ contract.signed_at|date:"Y-m-d H:i:s" }}</div>
+                {% else %}
+                <p style="color: #cbd5e1; font-style: italic; padding-top: 20px;">Awaiting Tenant Signature</p>
+                {% endif %}
+            </div>
+            <div class="sig-label">Tenant's Signature & Date</div>
+        </div>
+    </div>
+
+    <div id="footer_content">
+        Page <pdf:pagenumber> of <pdf:pagecount> | This document is governed by the Digital Signature Act and represents a binding legal commitment.
+    </div>
+</body>
+</html>

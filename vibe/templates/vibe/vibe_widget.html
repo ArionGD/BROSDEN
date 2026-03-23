@@ -16,7 +16,7 @@
                 return;
             }
 
-            fetch("{% url 'vibe:calculate_vibe' property.id %}")
+            fetch(`{% url 'vibe:calculate_vibe' property.id %}`)
                 .then(res => res.json())
                 .then(data => {
                     this.loading = false;

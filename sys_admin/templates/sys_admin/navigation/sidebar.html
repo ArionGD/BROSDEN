@@ -54,6 +54,11 @@
                 <i class="fas fa-user-shield w-6 text-center text-base text-amber-500 group-hover/nav:scale-110 transition-transform"></i> 
                 <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Owner KYC</span>
             </a>
+            <a href="{% url 'dms:admin_vault' %}"
+                class="flex items-center px-4 py-2 {% if request.resolver_match.view_name == 'dms:admin_vault' %}bg-indigo-50 text-indigo-600 border-indigo-600 shadow-sm{% else %}text-slate-500 hover:bg-slate-50 border-transparent hover:border-slate-300{% endif %} rounded-xl font-bold transition-all border-l-4 group/nav [.sidebar-collapsed_&]:px-2 [.sidebar-collapsed_&]:justify-center [.sidebar-collapsed_&]:border-l-0">
+                <i class="fas fa-folder-open w-6 text-center text-base text-violet-500 group-hover/nav:scale-110 transition-transform"></i> 
+                <span class="sidebar-text text-[15px] transition-all duration-200 ml-4 whitespace-nowrap">Document Vault</span>
+            </a>
         </nav>
 
 
