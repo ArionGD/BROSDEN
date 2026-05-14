@@ -1,3 +1,3 @@
-## BrosDen: One Stop Housing Solution - (College Project)
+# BrosDen: One Stop Housing Solution - (College Project)
 
-# This is the readme file.
+### This is the readme file.
